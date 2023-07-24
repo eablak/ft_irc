@@ -1,9 +1,10 @@
-#include "checks.hpp"
+#include "includes/checks.hpp"
+using namespace std;
 
-void checks::check_args(int ac, char **av){
+
+void checks::check_args(int ac){
     if (ac != 3){
-        std::cerr << "Usage <port> <password>" << std::endl;
+        cerr << "Usage <port> <password>" << endl;
         exit(1);
     }
-    
 }
