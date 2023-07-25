@@ -10,28 +10,21 @@ Server::Server(string _port, string _password){
 }
 
 void Server::createSocket(){
-    int serverSocket;
+    int opt = 1;
     struct sockaddr_in serverAddr;
 
-    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket == -1) 
-        error::error_func("Error creating socket");
-    int opt = 1;
-    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
-        error::error_func("Error while setting socket options");
-    if (fcntl(serverSocket, F_SETFL, O_NONBLOCK) < 0)
+    if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+        error::error_func("Error socket failed");
+    if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+        error::error_func("Error setsocket options");
+    if (fcntl(socketfd, F_SETFL, O_NONBLOCK) < 0)
         error::error_func("Error while setting socket flag options");
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(this->port);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
-
-    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1)
+    if (bind(socketfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1)
         error::error_func("Error binding socket.");
-
-    listen(serverSocket, 100);
-
-    std::cout << "Server listening on port " << port  <<  "..." << std::endl;
-
-    close(serverSocket);
+    if (listen(socketfd, 100) < 0)
+        error::error_func("Error listen socket");
 }

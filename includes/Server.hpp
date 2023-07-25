@@ -19,6 +19,7 @@ class Server{
     private:
     int port;
     string password;
+    int socketfd;
 
     public:
     Server(string av1,string av2);

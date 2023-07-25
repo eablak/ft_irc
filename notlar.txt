@@ -1,6 +1,8 @@
 1-> socket(AF_INET, SOCK_STREAM, 0)
+    int socketfd = socket(domain, type, protocol);
     socket() çağrısı ile bir soket oluşturulur. 
-    AF_INET adres ailesi, SOCK_STREAM türü (TCP) ve 0 protokolü seçilir.
+    AF_INET adres ailesi, SOCK_STREAM türü (TCP) ve 0 protokolü seçilir. 
+        ->Internet protocol
 
 2-> setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))
     setsockopt fonksiyonu, oluşturulan bir soketin seçeneklerini ayarlamak için kullanılır. Bu seçenekler, soketin davranışını belirlemek için kullanılabilir. İlgili parametrelerle birlikte çağrıldığında, bu fonksiyon belirtilen soket üzerindeki seçeneği etkinleştirir veya değiştirir.
