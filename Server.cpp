@@ -1,77 +1,37 @@
 #include "includes/Server.hpp"
+#include <cstdlib>
+#include <string>
 
-void Server::server_args(string port, string _password){
-     try{
-        int _port = stoi(port);
-        if (_port < 1024 || _port > 65535){
-            cerr << "wrong port range "<< endl;
-            exit(1);
-        }
-        this->port = _port;
-        this->password = _password;
-    } catch(const exception &e){
-        cerr << "wrong port" << endl;
-    }
+Server::Server(string _port, string _password){
+
+    this->port = std::stoi(_port);
+    this->password = _password;
+    createSocket();
 }
 
-Server::Server(string port, string _password){
-    server_args(port,_password);
-      int serverSocket, newSocket, n;
-    struct sockaddr_in serverAddr, clientAddr;
-    socklen_t clientAddrLen;
-    char buffer[1024];
+void Server::createSocket(){
+    int serverSocket;
+    struct sockaddr_in serverAddr;
 
-    // Create socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket == -1) {
-        std::cerr << "Error creating socket." << std::endl;
-       //exit func
-    }
+    if (serverSocket == -1) 
+        error::error_func("Error creating socket");
+    int opt = 1;
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+        error::error_func("Error while setting socket options");
+    if (fcntl(serverSocket, F_SETFL, O_NONBLOCK) < 0)
+        error::error_func("Error while setting socket flag options");
 
-    // Prepare the sockaddr_in structure
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(this->port); // Port number
+    serverAddr.sin_port = htons(this->port);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
-    // Bind
-    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
-        std::cerr << "Error binding socket." << std::endl;
-       //exit func
-    }
+    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1)
+        error::error_func("Error binding socket.");
 
-    // Listen
-    listen(serverSocket, 5);
+    listen(serverSocket, 100);
 
-    std::cout << "Server listening on port 8080..." << std::endl;
+    std::cout << "Server listening on port " << port  <<  "..." << std::endl;
 
-    // Accept connection
-    clientAddrLen = sizeof(clientAddr);
-    newSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
-    if (newSocket == -1) {
-        std::cerr << "Error accepting connection." << std::endl;
-       //exit func
-    }
-
-    // Read message from client
-    n = read(newSocket, buffer, sizeof(buffer) - 1);
-    if (n == -1) {
-        std::cerr << "Error reading from socket." << std::endl;
-       //exit func
-    }
-
-    buffer[n] = '\0';
-    std::cout << "Message from client: " << buffer << std::endl;
-
-    // Respond to client
-    const char* response = "Hello, client! I got your message.";
-    n = write(newSocket, response, strlen(response));
-    if (n == -1) {
-        std::cerr << "Error writing to socket." << std::endl;
-       //exit func
-    }
-
-    // Close sockets
-    close(newSocket);
     close(serverSocket);
-
 }

@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace checks{
-    void check_args(int ac);
+    void check_args(int ac,char **av);
 }
 
 

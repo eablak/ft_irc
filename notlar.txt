@@ -1,0 +1,33 @@
+1-> socket(AF_INET, SOCK_STREAM, 0)
+    socket() çağrısı ile bir soket oluşturulur. 
+    AF_INET adres ailesi, SOCK_STREAM türü (TCP) ve 0 protokolü seçilir.
+
+2-> setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))
+    setsockopt fonksiyonu, oluşturulan bir soketin seçeneklerini ayarlamak için kullanılır. Bu seçenekler, soketin davranışını belirlemek için kullanılabilir. İlgili parametrelerle birlikte çağrıldığında, bu fonksiyon belirtilen soket üzerindeki seçeneği etkinleştirir veya değiştirir.
+
+    Parametreler:
+        serverSocket: Seçenekleri ayarlayacağımız soketin dosya tanımlayıcısı (file descriptor).
+        SOL_SOCKET: Seçenek düzeyini belirten sabit. Bu durumda SOL_SOCKET, soket seçeneklerini belirlemek için kullanılır.
+        SO_REUSEADDR: Yeniden kullanılabilir adres seçeneği. Bu seçenek, sunucunun aynı portta tekrar başlatılması durumunda, daha önce bağlı olan aynı portu hızlıca tekrar kullanmasına izin verir.
+        &opt: SO_REUSEADDR seçeneğini etkinleştirmek veya devre dışı bırakmak için kullanılan değeri tutan bir işaretçi (pointer).
+        sizeof(opt): SO_REUSEADDR için kullanılan değerin boyutu.
+
+    Bu kod parçası, setsockopt fonksiyonunu serverSocket üzerinde SO_REUSEADDR seçeneğini etkinleştirmek için çağırıyor.
+
+3-> fcntl(serverSocket, F_SETFL, O_NONBLOCK)
+    fcntl fonksiyonu, dosya tanımlayıcısı (file descriptor) üzerinde işlemler yapmak için kullanılır. Bu kod parçasında, serverSocket dosya tanımlayıcısının bayrakları değiştirilir.
+
+    Parametreler:
+
+        serverSocket: Bayraklarının değiştirileceği dosya tanımlayıcısı (file descriptor).
+        F_SETFL: Dosya bayraklarını ayarlamak için kullanılan sabit.
+        O_NONBLOCK: Soketin engellenmeyen (non-blocking) modda olmasını sağlayan bayrak.
+
+    Bu kod parçası, fcntl fonksiyonunu serverSocket üzerinde O_NONBLOCK bayrağını etkinleştirmek için çağırıyor. Bu, soketin bloklayıcı olmaktan çıkarak engellenmeyen (non-blocking) modda çalışmasını sağlar.
+
+
+4-> bind() çağrısı ile oluşturulan soket sunucu adresine bağlanır. Bu adımda, soket adresi ve boyutu belirtilir. Eğer bağlantı başarısız olursa, bir hata mesajı yazdırılır ve işlem sonlandırılabilir.
+
+5-> listen() çağrısı ile sunucu belirtilen soketi dinlemeye başlar. Bu, gelen bağlantıları kabul etmeye hazır olduğu anlamına gelir. 5, burada eşzamanlı bağlantı kuyruğunun boyutunu belirtir.
+
+6-> accept() çağrısı ile yeni bir bağlantı kabul edilir. Bu fonksiyon, bloklayıcıdır ve yeni bir istemci bağlantısı gelene kadar bekler. Yeni bir bağlantı oluşturulduğunda, yeni bir soket döndürülür.
