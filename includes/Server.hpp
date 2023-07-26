@@ -32,6 +32,8 @@ class Server{
     void createSocket();
     void serverInvoke();
     void clientAccept();
+    int createClient(int fd);
+    Client *getClient(int fd);
 };
 
 #endif

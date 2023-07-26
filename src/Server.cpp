@@ -40,7 +40,9 @@ void Server::clientAccept(){
         poll_client.fd = client_fd;
         poll_client.events = POLLIN;
         _pollfd.push_back(poll_client);
-        _clients.push_back(new Client(client_fd));
+        Client *my_client = new Client(client_fd);
+        if (createClient(client_fd) == 1)
+            _clients.push_back(my_client);
     }
         
 }
