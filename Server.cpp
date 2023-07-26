@@ -29,12 +29,24 @@ void Server::createSocket(){
         error::error_func("Error listen socket");
 }
 
+void Server::clientAccept(){
+    struct sockaddr_in client_addr;
+    socklen_t len = sizeof(client_addr);
+    int client_fd = accept(socketfd,(sockaddr *)&client_addr,&len);
+    if (client_fd < 0)
+        error::error_func("Error accept");
+    else
+        cout << "connect" << endl;
+}
+
 void Server::serverInvoke(){
-    _pollfd[0].fd = socketfd;
-    _pollfd[0].events = POLLIN;
+    pollfd initalize = {socketfd,POLLIN,0};
+    _pollfd.push_back(initalize);
     cout << "Server listening on port.." << endl;
     while(1){
         if (poll(&_pollfd[0],_pollfd.size(),0) == -1)
             error::error_func("Error while polling");
+        if (_pollfd[0].revents & POLLIN)
+            clientAccept();
     }
 }

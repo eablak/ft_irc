@@ -27,6 +27,7 @@ class Server{
     Server(string av1,string av2);
     void createSocket();
     void serverInvoke();
+    void clientAccept();
 };
 
 #endif
