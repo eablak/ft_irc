@@ -33,3 +33,41 @@
 5-> listen() çağrısı ile sunucu belirtilen soketi dinlemeye başlar. Bu, gelen bağlantıları kabul etmeye hazır olduğu anlamına gelir. 5, burada eşzamanlı bağlantı kuyruğunun boyutunu belirtir.
 
 6-> accept() çağrısı ile yeni bir bağlantı kabul edilir. Bu fonksiyon, bloklayıcıdır ve yeni bir istemci bağlantısı gelene kadar bekler. Yeni bir bağlantı oluşturulduğunda, yeni bir soket döndürülür.
+
+
+
+pollfd -> poll işlevi tarafından kullanılarak soketlerin olaylarına ilişkin bilgileri içeren yapıları temsil eder.
+
+poll-> sistem çağrısıdır. poll işlevi, birden çok dosya tanımlayıcısının (file descriptor) durumunu izlemek ve olayların gerçekleştiği dosya tanımlayıcılarını belirlemek için kullanılır. 
+Bu, çoklu soket programlamasında ve diğer giriş/çıkış işlemlerinde oldukça yararlıdır.
+
+Bir sistemde, bir dosya tanımlayıcısının (soket, dosya, pipe, vs.) durumu değişebilir ve bu değişiklikler, olayların gerçekleştiği anlamına gelebilir. Örneğin, bir sokete veri geldiğinde veya
+bir dosya yazılabilir hale geldiğinde bir olay gerçekleşir. poll işlevi, belirtilen dosya tanımlayıcılarını eş zamanlı olarak izler ve olayların meydana geldiği durumlarda bildirimde bulunur.
+
+ int poll(struct pollfd *fds, nfds_t nfds, int timeout);
+
+ fds: pollfd yapısının bir dizisi. Bu dizi, izlenmek istenen dosya tanımlayıcılarını ve bu dosya tanımlayıcıları için beklenen olay maskelerini içerir.
+nfds: fds dizisinin boyutu olan nfds_t türünden bir değer. Yani, izlenecek dosya tanımlayıcılarının sayısıdır.
+timeout: İşlemin ne kadar süreyle bloklanacağını belirten bir zaman aşımı değeri. Pozitif bir değer, işlemi o süre boyunca bloklar.
+Sıfır, anında geri döner (yani bloklamaz) ve negatif bir değer (-1), işlemi sonsuz bir süre boyunca bloklar.
+
+struct pollfd {
+    int fd;         // Dosya tanımlayıcı
+    short events;   // Beklenen olay maskesi (POLLIN, POLLOUT vb.)
+    short revents;  // Gerçekleşen olay maskesi (POLLIN, POLLOUT vb.)
+};
+
+
+poll işlevi, takip edilen dosya tanımlayıcılarından herhangi biri için olayın gerçekleştiği durumda geri döner. 
+İşlem, zaman aşımına uğradığında veya takip edilen dosya tanımlayıcılarından herhangi biri için olayın gerçekleştiği durumda tamamlanır.
+
+
+POLLIN: Dosya tanımlayıcısına veri gelirse veya okunabilir hale gelirse (readable), bu olay meydana gelir.
+POLLOUT: Dosya tanımlayıcısına veri yazılabilir hale gelirse (writable), bu olay meydana gelir.
+POLLERR: Hata durumlarında bu olay meydana gelir. Örneğin, dosya tanımlayıcısı kapandığında veya hata durumunda bu olay tetiklenir.
+POLLHUP: Diğer uç (peer) taraf kapandığında veya bağlantıyı kapatma durumunda bu olay meydana gelir.
+POLLNVAL: Geçersiz dosya tanımlayıcısında bu olay meydana gelir. Yani, takip edilen bir dosya tanımlayıcısı geçerli değilse bu olay tetiklenir.
+
+poll işlevi, events alanındaki olay maskelerini izler ve belirtilen olayların gerçekleştiği durumda revents alanını günceller. revents alanı,
+poll işlevinin dönüş değeri olarak geri döndüğünde, gerçekleşen olayların maskesini içerir. Bu sayede, poll işlevinin dönüş değeri ile revents alanı kullanılarak,
+hangi dosya tanımlayıcısında hangi olayların gerçekleştiği belirlenebilir.

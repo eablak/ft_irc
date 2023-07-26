@@ -10,7 +10,8 @@
 #include <fcntl.h>
 #include <cstdlib>
 #include "error.hpp"
-
+#include <vector>
+#include <poll.h>
 
 using namespace std;
 
@@ -20,10 +21,12 @@ class Server{
     int port;
     string password;
     int socketfd;
+    vector<pollfd> _pollfd;
 
     public:
     Server(string av1,string av2);
     void createSocket();
+    void serverInvoke();
 };
 
 #endif

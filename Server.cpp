@@ -28,3 +28,13 @@ void Server::createSocket(){
     if (listen(socketfd, 100) < 0)
         error::error_func("Error listen socket");
 }
+
+void Server::serverInvoke(){
+    _pollfd[0].fd = socketfd;
+    _pollfd[0].events = POLLIN;
+    cout << "Server listening on port.." << endl;
+    while(1){
+        if (poll(&_pollfd[0],_pollfd.size(),0) == -1)
+            error::error_func("Error while polling");
+    }
+}
