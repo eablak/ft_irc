@@ -12,8 +12,11 @@
 #include "error.hpp"
 #include <vector>
 #include <poll.h>
+#include "Client.hpp"
 
 using namespace std;
+
+class Client;
 
 class Server{
 
@@ -22,6 +25,7 @@ class Server{
     string password;
     int socketfd;
     vector<pollfd> _pollfd;
+    vector<Client *> _clients;
 
     public:
     Server(string av1,string av2);

@@ -1,4 +1,4 @@
-#include "includes/Server.hpp"
+#include "../includes/Server.hpp"
 #include <cstdlib>
 #include <string>
 
@@ -35,14 +35,20 @@ void Server::clientAccept(){
     int client_fd = accept(socketfd,(sockaddr *)&client_addr,&len);
     if (client_fd < 0)
         error::error_func("Error accept");
-    else
-        cout << "connect" << endl;
+    else{
+        pollfd poll_client;
+        poll_client.fd = client_fd;
+        poll_client.events = POLLIN;
+        _pollfd.push_back(poll_client);
+        _clients.push_back(new Client(client_fd));
+    }
+        
 }
 
 void Server::serverInvoke(){
     pollfd initalize = {socketfd,POLLIN,0};
     _pollfd.push_back(initalize);
-    cout << "Server listening on port.." << endl;
+    cout << "Server listening "<< port << " port.." << endl;
     while(1){
         if (poll(&_pollfd[0],_pollfd.size(),0) == -1)
             error::error_func("Error while polling");
