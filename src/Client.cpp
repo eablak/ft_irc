@@ -5,5 +5,6 @@ Client::Client(int _fd){
 }
 
 int Client::checkPass(string _pass){
-    
+    std::cout << _pass << endl;
+    return 1;
 }

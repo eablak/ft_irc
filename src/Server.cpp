@@ -23,10 +23,15 @@ void Server::createSocket(){
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(this->port);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
-    if (bind(socketfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1)
+    if (::bind(socketfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1)
         error::error_func("Error binding socket.");
     if (listen(socketfd, 100) < 0)
         error::error_func("Error listen socket");
+}
+
+int Server::createClient(int clientfd){
+    cout << clientfd << "client create" << endl;
+    return (1);
 }
 
 void Server::clientAccept(){
