@@ -24,7 +24,7 @@ class Server{
     int port;
     string password;
     int socketfd;
-    vector<pollfd> _pollfd;
+    vector<pollfd> _pollfds;
     vector<Client *> _clients;
 
     public:

@@ -34,36 +34,37 @@ void Server::clientAccept(){
     struct sockaddr_in client_addr;
     socklen_t len = sizeof(client_addr);
     int client_fd = accept(socketfd,(sockaddr *)&client_addr,&len);
-    if (client_fd < 0)
+    if (client_fd == -1)
         error::error_func("Error accept");
     else{
         pollfd poll_client;
         poll_client.fd = client_fd;
         poll_client.events = POLLIN;
-        _pollfd.push_back(poll_client);
+        _pollfds.push_back(poll_client);
         Client *my_client = new Client(client_fd);
-        cout << client_fd << "client create" << endl;
         _clients.push_back(my_client);
-    }
-        
+    }        
 }
 
 void Server::clientRevent(){
-    for(size_t i = 1; i < _pollfd.size(); i++){
-        
-    }
+    return ;
 }
 
 
 void Server::serverInvoke(){
     pollfd initalize = {socketfd,POLLIN,0};
-    _pollfd.push_back(initalize);
+    _pollfds.push_back(initalize);
     while(1){
-        if (poll(&_pollfd[0],_pollfd.size(),0) == -1)
+        if (poll(&_pollfds[0],_pollfds.size(),0) == -1)
             error::error_func("Error while polling");
-        if (_pollfd[0].revents & POLLIN)
-            clientAccept();
-        clientRevent();
+        for(size_t i = 0; i < _pollfds.size(); i ++){
+            if (_pollfds[0].revents == 0)
+                continue;
+            if ((_pollfds[0].revents & POLLIN) && _pollfds[i].fd == socketfd) // ilk oluşurken aynı 
+                clientAccept();
+            else
+                clientRevent();
+        }
     }
 }
 
