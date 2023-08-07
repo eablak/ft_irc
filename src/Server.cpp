@@ -27,11 +27,7 @@ void Server::createSocket(){
         error::error_func("Error binding socket.");
     if (listen(socketfd, 100) < 0)
         error::error_func("Error listen socket");
-}
-
-int Server::createClient(int clientfd){
-    cout << clientfd << "client create" << endl;
-    return (1);
+    cout << "Server listening "<< port << " port.." << endl;
 }
 
 void Server::clientAccept(){
@@ -46,20 +42,31 @@ void Server::clientAccept(){
         poll_client.events = POLLIN;
         _pollfd.push_back(poll_client);
         Client *my_client = new Client(client_fd);
-        if (createClient(client_fd) == 1)
-            _clients.push_back(my_client);
+        cout << client_fd << "client create" << endl;
+        _clients.push_back(my_client);
     }
         
 }
 
+void Server::clientRevent(){
+    for(size_t i = 1; i < _pollfd.size(); i++){
+        
+    }
+}
+
+
 void Server::serverInvoke(){
     pollfd initalize = {socketfd,POLLIN,0};
     _pollfd.push_back(initalize);
-    cout << "Server listening "<< port << " port.." << endl;
     while(1){
         if (poll(&_pollfd[0],_pollfd.size(),0) == -1)
             error::error_func("Error while polling");
         if (_pollfd[0].revents & POLLIN)
             clientAccept();
+        clientRevent();
     }
+}
+
+Server::~Server(){
+    close(socketfd);
 }

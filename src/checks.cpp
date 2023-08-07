@@ -8,7 +8,7 @@ void checks::check_args(int ac, char **av){
         exit(1);
     }
     try{
-        int _port = stoi(av[1]);    //-std=c++11 !!!
+        int _port = stoi(av[1]);
         if (_port < 1024 || _port > 65535){
             cerr << "wrong port range "<< endl;
             exit(1);

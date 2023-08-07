@@ -29,10 +29,11 @@ class Server{
 
     public:
     Server(string av1,string av2);
+    ~Server();
     void createSocket();
     void serverInvoke();
     void clientAccept();
-    int createClient(int fd);
+    void clientRevent();
     // Client *getClient(int fd);
 };
 
