@@ -35,6 +35,7 @@ class Server{
     void clientAccept();
     void clientRevent();
     // Client *getClient(int fd);
+    void messageToClient(Client *client, std::string msg);
 };
 
 #endif

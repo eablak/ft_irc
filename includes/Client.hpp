@@ -18,6 +18,7 @@ class Client{
     public:
     Client(int fd);
     int checkPass(string _pass);
+    int getClientFd(Client *client);
 };
 
 

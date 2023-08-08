@@ -8,3 +8,7 @@ int Client::checkPass(string _pass){
     std::cout << _pass << endl;
     return 1;
 }
+
+int Client::getClientFd(Client *client){
+    return (client->fd);
+}

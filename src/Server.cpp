@@ -42,12 +42,14 @@ void Server::clientAccept(){
         poll_client.events = POLLIN;
         _pollfds.push_back(poll_client);
         Client *my_client = new Client(client_fd);
+        std::cout << "fd "<< client_fd << " client succesfully connected\n";
         _clients.push_back(my_client);
+        messageToClient(my_client, "Enter Password\n");
     }        
 }
 
 void Server::clientRevent(){
-    return ;
+    std::cout << "revent " << std::endl;
 }
 
 
@@ -60,9 +62,9 @@ void Server::serverInvoke(){
         for(size_t i = 0; i < _pollfds.size(); i ++){
             if (_pollfds[0].revents == 0)
                 continue;
-            if ((_pollfds[0].revents & POLLIN) && _pollfds[i].fd == socketfd) // ilk oluşurken aynı 
+            if ((_pollfds[0].revents & POLLIN) && _pollfds[i].fd == socketfd)
                 clientAccept();
-            else
+            if ((_pollfds[0].revents & POLLIN) && _pollfds[i].fd != socketfd)
                 clientRevent();
         }
     }
@@ -70,4 +72,15 @@ void Server::serverInvoke(){
 
 Server::~Server(){
     close(socketfd);
+}
+
+
+
+void Server::messageToClient(Client *client, std::string msg){
+    int clientfd = client->getClientFd(client);
+    if (send(clientfd,msg.c_str(),msg.length(),0) < 0)
+    {
+        std::cerr << "Failed to send message" << std::endl;
+		exit(1);
+    }
 }
