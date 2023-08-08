@@ -44,7 +44,7 @@ void Server::clientAccept(){
         Client *my_client = new Client(client_fd);
         std::cout << "fd "<< client_fd << " client succesfully connected\n";
         _clients.push_back(my_client);
-        messageToClient(my_client, "Enter Password\n");
+        messageToClient(my_client, "Welcome to IRC. Please Enter Password\n");
     }        
 }
 
