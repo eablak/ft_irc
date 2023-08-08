@@ -33,9 +33,10 @@ class Server{
     void createSocket();
     void serverInvoke();
     void clientAccept();
-    void clientRevent();
-    // Client *getClient(int fd);
+    void clientRevent(int clientFd);
+    Client *getClient(int fd);
     void messageToClient(Client *client, std::string msg);
+    void removeClient(int clientFd);
 };
 
 #endif

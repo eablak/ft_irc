@@ -48,8 +48,41 @@ void Server::clientAccept(){
     }        
 }
 
-void Server::clientRevent(){
-    std::cout << "revent " << std::endl;
+Client *Server::getClient(int clientFd){
+    vector<Client *>::iterator it;
+    for(it = _clients.begin(); it != _clients.end(); it++){
+        if (clientFd == (*it)->getClientFd()){
+            return (*it);
+        }
+    }
+    cerr << "Client not exist" << endl;
+    return (NULL);
+}
+
+void Server::removeClient(int fd){
+    vector<Client *>::iterator it;
+    for(it = _clients.begin(); it != _clients.end(); it++){
+        if ((*it)->getClientFd() == fd){
+            _clients.erase(it);
+            return ;
+        }
+    }
+}
+
+void Server::clientRevent(int clientFd){
+
+    Client *current_client = getClient(clientFd);
+    string msg;
+    try{
+        msg = current_client->getClientMsg(current_client);
+        // cout << msg << endl;
+    }catch(ClientRecvException &e){
+        cout << clientFd << " " << e.what();
+        getchar();
+        removeClient(clientFd);
+        getchar();
+        return ;
+    }
 }
 
 
@@ -60,12 +93,14 @@ void Server::serverInvoke(){
         if (poll(&_pollfds[0],_pollfds.size(),0) == -1)
             error::error_func("Error while polling");
         for(size_t i = 0; i < _pollfds.size(); i ++){
-            if (_pollfds[0].revents == 0)
+            if (_pollfds[i].revents == 0)
                 continue;
-            if ((_pollfds[0].revents & POLLIN) && _pollfds[i].fd == socketfd)
-                clientAccept();
-            if ((_pollfds[0].revents & POLLIN) && _pollfds[i].fd != socketfd)
-                clientRevent();
+            if (_pollfds[i].revents & POLLIN){
+                if (_pollfds[i].fd == socketfd)
+                    clientAccept();
+                else
+                    clientRevent(_pollfds[i].fd);
+            }
         }
     }
 }
@@ -77,7 +112,7 @@ Server::~Server(){
 
 
 void Server::messageToClient(Client *client, std::string msg){
-    int clientfd = client->getClientFd(client);
+    int clientfd = client->getClientFd();
     if (send(clientfd,msg.c_str(),msg.length(),0) < 0)
     {
         std::cerr << "Failed to send message" << std::endl;
