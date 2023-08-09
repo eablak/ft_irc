@@ -56,14 +56,24 @@ Client *Server::getClient(int clientFd){
         }
     }
     cerr << "Client not exist" << endl;
+    exit(1);
     return (NULL);
 }
 
 void Server::removeClient(int fd){
-    vector<Client *>::iterator it;
-    for(it = _clients.begin(); it != _clients.end(); it++){
-        if ((*it)->getClientFd() == fd){
-            _clients.erase(it);
+    close(fd);
+    vector<pollfd >::iterator it;
+    for(it = _pollfds.begin(); it != _pollfds.end(); it++){
+        if ((it)->fd == fd){
+            _pollfds.erase((it));
+            break;
+        }
+    }
+
+    vector<Client *>::iterator ite;
+    for(ite = _clients.begin(); ite != _clients.end(); ite++){
+        if ((*ite)->getClientFd() == fd){
+            _clients.erase(ite);
             return ;
         }
     }
@@ -75,12 +85,9 @@ void Server::clientRevent(int clientFd){
     string msg;
     try{
         msg = current_client->getClientMsg(current_client);
-        // cout << msg << endl;
     }catch(ClientRecvException &e){
-        cout << clientFd << " " << e.what();
-        getchar();
+        cout << clientFd << " " << e.what() << endl;
         removeClient(clientFd);
-        getchar();
         return ;
     }
 }

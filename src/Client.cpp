@@ -25,6 +25,5 @@ string Client::getClientMsg(Client *client){
     if (ret == 0)
         throw ClientRecvException();
     clientMsg = buffer;
-    cout << clientMsg << endl;
     return (clientMsg);
 }
