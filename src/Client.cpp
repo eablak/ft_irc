@@ -38,6 +38,14 @@ bool Client::getAuth() {
 
 void Client::NotAuthClient(Client *client, Server *server, string msg){
     cout << msg << " fd: "<< client->fd << " auth değilsin" <<endl;
-    (void) server;
+    // msg trimle ona göre noauthexec yaz;
+    // if send numeric else execnotauth
+    string command;
+    if (msg.find(" ") == std::string::npos)
+		msg = "";
+	else
+		msg = msg.substr(msg.find(" ") + 1);
+    if (msg != "PASS")
+        
     return;
 }   
