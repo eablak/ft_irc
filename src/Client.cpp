@@ -1,4 +1,5 @@
 #include "../includes/Client.hpp"
+#include "../includes/Numeric.hpp"
 
 Client::Client(int _fd){
     fd = _fd;
@@ -37,7 +38,7 @@ bool Client::getAuth() {
 }
 
 void Client::NotAuthClient(Client *client, Server *server, string msg){
-    cout << msg << " fd: "<< client->fd << " auth değilsin" <<endl;
+    cout << msg << " fd: "<< client->fd << " auth değil" <<endl;
     // msg trimle ona göre noauthexec yaz;
     // if send numeric else execnotauth
     string command;
@@ -46,6 +47,7 @@ void Client::NotAuthClient(Client *client, Server *server, string msg){
 	else
 		msg = msg.substr(msg.find(" ") + 1);
     if (msg != "PASS")
-        
+        numeric::sendNumeric(ERR_NOTREGISTERED,client->fd);
+    (void) server;
     return;
 }   

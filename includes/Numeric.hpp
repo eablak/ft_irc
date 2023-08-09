@@ -1,12 +1,8 @@
 #ifndef NUMERIC_HPP
 # define NUMERIC_HPP
-
 #include <iostream>
-#include "../src/Client.cpp"
-#include "../src/Server.cpp"
+#include <sys/socket.h>
 
-class Server;
-class Client;
 
 typedef std::pair<std::string, std::string> Numeric;
 
@@ -33,5 +29,23 @@ typedef std::pair<std::string, std::string> Numeric;
 #define ERR_ALREADYREGISTRED numeric::makeNumeric("462", ":Unauthorized command (already registered)")
 #define ERR_PASSWDMISMATCH numeric::makeNumeric("464", ":Password incorrect")
 #define ERR_CHANOPRIVSNEEDED(channel) numeric::makeNumeric("482", channel + " :You're not channel operator")
+
+
+namespace numeric{
+
+
+	Numeric makeNumeric(std::string code, std::string message)
+	{
+		Numeric numeric;
+
+		numeric.first = code;
+		numeric.second = message;
+		return (numeric);
+	}
+    void sendNumeric(Numeric _num, int fd){
+        send(fd,_num.second.c_str(),_num.second.length(),0);
+    }
+
+}
 
 #endif
