@@ -2,6 +2,10 @@
 
 Client::Client(int _fd){
     fd = _fd;
+    auth = false;
+    map_auth->insert(pair<string,bool>("PASS",false));
+    map_auth->insert(pair<string,bool>("USER",false));
+    map_auth->insert(pair<string,bool>("NICK",false));
 }
 
 int Client::checkPass(string _pass){
@@ -27,3 +31,13 @@ string Client::getClientMsg(Client *client){
     clientMsg = buffer;
     return (clientMsg);
 }
+
+bool Client::getAuth() {
+    return (auth);
+}
+
+void Client::NotAuthClient(Client *client, Server *server, string msg){
+    cout << msg << " fd: "<< client->fd << " auth değilsin" <<endl;
+    (void) server;
+    return;
+}   

@@ -90,6 +90,9 @@ void Server::clientRevent(int clientFd){
         removeClient(clientFd);
         return ;
     }
+    cout << msg;
+    if (current_client->getAuth() == false)
+        current_client->NotAuthClient(current_client,this,msg);
 }
 
 
