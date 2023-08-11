@@ -15,12 +15,11 @@ FLAGS    := -Wall -Wextra -Werror -std=c++98
 #                                 PROGRAM'S SRCS                               #
 ################################################################################
 
-SRCS        :=      src/main.cpp \
-						  src/checks.cpp \
-                          src/Server.cpp \
-						  src/error.cpp \
-						  src/Client.cpp \
-						  src/Channel.cpp \
+SRCS        :=      main.cpp \
+						checks.cpp\
+						Server.cpp\
+						error.cpp\
+						Client.cpp\
                           
 OBJS        := ${SRCS:.cpp=.o}
 

@@ -1,14 +1,11 @@
 #ifndef ERROR_HPP
 #define ERROR_HPP
-#include <string>
-#include <ostream>
-#include <iostream>
-using namespace std;
+
+#include "librarys.hpp"
 
 namespace error{
 
-    void error_func(string error_msg);
-    
+    void error_func(std::string error_msg);
 
 }
 

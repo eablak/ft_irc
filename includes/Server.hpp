@@ -1,20 +1,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
-#include "checks.hpp"
-#include "Server.hpp"
-#include <iostream>
-#include <cstring>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <cstdlib>
-#include "error.hpp"
-#include <vector>
-#include <poll.h>
-#include "Client.hpp"
 
-using namespace std;
+#include "librarys.hpp"
 
 class Client;
 
@@ -22,22 +9,20 @@ class Server{
 
     private:
     int port;
-    string password;
+    std::string password;
     int socketfd;
-    vector<pollfd> _pollfds;
-    vector<Client *> _clients;
+    std::vector<pollfd> _pollfds;
+    std::vector<Client > _clients;
 
     public:
-    Server(string av1,string av2);
-    ~Server();
+    Server(std::string av1,std::string av2);
+
     void createSocket();
     void serverInvoke();
     void clientAccept();
-    void clientRevent(int clientFd);
-    Client *getClient(int fd);
-    void messageToClient(Client *client, std::string msg);
-    void removeClient(int clientFd);
-    
+    void messageToClient(int fd, std::string msg);
+    void clientEvent(int fd);
 };
+
 
 #endif

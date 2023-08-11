@@ -1,11 +1,9 @@
 #ifndef CHECKS_HPP
 #define CHECKS_HPP
-#pragma once
-#include <iostream>
+#include "librarys.hpp"
 
 namespace checks{
     void check_args(int ac,char **av);
 }
-
 
 #endif
