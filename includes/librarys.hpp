@@ -14,6 +14,7 @@
 #include <poll.h>
 #include <string>
 #include <ostream>
+#include <list>
 #include <map>
 
 #include "checks.hpp"

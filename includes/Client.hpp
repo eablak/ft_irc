@@ -13,7 +13,7 @@ class Client{
     int fd;
     std::string current_msg;
     _auth client_auth;
-    std::map<std::string, std::string>client_message;
+    std::list<std::pair<std::string, std::string> >client_message;
    
     public:
     Client();
@@ -21,7 +21,10 @@ class Client{
     int getClientFd();
     void setMsg(std::string msg);
     _auth getAuthStatus();
+    void setAuthStatus(_auth status);
     void setClientMessage(std::string, std::string);
+    std::list<std::pair<std::string, std::string> > getMap();
+    void printMap();
 };
 
 #endif

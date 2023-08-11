@@ -81,7 +81,16 @@ void Server::clientEvent(int fd){
     std::cout << "fd " << fd << " " << msg;
     handleMsg(client, msg);
     if (client.getAuthStatus() == NOTAUTHENTICATED){
-        std::cout << "only pass "<< std::endl;
+        printf("heere  map size: %lu\n",client.getMap().size());
+        if (!client.getMap().empty()){
+            printf("!!!!!!!!!!Boş değil!!!!!\n");
+            if (client.getMap().front().first == "PASS"){
+                if (client.getMap().front().second == password){
+                    std::cout << "password başarılı" << std::endl;
+                    client.setAuthStatus(AUTHENTICATE);
+                }
+            }
+        }
     }
 }
 
@@ -114,8 +123,6 @@ void Server::handleMsg(Client client, std::string msg){
         msg[512] = '\n';
     }
 
-    client.setMsg(msg);
-
     size_t findPos = msg.find(' ');
     std::string first;
     std::string second;
@@ -126,8 +133,7 @@ void Server::handleMsg(Client client, std::string msg){
     }
     first = msg.substr(0,findPos);
     second = msg.substr(findPos + 1);
-    if (first == "PASS")
-        client.setClientMessage(first,second);
-    else
-        std::cout << "başka komut num err" << std::endl;
+    client.setClientMessage(first,second);
+    client.printMap();
+    std::cout << "fonk sonu " << client.getMap().size() << std::endl;
 }
