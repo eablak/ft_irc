@@ -46,7 +46,7 @@ void Server::clientAccept(){
         _pollfds.push_back(poll_client);
         _clients.push_back(Client(client_fd)); 
         std::cout << "fd "<< client_fd << " client succesfully connected\n";
-        messageToClient(client_fd, "Welcome to IRC. Please Enter Password\n");
+        messageToClient(client_fd, "Welcome to IRC. Please Enter Password\r\n");
     }        
 }
 
@@ -79,6 +79,10 @@ void Server::clientEvent(int fd){
     std::string  msg = readMessage(client.getClientFd());
     client.setMsg(msg);
     std::cout << "fd " << fd << " " << msg;
+    handleMsg(client, msg);
+    if (client.getAuthStatus() == NOTAUTHENTICATED){
+        std::cout << "only pass "<< std::endl;
+    }
 }
 
 void Server::serverInvoke(){
@@ -98,4 +102,32 @@ void Server::serverInvoke(){
             }
         }
     }
+}
+
+
+void Server::handleMsg(Client client, std::string msg){
+
+    if (msg.size() > 512){
+        std::cout << "512 den fazla" << std::endl;
+        //numericten inputtolong
+        msg[511] = '\r';
+        msg[512] = '\n';
+    }
+
+    client.setMsg(msg);
+
+    size_t findPos = msg.find(' ');
+    std::string first;
+    std::string second;
+    if (findPos == std::string::npos){
+        //ERR_UNKNOWNCOMMAND numeric
+        std::cout << "unknown com" << std::endl;
+        return ;
+    }
+    first = msg.substr(0,findPos);
+    second = msg.substr(findPos + 1);
+    if (first == "PASS")
+        client.setClientMessage(first,second);
+    else
+        std::cout << "başka komut num err" << std::endl;
 }

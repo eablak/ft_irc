@@ -24,6 +24,7 @@ class Server{
     void clientEvent(int fd);
     std::string readMessage(int fd);
     Client getClient(int fd);
+    void handleMsg(Client client, std::string msg);
 };
 
 
