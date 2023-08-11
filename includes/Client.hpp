@@ -11,11 +11,13 @@ class Client{
     int fd;
     enum _auth {AUTHENTICATE, NOTAUTHENTICATED, REGISTERED};
     _auth client_auth;
+    std::string current_msg;
    
     public:
     Client();
     Client(int fd);
     int getClientFd();
+    void setMsg(std::string msg);
 };
 
 #endif

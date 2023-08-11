@@ -50,14 +50,35 @@ void Server::clientAccept(){
     }        
 }
 
-void Server::clientEvent(int fd){
-    char buffer[1024];
-    ssize_t bytesRead = recv(fd, buffer, sizeof(buffer), 0);
+Client Server::getClient(int fd){
+    for(size_t i = 0; i < _clients.size(); i++){
+        if (_clients[i].getClientFd() == fd)
+            return (_clients[i]);
+    }
+    std::cout << "getClient Error" << std::endl;
+    exit(1);
+}
+
+std::string Server::readMessage(int fd){
+    std::vector<char> buffer(5000);
+    int bytesRead = recv(fd, buffer.data(), buffer.size(), 0);
     if (bytesRead == -1) {
         std::cerr << "Receive error." << std::endl;
-        return ;
+        return (NULL);
     }
-    std::cout << "fd " << fd << " " << buffer;
+    if (bytesRead == 0)
+    {
+        std::cout << "fd " << fd << " disconnect" << std::endl;
+        close(fd);    
+    }
+    return (buffer.data());
+}
+
+void Server::clientEvent(int fd){
+    Client client = getClient(fd);
+    std::string  msg = readMessage(client.getClientFd());
+    client.setMsg(msg);
+    std::cout << "fd " << fd << " " << msg;
 }
 
 void Server::serverInvoke(){

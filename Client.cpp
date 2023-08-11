@@ -8,3 +8,7 @@ Client::Client(int _fd){
 int Client::getClientFd(){
     return (fd);
 }
+
+void Client::setMsg(std::string msg){
+    current_msg = msg;
+}
