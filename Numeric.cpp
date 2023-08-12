@@ -1,6 +1,7 @@
 #include "includes/Numeric.hpp"
 
-void numeric::createNumeric(std::string errorNo, std::string errorStr){
-    
-    numericList.push_back(std::make_pair(errorNo,errorStr));
+void Numeric::printNumeric(std::string errno){
+    (void) errno;
+    printf("hata\n");
+    return ;
 }

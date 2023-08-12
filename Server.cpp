@@ -86,7 +86,7 @@ void Server::clientEvent(int fd){
             if (client.getMap().front().first == "PASS"){
                 client.setMapSecondEnd();
                 if (client.getMap().front().second == password){
-                    // std::cout << "password başarılı" << std::endl;
+                    std::cout << "password başarılı" << std::endl;
                     client.setAuthStatus(AUTHENTICATE);
                 }
             }
@@ -126,11 +126,15 @@ void Server::handleMsg(Client &client, std::string msg){
     std::string first;
     std::string second;
     if (findPos == std::string::npos){
-        //ERR_UNKNOWNCOMMAND numeric
-        std::cout << "unknown com" << std::endl;
+        // client._nums.printNumeric("461");
+        std::cout << "needmoreparams" << std::endl; 
         return ;
     }
     first = msg.substr(0,findPos);
     second = msg.substr(findPos + 1);
+    if (findPos != std::string::npos){
+        if (first != "PASS")
+            messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
+    }
     client.setClientMessage(first,second);
 }

@@ -3,16 +3,21 @@
 
 #include "librarys.hpp"
 
-std::list<std::pair<std::string, std::string> > numericList;
 
 
-#define RPL_WELCOME numeric::createNumeric("001", ":Welcome to the Internet Relay Network ! @")
+#define ERR_NEEDMOREPARAMS numeric::makeNumeric("461", " :Not enough parameters")
 
-namespace numeric{
+class Numeric{
+    private:
+    std::map<std::string, std::string> numericMap;
 
-
+    public:
     void createNumeric(std::string errorNo, std::string errorStr);
-
-}
+    void printNumeric(std::string errno);
+};
 
 #endif
+
+
+
+//class tut

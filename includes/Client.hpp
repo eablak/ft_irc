@@ -4,8 +4,11 @@
 class Server;
 
 #include "librarys.hpp"
+#include "Numeric.hpp"
 
 enum _auth {AUTHENTICATE, NOTAUTHENTICATED, REGISTERED};
+
+class Numeric;
 
 class Client{
 
@@ -14,6 +17,7 @@ class Client{
     std::string current_msg;
     _auth client_auth;
     std::list<std::pair<std::string, std::string> >client_message;
+    // Numeric _nums;
    
     public:
     Client();
