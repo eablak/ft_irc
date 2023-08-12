@@ -71,6 +71,8 @@ std::string Server::readMessage(int fd){
         std::cout << "fd " << fd << " disconnect" << std::endl;
         close(fd);    
     }
+    if (buffer.data()[bytesRead - 1] == 10 || buffer.data()[bytesRead - 1] == 13)
+        buffer.data()[bytesRead - 1] = '\0';
     return (buffer.data());
 }
 
@@ -81,11 +83,7 @@ void Server::clientEvent(int fd){
     handleMsg(client, msg);
     if (client.getAuthStatus() == NOTAUTHENTICATED){
         if (!client.getMap().empty()){
-            // std::cout << "ilk değer " << client.getMap().front().first << std::endl;
-            // std::cout << "ikinci değer " << client.getMap().front().second << std::endl;
             if (client.getMap().front().first == "PASS"){
-                // std::cout << "içerideki pass " << password << std::endl;
-                // std::cout << "aldığım pass " << client.getMap().front().second << std::endl;
                 if (client.getMap().front().second == password){
                     std::cout << "password başarılı" << std::endl;
                     client.setAuthStatus(AUTHENTICATE);
