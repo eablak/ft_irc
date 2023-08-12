@@ -20,6 +20,7 @@ SRCS        :=      main.cpp \
 						Server.cpp\
 						error.cpp\
 						Client.cpp\
+						Numeric.cpp \
                           
 OBJS        := ${SRCS:.cpp=.o}
 

@@ -86,7 +86,7 @@ void Server::clientEvent(int fd){
             if (client.getMap().front().first == "PASS"){
                 client.setMapSecondEnd();
                 if (client.getMap().front().second == password){
-                    std::cout << "password başarılı" << std::endl;
+                    // std::cout << "password başarılı" << std::endl;
                     client.setAuthStatus(AUTHENTICATE);
                 }
             }
@@ -101,13 +101,13 @@ void Server::serverInvoke(){
         if (poll(&_pollfds[0],_pollfds.size(),0) == -1) // poll gelen verileri beklemek ve bunları işlemek için
             error::error_func("Error while polling");
         for(size_t i = 0; i < _pollfds.size(); i ++){
-            if (_pollfds[i].revents == 0) // olay yoksa devam
+            if (_pollfds[i].revents == 0)
                 continue;
-            if (_pollfds[i].revents & POLLIN){ // giriş varsa
-                if (_pollfds[i].fd == socketfd) // bağlantı
+            if (_pollfds[i].revents & POLLIN){ 
+                if (_pollfds[i].fd == socketfd)
                     clientAccept();
                 else
-                    clientEvent(_pollfds[i].fd); // gelen veri işle
+                    clientEvent(_pollfds[i].fd);
             }
         }
     }
