@@ -23,8 +23,8 @@ class Server{
     void messageToClient(int fd, std::string msg);
     void clientEvent(int fd);
     std::string readMessage(int fd);
-    Client getClient(int fd);
-    void handleMsg(Client client, std::string msg);
+    Client &getClient(int fd);
+    void handleMsg(Client &client, std::string msg);
 };
 
 

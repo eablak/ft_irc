@@ -10,6 +10,7 @@ enum _auth {AUTHENTICATE, NOTAUTHENTICATED, REGISTERED};
 class Client{
 
     private:
+    std::string isim;
     int fd;
     std::string current_msg;
     _auth client_auth;
@@ -25,6 +26,7 @@ class Client{
     void setClientMessage(std::string, std::string);
     std::list<std::pair<std::string, std::string> > getMap();
     void printMap();
+    std::string getISIM();
 };
 
 #endif

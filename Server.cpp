@@ -50,7 +50,7 @@ void Server::clientAccept(){
     }        
 }
 
-Client Server::getClient(int fd){
+Client &Server::getClient(int fd){
     for(size_t i = 0; i < _clients.size(); i++){
         if (_clients[i].getClientFd() == fd)
             return (_clients[i]);
@@ -77,14 +77,15 @@ std::string Server::readMessage(int fd){
 void Server::clientEvent(int fd){
     Client client = getClient(fd);
     std::string  msg = readMessage(client.getClientFd());
-    client.setMsg(msg);
-    std::cout << "fd " << fd << " " << msg;
+    client.setMsg(msg); 
     handleMsg(client, msg);
     if (client.getAuthStatus() == NOTAUTHENTICATED){
-        printf("heere  map size: %lu\n",client.getMap().size());
         if (!client.getMap().empty()){
-            printf("!!!!!!!!!!Boş değil!!!!!\n");
+            // std::cout << "ilk değer " << client.getMap().front().first << std::endl;
+            // std::cout << "ikinci değer " << client.getMap().front().second << std::endl;
             if (client.getMap().front().first == "PASS"){
+                // std::cout << "içerideki pass " << password << std::endl;
+                // std::cout << "aldığım pass " << client.getMap().front().second << std::endl;
                 if (client.getMap().front().second == password){
                     std::cout << "password başarılı" << std::endl;
                     client.setAuthStatus(AUTHENTICATE);
@@ -114,8 +115,7 @@ void Server::serverInvoke(){
 }
 
 
-void Server::handleMsg(Client client, std::string msg){
-
+void Server::handleMsg(Client &client, std::string msg){
     if (msg.size() > 512){
         std::cout << "512 den fazla" << std::endl;
         //numericten inputtolong
@@ -134,6 +134,4 @@ void Server::handleMsg(Client client, std::string msg){
     first = msg.substr(0,findPos);
     second = msg.substr(findPos + 1);
     client.setClientMessage(first,second);
-    client.printMap();
-    std::cout << "fonk sonu " << client.getMap().size() << std::endl;
 }

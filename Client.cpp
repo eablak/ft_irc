@@ -1,6 +1,10 @@
 #include "includes/Client.hpp"
 
+Client::Client(){
+}
+
 Client::Client(int _fd){
+    isim = "Tek ben";
     fd = _fd;
     this->client_auth = NOTAUTHENTICATED;
 }
@@ -19,13 +23,11 @@ _auth Client::getAuthStatus(){
 
 void Client::setClientMessage(std::string command, std::string args){
 
-    printf("SİZE :::   %lu\n\n",client_message.size());
     if (this->client_message.size() == 1){
+        std::cout << "size 1" << std::endl;
         this->client_message.erase(this->client_message.begin());
     }
     this->client_message.push_back(std::make_pair(command,args));
-    printf("SİZE :::   %lu\n\n",client_message.size());
-
 }
 
 std::list<std::pair<std::string, std::string> > Client::getMap(){
@@ -41,4 +43,9 @@ void Client::printMap(){
     std::cout << "map size : " << client_message.size() << std::endl;
     std::cout << "ilk değer: " << client_message.begin()->first << std::endl;
     std::cout << "ikinci değer: " << client_message.begin()->second << std::endl;
+}
+
+std::string Client::getISIM()
+{
+    return (this->isim);
 }
