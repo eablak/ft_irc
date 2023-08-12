@@ -4,7 +4,6 @@ Client::Client(){
 }
 
 Client::Client(int _fd){
-    isim = "Tek ben";
     fd = _fd;
     this->client_auth = NOTAUTHENTICATED;
 }
@@ -45,7 +44,7 @@ void Client::printMap(){
     std::cout << "ikinci değer: " << client_message.begin()->second << std::endl;
 }
 
-std::string Client::getISIM()
-{
-    return (this->isim);
+void Client::setMapSecondEnd(){
+    if (client_message.front().second[client_message.front().second.length()-1] == '\r')
+          client_message.front().second.pop_back();
 }

@@ -84,6 +84,7 @@ void Server::clientEvent(int fd){
     if (client.getAuthStatus() == NOTAUTHENTICATED){
         if (!client.getMap().empty()){
             if (client.getMap().front().first == "PASS"){
+                client.setMapSecondEnd();
                 if (client.getMap().front().second == password){
                     std::cout << "password başarılı" << std::endl;
                     client.setAuthStatus(AUTHENTICATE);
