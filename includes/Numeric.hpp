@@ -1,10 +1,8 @@
 #ifndef NUMERIC_HPP
 #define NUMERIC_HPP
 
-// #include "librarys.hpp"
-#include <iostream>
-#include <map>
-// #include "Server.hpp"
+#include "librarys.hpp"
+// #include "Client.hpp"
 
 #define RPL_WELCOME(nick, user, host) Numeric::createNumeric("001", ":Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
 #define RPL_YOURHOST(nick, host) Numeric::createNumeric("002", ":Your host is " + host + ", running version " + VERSION)
@@ -30,16 +28,16 @@
 #define ERR_PASSWDMISMATCH Numeric::createNumeric("464", ":Password incorrect")
 #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
-class Server;
+class Client;
 
 class Numeric{
     private:
     std::map<std::string, std::string> numericMap;
 
     public:
-    void handleNumeric(std::string errNo,std::string _define, Server &server);
+    void handleNumeric(std::string errNo,std::string _define, Client &client);
     void createNumeric(std::string errNo, std::string _define);
-    void printNumeric(std::string errNo, Server &server);
+    void printNumeric(std::string errNo, Client &client);
 };
 
 #endif

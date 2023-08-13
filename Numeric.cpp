@@ -4,12 +4,12 @@ void Numeric::createNumeric(std::string errNo, std::string _define){
     numericMap[errNo] = _define;
 }
 
-void Numeric::printNumeric(std::string errNo, Server &server){
+void Numeric::printNumeric(std::string errNo, Client &client){
     std::cout << numericMap[errNo] << std::endl;
-    (void) server;
+    (void) client;
 }
 
-void Numeric::handleNumeric(std::string errNo,std::string _define, Server &server){
+void Numeric::handleNumeric(std::string errNo,std::string _define, Client &client){
     createNumeric(errNo,_define);
-    printNumeric(errNo,server);
+    printNumeric(errNo,client);
 }

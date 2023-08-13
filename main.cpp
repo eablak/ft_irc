@@ -1,4 +1,6 @@
 #include "includes/librarys.hpp"
+#include "includes/Server.hpp"
+#include "includes/checks.hpp"
 
 int main(int ac, char **av){
 
