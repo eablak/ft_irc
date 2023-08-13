@@ -23,7 +23,7 @@
 #define ERR_USERONCHANNEL(nick, channel) Numeric::createNumeric("443", nick + " " + channel + " :is already on channel")
 #define ERR_NOTREGISTERED Numeric::createNumeric("451", ":You have not registered")
 
-#define ERR_NEEDMOREPARAMS(cmd) ("461" + cmd + " :Not enough parameters")
+#define ERR_NEEDMOREPARAMS(cmd) ("461" + cmd + " :Not enough parameters\r\n")
 
 #define ERR_ALREADYREGISTRED Numeric::createNumeric("462", ":Unauthorized command (already registered)")
 #define ERR_PASSWDMISMATCH Numeric::createNumeric("464", ":Password incorrect")
