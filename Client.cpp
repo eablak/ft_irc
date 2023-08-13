@@ -3,6 +3,11 @@
 Client::Client(){
 }
 
+// Client::Client(Client &copy){
+//     printf("HEREEEEE\n");
+//     *this = copy;
+// }
+
 Client::Client(int _fd){
     fd = _fd;
     this->client_auth = NOTAUTHENTICATED;

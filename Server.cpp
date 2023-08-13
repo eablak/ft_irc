@@ -107,9 +107,10 @@ void Server::processRegistered(Client &client){
 }
 
 void Server::clientEvent(int fd){
-    Client client = getClient(fd);
+    Client &client = getClient(fd);
     std::string  msg = readMessage(client.getClientFd());
     client.setMsg(msg); 
+    std::cout << client.getAuthStatus()<< std::endl;
     handleMsg(client, msg);
     if (client.getAuthStatus() == NOTAUTHENTICATED){
         processNotAuthenticated(client);
