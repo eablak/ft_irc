@@ -76,21 +76,51 @@ std::string Server::readMessage(int fd){
     return (buffer.data());
 }
 
+void Server::processNotAuthenticated(Client &client){
+    if (!client.getMap().empty()){
+        if (client.getMap().front().first != "PASS")
+            messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
+        else{
+            client.setMapSecondEnd();
+            if (client.getMap().front().second == password){
+                std::cout << client.getAuthStatus() << std::endl;
+                std::cout << "password başarılı" << std::endl;
+                client.setAuthStatus(AUTHENTICATE);
+                std::cout << client.getAuthStatus() << std::endl;
+                return ;
+            } else{
+                client.getNums().handleNumeric("464",ERR_PASSWDMISMATCH(),client,*this);
+            }
+        }
+    }
+}
+
+void Server::processAuthenticate(Client &client){
+    std::cout << "HERE\n";
+    (void) client;
+    return ;
+}
+
+void Server::processRegistered(Client &client){
+    (void) client;
+    return ;
+}
+
 void Server::clientEvent(int fd){
     Client client = getClient(fd);
     std::string  msg = readMessage(client.getClientFd());
     client.setMsg(msg); 
     handleMsg(client, msg);
     if (client.getAuthStatus() == NOTAUTHENTICATED){
-        if (!client.getMap().empty()){
-            if (client.getMap().front().first == "PASS"){
-                client.setMapSecondEnd();
-                if (client.getMap().front().second == password){
-                    std::cout << "password başarılı" << std::endl;
-                    client.setAuthStatus(AUTHENTICATE);
-                }
-            }
-        }
+        processNotAuthenticated(client);
+        return ;
+    } else if (client.getAuthStatus() == AUTHENTICATE){
+        printf("sdfndjkg\n");
+        processAuthenticate(client);
+        return ;
+    } else {
+        processRegistered(client);
+        return ;
     }
 }
 
@@ -116,8 +146,8 @@ void Server::serverInvoke(){
 
 void Server::handleMsg(Client &client, std::string msg){
     if (msg.size() > 512){
-        std::cout << "512 den fazla" << std::endl;
-        //numericten inputtolong
+        std::cout << "512" << std::endl; //kendisi handleliyo
+        client.getNums().handleNumeric("417","ERR_INPUTTOOLONG",client,*this);
         msg[511] = '\r';
         msg[512] = '\n';
     }
@@ -125,15 +155,12 @@ void Server::handleMsg(Client &client, std::string msg){
     size_t findPos = msg.find(' ');
     std::string first;
     std::string second;
-    if (findPos == std::string::npos){
+    // ilk gelen şey bir komut değilse onun hatasını ver
+    if (findPos == std::string::npos){ // ve bir komutsa bu hata komut değilse başka hataya göre ayarla
         client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(first),client,*this);
         return ;
     }
     first = msg.substr(0,findPos);
     second = msg.substr(findPos + 1);
-    if (findPos != std::string::npos){
-        if (first != "PASS")
-            messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
-    }
     client.setClientMessage(first,second);
 }

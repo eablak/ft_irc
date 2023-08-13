@@ -29,6 +29,9 @@ class Server{
     std::string readMessage(int fd);
     Client &getClient(int fd);
     void handleMsg(Client &client, std::string msg);
+    void processNotAuthenticated(Client &client);
+    void processAuthenticate(Client &client);
+    void processRegistered(Client &client);
 };
 
 
