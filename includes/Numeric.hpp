@@ -37,7 +37,7 @@ class Numeric{
     std::map<std::string, std::string> numericMap;
 
     public:
-    // void handleNumeric(numeric type, Server &server);
+    void handleNumeric(std::string errNo,std::string _define, Server &server);
     void createNumeric(std::string errNo, std::string _define);
     void printNumeric(std::string errNo, Server &server);
 };

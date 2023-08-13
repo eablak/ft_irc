@@ -49,6 +49,7 @@ void Client::setMapSecondEnd(){
           client_message.front().second.pop_back();
 }
 
-Numeric Client::getNums(){
+Numeric &Client::getNums(){
     return (_nums);
 }
+

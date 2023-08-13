@@ -30,7 +30,7 @@ class Client{
     std::list<std::pair<std::string, std::string> > getMap();
     void printMap();
     void setMapSecondEnd();
-    Numeric getNums();
+    Numeric &getNums();
 };
 
 #endif
