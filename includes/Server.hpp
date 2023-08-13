@@ -4,8 +4,10 @@
 #include "librarys.hpp"
 #include "Client.hpp"
 #include "error.hpp"
+#include "Numeric.hpp"
 
 class Client;
+class Numeric;
 
 class Server{
 

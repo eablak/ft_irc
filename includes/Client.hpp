@@ -4,7 +4,7 @@
 class Server;
 
 #include "librarys.hpp"
-#include "Numeric.hpp"
+// #include "Numeric.hpp"
 
 enum _auth {AUTHENTICATE, NOTAUTHENTICATED, REGISTERED};
 

@@ -126,7 +126,7 @@ void Server::handleMsg(Client &client, std::string msg){
     std::string first;
     std::string second;
     if (findPos == std::string::npos){
-        client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(first),client);
+        client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(first),client,*this);
         return ;
     }
     first = msg.substr(0,findPos);

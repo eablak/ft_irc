@@ -3,6 +3,7 @@
 
 #include "librarys.hpp"
 // #include "Client.hpp"
+// #include "Server.hpp"
 
 #define RPL_WELCOME(nick, user, host) Numeric::createNumeric("001", ":Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
 #define RPL_YOURHOST(nick, host) Numeric::createNumeric("002", ":Your host is " + host + ", running version " + VERSION)
@@ -29,19 +30,16 @@
 #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
 class Client;
+class Server;
 
 class Numeric{
     private:
     std::map<std::string, std::string> numericMap;
 
     public:
-    void handleNumeric(std::string errNo,std::string _define, Client &client);
+    void handleNumeric(std::string errNo,std::string _define, Client &client,Server &server);
     void createNumeric(std::string errNo, std::string _define);
-    void printNumeric(std::string errNo, Client &client);
+    void printNumeric(std::string errNo, Client &client, Server &server);
 };
 
 #endif
-
-
-
-//class tut
