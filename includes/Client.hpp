@@ -17,7 +17,7 @@ class Client{
     std::string current_msg;
     _auth client_auth;
     std::list<std::pair<std::string, std::string> >client_message;
-    // Numeric _nums;
+    Numeric _nums;
    
     public:
     Client();
@@ -30,6 +30,7 @@ class Client{
     std::list<std::pair<std::string, std::string> > getMap();
     void printMap();
     void setMapSecondEnd();
+    Numeric getNums();
 };
 
 #endif

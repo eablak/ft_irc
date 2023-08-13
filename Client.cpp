@@ -48,3 +48,7 @@ void Client::setMapSecondEnd(){
     if (client_message.front().second[client_message.front().second.length()-1] == '\r')
           client_message.front().second.pop_back();
 }
+
+Numeric Client::getNums(){
+    return (_nums);
+}

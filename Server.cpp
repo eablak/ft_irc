@@ -126,8 +126,10 @@ void Server::handleMsg(Client &client, std::string msg){
     std::string first;
     std::string second;
     if (findPos == std::string::npos){
-        // client._nums.printNumeric("461");
-        std::cout << "needmoreparams" << std::endl; 
+        // client.getNums().createNumeric(ERR_NEEDMOREPARAMS(first));
+        Numeric numobj = client.getNums();
+        numobj.createNumeric("461",ERR_NEEDMOREPARAMS(first));
+        numobj.printNumeric("461",*this);
         return ;
     }
     first = msg.substr(0,findPos);

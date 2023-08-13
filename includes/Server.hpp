@@ -2,6 +2,7 @@
 #define SERVER_HPP
 
 #include "librarys.hpp"
+#include "Numeric.hpp"
 
 class Client;
 
