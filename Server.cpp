@@ -1,167 +1,235 @@
 #include "includes/Server.hpp"
+#include "includes/checks.hpp"
 
-Server::Server(std::string _port, std::string _password){
-
-    this->port = std::stoi(_port);
-    this->password = _password;
-    createSocket();
+Server::Server(std::string _port, std::string _password)
+{
+	this->port = std::stoi(_port);
+	this->password = _password;
+	createSocket();
 }
 
-void Server::createSocket(){
-    int opt = 1;
-    struct sockaddr_in serverAddr;
+void Server::createSocket()
+{
+	int					opt;
+	struct sockaddr_in	serverAddr;
 
-    if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) // soket oluşturma -> SOCK_STREAM (TCP)
-        error::error_func("Error socket failed");
-    if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) //soket seçeneklerini ayarlama -> SO_REUSEADDR aynı adresi yeniden kullanma
-        error::error_func("Error setsocket options");
-    if (fcntl(socketfd, F_SETFL, O_NONBLOCK) < 0) // Soketi non-blocking moda ayarlamak için fcntl
-        error::error_func("Error while setting socket flag options");
-
-    serverAddr.sin_family = AF_INET; // sin_family ağ ailesini (IPv4) belirtir,
-    serverAddr.sin_port = htons(this->port);
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    if (::bind(socketfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) // bağlama
-        error::error_func("Error binding socket.");
-    if (listen(socketfd, 100) < 0) // bağlantı isteklerini dinler
-        error::error_func("Error listen socket");
-    std::cout << "Server listening "<< port << " port.." << std::endl;
+	opt = 1;
+	if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) // soket oluşturma -> SOCK_STREAM (TCP)
+		error::error_func("Error socket failed");
+	if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+	//soket seçeneklerini ayarlama -> SO_REUSEADDR aynı adresi yeniden kullanma
+		error::error_func("Error setsocket options");
+	if (fcntl(socketfd, F_SETFL, O_NONBLOCK) < 0)
+	// Soketi non-blocking moda ayarlamak için fcntl
+		error::error_func("Error while setting socket flag options");
+	serverAddr.sin_family = AF_INET; // sin_family ağ ailesini (IPv4) belirtir,
+	serverAddr.sin_port = htons(this->port);
+	serverAddr.sin_addr.s_addr = INADDR_ANY;
+	if (::bind(socketfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) ==
+		-1) // bağlama
+		error::error_func("Error binding socket.");
+	if (listen(socketfd, 100) < 0) // bağlantı isteklerini dinler
+		error::error_func("Error listen socket");
+	std::cout << "Server listening " << port << " port.." << std::endl;
 }
 
-void Server::messageToClient(int fd, std::string msg){
-    if (send(fd,msg.c_str(),msg.size(),0) < 0) // msg.c_str() -> char * çevir yoksa hatalı değer gonderir
-        error::error_func("Send Error");
+void Server::messageToClient(int fd, std::string msg)
+{
+	if (send(fd, msg.c_str(), msg.size(), 0) < 0) // msg.c_str() -> char* çevir yoksa hatalı değer gonderir
+		error::error_func("Send Error");
 }
 
-void Server::clientAccept(){
-    struct sockaddr_in client_addr;
-    socklen_t len = sizeof(client_addr);
-    int client_fd = accept(socketfd,(sockaddr *)&client_addr,&len);
-    if (client_fd == -1)
-        error::error_func("Error accept");
-    else{
-        pollfd poll_client;
-        poll_client.fd = client_fd;
-        poll_client.events = POLLIN;
-        _pollfds.push_back(poll_client);
-        _clients.push_back(Client(client_fd)); 
-        std::cout << "fd "<< client_fd << " client succesfully connected\n";
-        messageToClient(client_fd, "Welcome to IRC. Please Enter Password\r\n");
-    }        
+void Server::clientAccept()
+{
+	struct sockaddr_in	client_addr;
+	socklen_t			len;
+	int					client_fd;
+		pollfd poll_client;
+
+	len = sizeof(client_addr);
+	client_fd = accept(socketfd, (sockaddr *)&client_addr, &len);
+	if (client_fd == -1)
+		error::error_func("Error accept");
+	else
+	{
+		poll_client.fd = client_fd;
+		poll_client.events = POLLIN;
+		_pollfds.push_back(poll_client);
+		_clients.push_back(Client(client_fd));
+		std::cout << "fd " << client_fd << " client succesfully connected\n";
+		messageToClient(client_fd, "Welcome to IRC. Please Enter Password\r\n");
+	}
 }
 
-Client &Server::getClient(int fd){
-    for(size_t i = 0; i < _clients.size(); i++){
-        if (_clients[i].getClientFd() == fd)
-            return (_clients[i]);
-    }
-    std::cout << "getClient Error" << std::endl;
-    exit(1);
+Client &Server::getClient(int fd)
+{
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i].getClientFd() == fd)
+			return (_clients[i]);
+	}
+	std::cout << "getClient Error" << std::endl;
+	exit(1);
 }
 
-std::string Server::readMessage(int fd){
-    std::vector<char> buffer(5000);
-    int bytesRead = recv(fd, buffer.data(), buffer.size(), 0);
-    if (bytesRead == -1) {
-        std::cerr << "Receive error." << std::endl;
-        return (NULL);
-    }
-    if (bytesRead == 0)
-    {
-        std::cout << "fd " << fd << " disconnect" << std::endl;
-        close(fd);    
-    }
-    if (buffer.data()[bytesRead - 1] == 10 || buffer.data()[bytesRead - 1] == 13)
-        buffer.data()[bytesRead - 1] = '\0';
-    return (buffer.data());
+std::string Server::readMessage(int fd)
+{
+	int	bytesRead;
+
+	std::vector<char> buffer(5000);
+	bytesRead = recv(fd, buffer.data(), buffer.size(), 0);
+	if (bytesRead == -1)
+	{
+		std::cerr << "Receive error." << std::endl;
+		return (NULL);
+	}
+	if (bytesRead == 0)
+	{
+		std::cout << "fd " << fd << " disconnect" << std::endl;
+		close(fd);
+	}
+	if (buffer.data()[bytesRead - 1] == 10 || buffer.data()[bytesRead
+		- 1] == 13)
+		buffer.data()[bytesRead - 1] = '\0';
+	return (buffer.data());
 }
 
-void Server::processNotAuthenticated(Client &client){
-    if (!client.getMap().empty()){
-        if (client.getMap().front().first != "PASS")
-            messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
-        else{
-            client.setMapSecondEnd();
-            if (client.getMap().front().second == password){
-                std::cout << client.getAuthStatus() << std::endl;
-                std::cout << "password başarılı" << std::endl;
-                client.setAuthStatus(AUTHENTICATE);
-                std::cout << client.getAuthStatus() << std::endl;
-                return ;
-            } else{
-                client.getNums().handleNumeric("464",ERR_PASSWDMISMATCH(),client,*this);
-            }
-        }
-    }
+void Server::processNotAuthenticated(Client &client)
+{
+	if (!client.getMap().empty())
+	{
+		if (client.getMap().front().first != "PASS")
+			messageToClient(client.getClientFd(),
+					"Error: you can only send PASS\n");
+		else
+		{
+			client.setMapSecondEnd();
+			if (client.getMap().front().second == password)
+			{
+				std::cout << "password başarılı" << std::endl;
+				client.setAuthStatus(AUTHENTICATE);
+				return ;
+			}
+			else
+			{
+				client.getNums().handleNumeric("464", ERR_PASSWDMISMATCH(),
+						client, *this);
+			}
+		}
+	}
 }
 
-void Server::processAuthenticate(Client &client){
-    std::cout << "HERE\n";
-    (void) client;
-    return ;
+void Server::processAuthenticate(Client &client)
+{
+	if (!client.getMap().empty())
+	{
+		if (client.getMap().front().first != "NICK"
+			&& client.getMap().front().first != "USER")
+		{
+			messageToClient(client.getClientFd(),
+					"Error: you can only send NICK or USER\n");
+		}
+		else
+		{
+			client.setMapSecondEnd();
+			if (client.getMap().front().first == "NICK")
+			{
+				checks::checkNick(client.getMap().front().second);
+				client.setNickname(client.getMap().front().second);
+			}
+			else
+				client.setUsername(client.getMap().front().second);
+		}
+	}
+	if (!(client.getNickname() == "" || client.getUsername() == ""))
+	{
+		client.setAuthStatus(REGISTERED);
+		std::cout << "registered" << std::endl;
+	}
 }
 
-void Server::processRegistered(Client &client){
-    (void) client;
-    return ;
+void Server::processRegistered(Client &client)
+{
+	(void)client;
+	return ;
 }
 
-void Server::clientEvent(int fd){
-    Client &client = getClient(fd);
-    std::string  msg = readMessage(client.getClientFd());
-    client.setMsg(msg); 
-    std::cout << client.getAuthStatus()<< std::endl;
-    handleMsg(client, msg);
-    if (client.getAuthStatus() == NOTAUTHENTICATED){
-        processNotAuthenticated(client);
-        return ;
-    } else if (client.getAuthStatus() == AUTHENTICATE){
-        printf("sdfndjkg\n");
-        processAuthenticate(client);
-        return ;
-    } else {
-        processRegistered(client);
-        return ;
-    }
+void Server::clientEvent(int fd)
+{
+	Client &client = getClient(fd);
+	std::string msg = readMessage(client.getClientFd());
+	client.setMsg(msg);
+	if (!handleMsg(client, msg))
+		return ;
+	if (client.getAuthStatus() == NOTAUTHENTICATED)
+	{
+		processNotAuthenticated(client);
+	}
+	else if (client.getAuthStatus() == AUTHENTICATE)
+	{
+		processAuthenticate(client);
+	}
+	else
+	{
+		processRegistered(client);
+		return ;
+	}
 }
 
-void Server::serverInvoke(){
-    pollfd initalize = {socketfd,POLLIN,0}; // soketin giriş olaylarını (POLLIN) izlemek üzere 
-    _pollfds.push_back(initalize);
-    while(1){
-        if (poll(&_pollfds[0],_pollfds.size(),0) == -1) // poll gelen verileri beklemek ve bunları işlemek için
-            error::error_func("Error while polling");
-        for(size_t i = 0; i < _pollfds.size(); i ++){
-            if (_pollfds[i].revents == 0)
-                continue;
-            if (_pollfds[i].revents & POLLIN){ 
-                if (_pollfds[i].fd == socketfd)
-                    clientAccept();
-                else
-                    clientEvent(_pollfds[i].fd);
-            }
-        }
-    }
+void Server::serverInvoke()
+{
+	pollfd initalize = {socketfd, POLLIN, 0};
+		// soketin giriş olaylarını (POLLIN) izlemek üzere
+	_pollfds.push_back(initalize);
+	while (1)
+	{
+		if (poll(&_pollfds[0], _pollfds.size(), 0) == -1)
+		// poll gelen verileri beklemek ve bunları işlemek için
+			error::error_func("Error while polling");
+		for (size_t i = 0; i < _pollfds.size(); i++)
+		{
+			if (_pollfds[i].revents == 0)
+				continue ;
+			if (_pollfds[i].revents & POLLIN)
+			{
+				if (_pollfds[i].fd == socketfd)
+					clientAccept();
+				else
+					clientEvent(_pollfds[i].fd);
+			}
+		}
+	}
 }
 
+int Server::handleMsg(Client &client, std::string msg)
+{
+	if (msg.size() > 512)
+	{
+		std::cout << "512" << std::endl; //kendisi handleliyo
+		client.getNums().handleNumeric("417", "ERR_INPUTTOOLONG", client,
+				*this);
+		msg[511] = '\r';
+		msg[512] = '\n';
+	}
 
-void Server::handleMsg(Client &client, std::string msg){
-    if (msg.size() > 512){
-        std::cout << "512" << std::endl; //kendisi handleliyo
-        client.getNums().handleNumeric("417","ERR_INPUTTOOLONG",client,*this);
-        msg[511] = '\r';
-        msg[512] = '\n';
-    }
-
-    size_t findPos = msg.find(' ');
-    std::string first;
-    std::string second;
-    // ilk gelen şey bir komut değilse onun hatasını ver
-    if (findPos == std::string::npos){ // ve bir komutsa bu hata komut değilse başka hataya göre ayarla
-        client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(first),client,*this);
-        return ;
-    }
-    first = msg.substr(0,findPos);
-    second = msg.substr(findPos + 1);
-    client.setClientMessage(first,second);
+	size_t findPos = msg.find(' ');
+	std::string first;
+	std::string second;
+	// ilk gelen şey bir komut değilse onun hatasını ver
+	if (findPos == std::string::npos)
+	{ // ve bir komutsa bu hata komut değilse başka hataya göre ayarla
+		if (msg == "NICK")
+		{
+			client.getNums().handleNumeric("431", ERR_NONICKNAMEGIVEN(), client,
+					*this);
+			return (0);
+		}
+		client.getNums().handleNumeric("461", ERR_NEEDMOREPARAMS(msg), client,
+				*this);
+		return (0);
+	}
+	first = msg.substr(0, findPos);
+	second = msg.substr(findPos + 1);
+	client.setClientMessage(first, second);
+	return (1);
 }

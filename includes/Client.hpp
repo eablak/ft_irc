@@ -18,6 +18,8 @@ class Client{
     _auth client_auth;
     std::list<std::pair<std::string, std::string> >client_message;
     Numeric _nums;
+    std::string nickname;
+    std::string username;
    
     public:
     Client();
@@ -32,6 +34,10 @@ class Client{
     void printMap();
     void setMapSecondEnd();
     Numeric &getNums();
+    std::string getNickname();
+    std::string getUsername();
+    void setNickname(std::string _nickname);
+    void setUsername(std::string _username);
 };
 
 #endif

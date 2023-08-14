@@ -28,7 +28,6 @@ _auth Client::getAuthStatus(){
 void Client::setClientMessage(std::string command, std::string args){
 
     if (this->client_message.size() == 1){
-        std::cout << "size 1" << std::endl;
         this->client_message.erase(this->client_message.begin());
     }
     this->client_message.push_back(std::make_pair(command,args));
@@ -58,3 +57,18 @@ Numeric &Client::getNums(){
     return (_nums);
 }
 
+std::string Client::getNickname(){
+    return (nickname);
+}
+
+std::string Client::getUsername(){
+    return (username);
+}
+
+void Client::setNickname(std::string _nickname){
+    nickname = _nickname;
+}
+
+void Client::setUsername(std::string _username){
+    username = _username;
+}

@@ -4,6 +4,7 @@
 
 namespace checks{
     void check_args(int ac,char **av);
+    int checkNick(std::string nick);
 }
 
 #endif
