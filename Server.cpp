@@ -107,6 +107,13 @@ void Server::clientEvent(int fd)
 		it = _handlemsg.getCommandMap().find(client.getMap().front().first);
 		if (it != _handlemsg.getCommandMap().end())
 			it->second->execute(*this,client);
+	}else{
+		if (client.getAuthStatus() == NOTAUTHENTICATED)
+			messageToClient(client.getClientFd(),"2)Error: you can only send PASS\n");
+		else if (client.getAuthStatus() == AUTHENTICATE)
+			messageToClient(client.getClientFd(),"Error: you can only send USER or NICK\n");
+		else if (client.getAuthStatus() == REGISTERED)
+			std::cout << "SADECE diğer konutlar GİREBİLİR" << std::endl;
 	}
 }
 
@@ -137,4 +144,17 @@ void Server::serverInvoke()
 
 std::string Server::getPassword(){
 	return (password);
+}
+
+std::string Server::getHostname()
+{
+	return this->hostname;
+}
+
+void Server::setHostname(){ // !
+	char hostname_c[1024];
+	int rtn = gethostname(hostname_c, 1024);
+	if (rtn == -1)
+		error::error_func("Host Error\n");
+	this->hostname = hostname_c;
 }

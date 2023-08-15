@@ -24,7 +24,6 @@ class Client{
     public:
     Client();
     Client(int fd);
-    // Client(Client &copy);
     int getClientFd();
     void setMsg(std::string msg);
     _auth getAuthStatus();

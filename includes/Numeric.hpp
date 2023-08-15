@@ -5,7 +5,6 @@
 // #include "Client.hpp"
 // #include "Server.hpp"
 
-// #define RPL_WELCOME(nick, user, host) Numeric::createNumeric("001", ":Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
 // #define RPL_YOURHOST(nick, host) Numeric::createNumeric("002", ":Your host is " + host + ", running version " + VERSION)
 // #define RPL_CREATED(nick, date) Numeric::createNumeric("003", ":This server was created " + date)
 // #define RPL_NOTOPIC(nick, channel) Numeric::createNumeric("331", channel + " :No topic is set")
@@ -23,6 +22,7 @@
 // #define ERR_ALREADYREGISTRED Numeric::createNumeric("462", ":Unauthorized command (already registered)")
 // #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
+#define RPL_WELCOME(nick, user, host) ("001", ":Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
 #define ERR_NEEDMOREPARAMS(cmd) ("461 " + cmd + " :Not enough parameters\r\n")
 #define ERR_INPUTTOOLONG() ("417 :Input line was too long\r\n")
 #define ERR_PASSWDMISMATCH() ("464 :Password incorrect\r\n")

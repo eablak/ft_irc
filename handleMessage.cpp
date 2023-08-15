@@ -11,7 +11,7 @@ void handleMessage::processNotAuthenticated(Server &server, Client &client)
 		if (client.getMap().front().first == "PASS")
 			_commandMap.insert(std::make_pair("PASS",new PASS()));
 		else
-			server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
+			server.messageToClient(client.getClientFd(),"1)Error: you can only send PASS\n");
     }
 }
 
@@ -69,12 +69,18 @@ int handleMessage::handleMsg(Server &server, Client &client, std::string msg){
 		msg[512] = '\n';
 	}
 
+	if (msg == "")
+		return 0;
+
 	size_t findPos = msg.find(' ');
 	std::string first;
 	std::string second;
 
-    if (findPos == std::string::npos)
-        return (0);
+    if (findPos == std::string::npos){
+		first = msg;
+		second = "";
+        return (1);
+	}
 
     first = msg.substr(0, findPos);
 	second = msg.substr(findPos + 1);
@@ -89,18 +95,4 @@ int handleMessage::handleMsg(Server &server, Client &client, std::string msg){
 	}
     client.setClientMessage(first, second);
     return (1);
-	// ilk gelen şey bir komut değilse onun hatasını ver
-	// if (findPos == std::string::npos)
-	// { // ve bir komutsa bu hata komut değilse başka hataya göre ayarla
-	// 	if (msg == "NICK")
-	// 	{
-	// 		client.getNums().handleNumeric("431", ERR_NONICKNAMEGIVEN(), client, server);
-	// 		return (0);
-	// 	}
-	// 	client.getNums().handleNumeric("461", ERR_NEEDMOREPARAMS(msg), client, server);
-	// 	return (0);
-	// }
-	// first = msg.substr(0, findPos);
-	// second = msg.substr(findPos + 1);
-	// client.setClientMessage(first, second);
 }
