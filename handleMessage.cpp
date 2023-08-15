@@ -78,13 +78,15 @@ int handleMessage::handleMsg(Server &server, Client &client, std::string msg){
 
     first = msg.substr(0, findPos);
 	second = msg.substr(findPos + 1);
-    
+    size_t f_pos = 0;
     if (second[0] != ':'){
-        size_t f_pos = second.find(' ');
+        f_pos = second.find(' ');
         if (f_pos != std::string::npos){
             second = second.substr(0,f_pos);
         }
-    }
+    }else{
+		second = second.substr(f_pos+1);
+	}
     client.setClientMessage(first, second);
     return (1);
 	// ilk gelen şey bir komut değilse onun hatasını ver
