@@ -102,6 +102,11 @@ void Server::clientEvent(int fd)
 	if (!_handlemsg.handleMsg(*this,client,msg))
 		return ;
 	_handlemsg.clientMsgProcess(*this,client);
+
+	std::map<std::string, ICommand *>::iterator it;
+	for(it = _handlemsg.getCommandMap().begin(); it != _handlemsg.getCommandMap().end(); it++){
+		
+	}
 }
 
 void Server::serverInvoke()
@@ -131,8 +136,4 @@ void Server::serverInvoke()
 
 std::string Server::getPassword(){
 	return (password);
-}
-
-handleMessage *Server::getHandleMsg(){
-	return (_handlemsg);
 }

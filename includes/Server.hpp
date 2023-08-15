@@ -21,7 +21,6 @@ class Server{
     int socketfd;
     std::vector<pollfd> _pollfds;
     std::vector<Client > _clients;
-    handleMessage *_handlemsg;
 
     public:
     Server(std::string av1,std::string av2);
@@ -34,7 +33,6 @@ class Server{
     std::string readMessage(int fd);
     Client &getClient(int fd);
     std::string getPassword();
-    handleMessage *getHandleMsg();
 };
 
 
