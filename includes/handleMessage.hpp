@@ -2,8 +2,18 @@
 #define HANDLEMESSAGE_HPP
 
 #include "Server.hpp"
+#include "ICommand.hpp"
+#include "Pass.hpp"
+
+class Server;
+class Client;
+class ICommand;
 
 class handleMessage{
+
+    private:
+    // ICommand'ekle
+    std::map<std::string, ICommand *> _commandMap;
 
     public:
     int handleMsg(Server &server, Client &client, std::string msg);
@@ -11,6 +21,8 @@ class handleMessage{
     void processNotAuthenticated(Server &server, Client &client);
     void processAuthenticate(Server &server, Client &client);
     void processRegistered(Server &server, Client &client);
+    void setCommandMap(std::string, ICommand command);
+    std::map<std::string, ICommand *> getCommandMap();
 };
 
 #endif

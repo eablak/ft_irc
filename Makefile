@@ -17,11 +17,12 @@ FLAGS    := -Wall -Wextra -Werror -std=c++98
 
 SRCS        :=      main.cpp \
 						checks.cpp\
-						Server.cpp\
 						error.cpp\
 						Client.cpp\
 						Numeric.cpp \
+						Server.cpp\
 						handleMessage.cpp \
+						commands/Pass.cpp \
                           
 OBJS        := ${SRCS:.cpp=.o}
 

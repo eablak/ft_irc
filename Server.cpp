@@ -1,6 +1,4 @@
 #include "includes/Server.hpp"
-#include "includes/checks.hpp"
-#include "includes/handleMessage.hpp"
 
 Server::Server(std::string _port, std::string _password)
 {
@@ -104,7 +102,6 @@ void Server::clientEvent(int fd)
 	if (!_handlemsg.handleMsg(*this,client,msg))
 		return ;
 	_handlemsg.clientMsgProcess(*this,client);
-
 }
 
 void Server::serverInvoke()
@@ -134,4 +131,8 @@ void Server::serverInvoke()
 
 std::string Server::getPassword(){
 	return (password);
+}
+
+handleMessage *Server::getHandleMsg(){
+	return (_handlemsg);
 }
