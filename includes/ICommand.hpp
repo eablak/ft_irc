@@ -10,8 +10,7 @@ class ICommand{
 
     public:
     virtual ~ICommand(){};
-    virtual void execute(Server &server, Client &client, std::list<std::pair<std::string, 
-        std::string> >client_message) = 0;
+    virtual void execute(Server &server, Client &client) = 0;
 };
 
 #endif

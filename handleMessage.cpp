@@ -8,36 +8,11 @@ void handleMessage::processNotAuthenticated(Server &server, Client &client)
 {
     if (!client.getMap().empty())
 	{
-		if (client.getMap().front().first == "PASS"){
+		if (client.getMap().front().first == "PASS")
 			_commandMap.insert(std::make_pair("PASS",new PASS()));
-        }
-		else{
+		else
 			server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
-		}
     }
-
-	//PASS içinde
-	// if (!client.getMap().empty())
-	// {
-	// 	if (client.getMap().front().first != "PASS")
-	// 		server.messageToClient(client.getClientFd(),
-	// 				"Error: you can only send PASS\n");
-	// 	else
-	// 	{
-	// 		client.setMapSecondEnd();
-	// 		if (client.getMap().front().second == server.getPassword())
-	// 		{
-	// 			std::cout << "password başarılı" << std::endl;
-	// 			client.setAuthStatus(AUTHENTICATE);
-	// 			return ;
-	// 		}
-	// 		else
-	// 		{
-	// 			client.getNums().handleNumeric("464", ERR_PASSWDMISMATCH(),
-	// 					client, server);
-	// 		}x
-	// 	}
-	// }
 }
 
 void handleMessage::processAuthenticate(Server &server, Client &client)
