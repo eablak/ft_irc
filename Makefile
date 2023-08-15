@@ -9,7 +9,7 @@
 
 NAME        := ircserv
 CC         := c++
-FLAGS    :=  -std=c++98
+FLAGS    := -Wall -Wextra -Werror -std=c++98
  
 ################################################################################
 #                                 PROGRAM'S SRCS                               #
@@ -21,6 +21,7 @@ SRCS        :=      main.cpp \
 						error.cpp\
 						Client.cpp\
 						Numeric.cpp \
+						handleMessage.cpp \
                           
 OBJS        := ${SRCS:.cpp=.o}
 

@@ -17,5 +17,6 @@ void checks::check_args(int ac, char **av){
 }
 
 int checks::checkNick(std::string nick){
-    
+    (void) nick;
+    return 1;
 }

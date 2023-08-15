@@ -1,5 +1,6 @@
 #include "includes/Server.hpp"
 #include "includes/checks.hpp"
+#include "includes/handleMessage.hpp"
 
 Server::Server(std::string _port, std::string _password)
 {
@@ -94,86 +95,16 @@ std::string Server::readMessage(int fd)
 	return (buffer.data());
 }
 
-void Server::processNotAuthenticated(Client &client)
-{
-	if (!client.getMap().empty())
-	{
-		if (client.getMap().front().first != "PASS")
-			messageToClient(client.getClientFd(),
-					"Error: you can only send PASS\n");
-		else
-		{
-			client.setMapSecondEnd();
-			if (client.getMap().front().second == password)
-			{
-				std::cout << "password başarılı" << std::endl;
-				client.setAuthStatus(AUTHENTICATE);
-				return ;
-			}
-			else
-			{
-				client.getNums().handleNumeric("464", ERR_PASSWDMISMATCH(),
-						client, *this);
-			}
-		}
-	}
-}
-
-void Server::processAuthenticate(Client &client)
-{
-	if (!client.getMap().empty())
-	{
-		if (client.getMap().front().first != "NICK"
-			&& client.getMap().front().first != "USER")
-		{
-			messageToClient(client.getClientFd(),
-					"Error: you can only send NICK or USER\n");
-		}
-		else
-		{
-			client.setMapSecondEnd();
-			if (client.getMap().front().first == "NICK")
-			{
-				checks::checkNick(client.getMap().front().second);
-				client.setNickname(client.getMap().front().second);
-			}
-			else
-				client.setUsername(client.getMap().front().second);
-		}
-	}
-	if (!(client.getNickname() == "" || client.getUsername() == ""))
-	{
-		client.setAuthStatus(REGISTERED);
-		std::cout << "registered" << std::endl;
-	}
-}
-
-void Server::processRegistered(Client &client)
-{
-	(void)client;
-	return ;
-}
-
 void Server::clientEvent(int fd)
 {
 	Client &client = getClient(fd);
 	std::string msg = readMessage(client.getClientFd());
 	client.setMsg(msg);
-	if (!handleMsg(client, msg))
+	handleMessage _handlemsg;
+	if (!_handlemsg.handleMsg(*this,client,msg))
 		return ;
-	if (client.getAuthStatus() == NOTAUTHENTICATED)
-	{
-		processNotAuthenticated(client);
-	}
-	else if (client.getAuthStatus() == AUTHENTICATE)
-	{
-		processAuthenticate(client);
-	}
-	else
-	{
-		processRegistered(client);
-		return ;
-	}
+	_handlemsg.clientMsgProcess(*this,client);
+
 }
 
 void Server::serverInvoke()
@@ -201,35 +132,6 @@ void Server::serverInvoke()
 	}
 }
 
-int Server::handleMsg(Client &client, std::string msg)
-{
-	if (msg.size() > 512)
-	{
-		std::cout << "512" << std::endl; //kendisi handleliyo
-		client.getNums().handleNumeric("417", "ERR_INPUTTOOLONG", client,
-				*this);
-		msg[511] = '\r';
-		msg[512] = '\n';
-	}
-
-	size_t findPos = msg.find(' ');
-	std::string first;
-	std::string second;
-	// ilk gelen şey bir komut değilse onun hatasını ver
-	if (findPos == std::string::npos)
-	{ // ve bir komutsa bu hata komut değilse başka hataya göre ayarla
-		if (msg == "NICK")
-		{
-			client.getNums().handleNumeric("431", ERR_NONICKNAMEGIVEN(), client,
-					*this);
-			return (0);
-		}
-		client.getNums().handleNumeric("461", ERR_NEEDMOREPARAMS(msg), client,
-				*this);
-		return (0);
-	}
-	first = msg.substr(0, findPos);
-	second = msg.substr(findPos + 1);
-	client.setClientMessage(first, second);
-	return (1);
+std::string Server::getPassword(){
+	return (password);
 }

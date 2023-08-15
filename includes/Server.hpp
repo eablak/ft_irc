@@ -6,6 +6,7 @@
 #include "error.hpp"
 #include "Numeric.hpp"
 
+
 class Client;
 class Numeric;
 
@@ -28,10 +29,7 @@ class Server{
     void clientEvent(int fd);
     std::string readMessage(int fd);
     Client &getClient(int fd);
-    int handleMsg(Client &client, std::string msg);
-    void processNotAuthenticated(Client &client);
-    void processAuthenticate(Client &client);
-    void processRegistered(Client &client);
+    std::string getPassword();
 };
 
 
