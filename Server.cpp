@@ -102,10 +102,11 @@ void Server::clientEvent(int fd)
 	if (!_handlemsg.handleMsg(*this,client,msg))
 		return ;
 	_handlemsg.clientMsgProcess(*this,client);
-
-	std::map<std::string, ICommand *>::iterator it;
-	for(it = _handlemsg.getCommandMap().begin(); it != _handlemsg.getCommandMap().end(); it++){
-		
+	if (_handlemsg.getCommandMap().size() != 0){
+		std::map<std::string, ICommand *>::iterator it;
+		it = _handlemsg.getCommandMap().find(client.getMap().front().first);
+		if (it != _handlemsg.getCommandMap().end())
+			it->second->execute(*this,client,client.getMap());
 	}
 }
 
