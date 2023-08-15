@@ -11,7 +11,7 @@ void handleMessage::processNotAuthenticated(Server &server, Client &client)
 		if (client.getMap().front().first == "PASS")
 			_commandMap.insert(std::make_pair("PASS",new PASS()));
 		else
-			server.messageToClient(client.getClientFd(),"1)Error: you can only send PASS\n");
+			server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
     }
 }
 
@@ -79,7 +79,13 @@ int handleMessage::handleMsg(Server &server, Client &client, std::string msg){
     if (findPos == std::string::npos){
 		first = msg;
 		second = "";
-        return (1);
+		if (client.getAuthStatus() == NOTAUTHENTICATED && first != "PASS"){
+			server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
+			return (0);
+		}else if (client.getAuthStatus() == AUTHENTICATE && (first != "NICK" || first != "USER")){
+			server.messageToClient(client.getClientFd(),"Error: you can only send NICK or USER\n");
+			return (0);
+		}
 	}
 
     first = msg.substr(0, findPos);

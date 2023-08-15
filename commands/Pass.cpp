@@ -16,7 +16,7 @@ void PASS::execute(Server &server, Client &client){
     if (client.getMap().front().second == server.getPassword())
     {
         client.setAuthStatus(AUTHENTICATE);
-        std::cout << client.getAuthStatus() << std::endl;
+        std::cout << "auth oldu" << std::endl;
         return ;
     }
     else
