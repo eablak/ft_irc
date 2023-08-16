@@ -5,18 +5,15 @@ std::map<std::string, ICommand *> HandleMessage::getCommandMap(){
 	return (_commandMap);
 }
 
-void HandleMessage::processNotAuthenticated(Server &server, Client &client)
+int HandleMessage::processNotAuthenticated(Server &server, Client &client)
 {
-    // if (!client.getMap().empty())	
-	// {
-	// 	if (client.getMap().front().first == "PASS")
-	// 		_commandMap.insert(std::make_pair("PASS",new PASS()));
-	// 	else
-	// 		server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
-    // }
-	(void) client;
 	(void) server;
+   if (client.getCommand() != "PASS"){
+	std::cout << "HAtayı buraya ver only pass" << std::endl; 
+	return 0;
+   }
 	_commandMap.insert(std::make_pair("PASS",new PASS()));
+	return (1);
 }
 
 void HandleMessage::processAuthenticate(Server &server, Client &client)
@@ -55,13 +52,14 @@ void HandleMessage::processRegistered(Server &server, Client &client)
 	return ;
 }
 
-void HandleMessage::clientMsgProcess(Server &server, Client &client){
+int HandleMessage::clientMsgProcess(Server &server, Client &client){
     if (client.getAuthStatus() == NOTAUTHENTICATED)
-    	processNotAuthenticated(server,client);
+    	return (processNotAuthenticated(server,client));
     else if (client.getAuthStatus() == AUTHENTICATE)
     	processAuthenticate(server,client);
     else
     	processRegistered(server,client);
+	return (1);
 }
 
 int HandleMessage::handleMsg(Server &server, Client &client, std::string msg){

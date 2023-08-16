@@ -121,10 +121,10 @@ void Server::clientEvent(int fd)
 	HandleMessage _handlemsg;
 	if (!_handlemsg.handleMsg(*this, client, msg))
 		return;
-	_handlemsg.clientMsgProcess(*this, client);
+	if (_handlemsg.clientMsgProcess(*this, client) == 0)
+		return ;
 	ICommand *command = _handlemsg.getCommand(client.getCommand());
-	printf("%s\n", client.getCommand().c_str());
-	printf("!\n");
+
 	try
 	{
 		command->execute(*this, client);
