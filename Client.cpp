@@ -44,9 +44,12 @@ void Client::printMap(){
 }
 
 void Client::setParamsEnd(){
-    size_t len = params.size();
-    if (params[len -1][params[len -1].size() - 1] == '\r')
-        params[len -1][params[len -1].size() - 1] = '\0';
+    if (!params.empty()){
+        std::string &str = params.back();
+        if (str[str.size()- 1] == '\r'){
+            str.erase(str.size()- 1);
+        }
+    }
 }
 
 Numeric &Client::getNums(){

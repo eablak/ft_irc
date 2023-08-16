@@ -13,7 +13,6 @@
 // #define RPL_ENDOFNAMES(nick, channel) Numeric::createNumeric("366", channel + " :End of /NAMES list")
 // #define ERR_NOSUCHNICK(nick) Numeric::createNumeric("401", nick + " :No such nick/channel")
 // #define ERR_NOSUCHCHANNEL(channel) Numeric::createNumeric("403", channel + " :No such channel")
-// #define ERR_UNKNOWNCOMMAND(cmd) Numeric::createNumeric("421", cmd + " :Unknown command")
 // #define ERR_NICKNAMEINUSE(nick) Numeric::createNumeric("433", nick + " :Nickname is already in use")
 // #define ERR_USERNOTINCHANNEL(nick, channel) Numeric::createNumeric("441", nick + " " + channel + " :They aren't on that channel")
 // #define ERR_NOTONCHANNEL(channel) Numeric::createNumeric("442", channel + " :You're not on that channel")
@@ -28,6 +27,7 @@
 #define ERR_PASSWDMISMATCH() ("464 :Password incorrect\r\n")
 #define ERR_NONICKNAMEGIVEN() ("431 :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nick) ("432", nick + " :Erroneus nickname")
+#define ERR_UNKNOWNCOMMAND(cmd) ("421 " + cmd + " :Unknown command\r\n")
 
 class Client;
 class Server;

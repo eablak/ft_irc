@@ -5,44 +5,49 @@ std::map<std::string, ICommand *> HandleMessage::getCommandMap(){
 	return (_commandMap);
 }
 
-int HandleMessage::processNotAuthenticated(Server &server, Client &client)
+void HandleMessage::processNotAuthenticated(Server &server, Client &client)
 {
 	(void) server;
    if (client.getCommand() != "PASS"){
-	server.messageToClient(client.getClientFd(),"You can send only PASS\n");
-	return 0;
+	// server.messageToClient(client.getClientFd(),"You can only send PASS\n");
+	return ;
    }
 	_commandMap.insert(std::make_pair("PASS",new PASS()));
-	return (1);
+	return;
 }
 
 void HandleMessage::processAuthenticate(Server &server, Client &client)
 {
-	if (!client.getMap().empty())
-	{
-		if (client.getMap().front().first != "NICK"
-			&& client.getMap().front().first != "USER")
-		{
-			server.messageToClient(client.getClientFd(),
-					"Error: you can only send NICK or USER\n");
-		}
-		else
-		{
-			client.setParamsEnd(); //
-			if (client.getMap().front().first == "NICK")
-			{
-				checks::checkNick(client.getMap().front().second);
-				client.setNickname(client.getMap().front().second);
-			}
-			else
-				client.setUsername(client.getMap().front().second);
-		}
-	}
-	if (!(client.getNickname() == "" || client.getUsername() == ""))
-	{
-		client.setAuthStatus(REGISTERED);
-		std::cout << "registered" << std::endl;
-	}
+
+	(void) server;
+	(void) client;
+
+
+	// if (!client.getMap().empty())
+	// {
+	// 	if (client.getMap().front().first != "NICK"
+	// 		&& client.getMap().front().first != "USER")
+	// 	{
+	// 		server.messageToClient(client.getClientFd(),
+	// 				"Error: you can only send NICK or USER\n");
+	// 	}
+	// 	else
+	// 	{
+	// 		client.setParamsEnd(); //
+	// 		if (client.getMap().front().first == "NICK")
+	// 		{
+	// 			checks::checkNick(client.getMap().front().second);
+	// 			client.setNickname(client.getMap().front().second);
+	// 		}
+	// 		else
+	// 			client.setUsername(client.getMap().front().second);
+	// 	}
+	// }
+	// if (!(client.getNickname() == "" || client.getUsername() == ""))
+	// {
+	// 	client.setAuthStatus(REGISTERED);
+	// 	std::cout << "registered" << std::endl;
+	// }
 }
 
 void HandleMessage::processRegistered(Server &server, Client &client)
@@ -52,14 +57,13 @@ void HandleMessage::processRegistered(Server &server, Client &client)
 	return ;
 }
 
-int HandleMessage::clientMsgProcess(Server &server, Client &client){
+void HandleMessage::clientMsgProcess(Server &server, Client &client){
     if (client.getAuthStatus() == NOTAUTHENTICATED)
-    	return (processNotAuthenticated(server,client));
+    	processNotAuthenticated(server,client);
     else if (client.getAuthStatus() == AUTHENTICATE)
     	processAuthenticate(server,client);
     else
     	processRegistered(server,client);
-	return (1);
 }
 
 int HandleMessage::handleMsg(Server &server, Client &client, std::string msg){
@@ -104,6 +108,8 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg){
 ICommand *HandleMessage::getCommand(std::string command){
 	std::map<std::string, ICommand *>::iterator it;
 	it = this->_commandMap.find(command);
-	//nulsa kontrol
+	 if (it == this->_commandMap.end()) {
+        return NULL;
+    }
 	return it->second;
 }

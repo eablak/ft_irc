@@ -118,9 +118,13 @@ void Server::clientEvent(int fd)
 	HandleMessage _handlemsg;
 	if (!_handlemsg.handleMsg(*this, client, msg))
 		return;
-	if (_handlemsg.clientMsgProcess(*this, client) == 0)
-		return ;
+	_handlemsg.clientMsgProcess(*this, client);
+	
 	ICommand *command = _handlemsg.getCommand(client.getCommand());
+	if (command == NULL){
+		client.getNums().handleNumeric("421",ERR_UNKNOWNCOMMAND(client.getCommand()),client,*this);
+		return ;
+	}
 	command->execute(*this, client);
 	std::vector<std::string> &params = client.getParams();
 	params.clear();
