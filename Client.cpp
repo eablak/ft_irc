@@ -12,9 +12,9 @@ int Client::getClientFd(){
     return (fd);
 }
 
-void Client::setMsg(std::string msg){ //kullanmayabilirm
-    current_msg = msg;
-}
+// void Client::setMsg(std::string msg){ //kullanmayabilirm
+//     current_msg = msg;
+// }
 
 _auth Client::getAuthStatus(){
     return (client_auth);
@@ -66,4 +66,18 @@ void Client::setNickname(std::string _nickname){
 
 void Client::setUsername(std::string _username){
     username = _username;
+}
+
+std::string Client::getCommand(){
+    return command;
+}
+
+std::vector<std::string> Client::getParams(){
+    return params;
+}
+
+void Client::setParams(std::vector<std::string> tmp){
+    for(size_t i = 0; i< tmp.size(); i++){
+        params.push_back(tmp[i]);
+    }
 }

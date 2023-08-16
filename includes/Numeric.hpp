@@ -1,7 +1,7 @@
 #ifndef NUMERIC_HPP
 #define NUMERIC_HPP
 
-#include "librarys.hpp"
+#include "libraries.hpp"
 // #include "Client.hpp"
 // #include "Server.hpp"
 

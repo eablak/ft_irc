@@ -1,4 +1,5 @@
 #include "includes/HandleMessage.hpp"
+#include "includes/Utils.hpp"
 
 std::map<std::string, ICommand *> HandleMessage::getCommandMap(){
 	return (_commandMap);
@@ -90,15 +91,18 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg){
 
     first = msg.substr(0, findPos);
 	second = msg.substr(findPos + 1);
-    size_t f_pos = 0;
-    if (second[0] != ':'){
-        f_pos = second.find(' ');
-        if (f_pos != std::string::npos){
-            second = second.substr(0,f_pos);
-        }
-    }else{
-		second = second.substr(f_pos+1);
-	}
-    client.setClientMessage(first, second);
+	client.getCommand() = first;
+	size_t firstNonSpace = second.find_first_not_of(" ");
+	
+    if (firstNonSpace != std::string::npos)
+        second.erase(0, firstNonSpace);
+    else
+		second.clear();
+
+	if(second[0] == ':')
+		client.getParams().push_back(second);
+	else
+		client.setParams(Utils::split(second,' '));
+
     return (1);
 }

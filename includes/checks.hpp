@@ -1,6 +1,6 @@
 #ifndef CHECKS_HPP
 #define CHECKS_HPP
-#include "librarys.hpp"
+#include "libraries.hpp"
 
 namespace checks{
     void check_args(int ac,char **av);

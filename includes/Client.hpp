@@ -3,7 +3,7 @@
 
 class Server;
 
-#include "librarys.hpp"
+#include "libraries.hpp"
 #include "Numeric.hpp"
 
 enum _auth {AUTHENTICATE, NOTAUTHENTICATED, REGISTERED};
@@ -14,7 +14,9 @@ class Client{
 
     private:
     int fd;
-    std::string current_msg;
+    // std::string current_msg;
+    std::string command;
+    std::vector<std::string> params;
     _auth client_auth;
     std::list<std::pair<std::string, std::string> >client_message;
     Numeric _nums;
@@ -25,7 +27,7 @@ class Client{
     Client();
     Client(int fd);
     int getClientFd();
-    void setMsg(std::string msg);
+    // void setMsg(std::string msg);
     _auth getAuthStatus();
     void setAuthStatus(_auth status);
     void setClientMessage(std::string, std::string);
@@ -37,6 +39,11 @@ class Client{
     std::string getUsername();
     void setNickname(std::string _nickname);
     void setUsername(std::string _username);
+
+    std::string getCommand();
+    std::vector<std::string> getParams();
+    void setParams(std::vector<std::string> tmp);
+
 };
 
 #endif

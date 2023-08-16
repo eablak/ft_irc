@@ -12,6 +12,8 @@
 #include <ostream>
 #include <list>
 #include <map>
+#include <sstream>
+
 
 // #include "checks.hpp"
 // #include "Server.hpp"

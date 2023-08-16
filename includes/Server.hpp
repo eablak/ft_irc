@@ -1,7 +1,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "librarys.hpp"
+#include "libraries.hpp"
 #include "Client.hpp"
 #include "error.hpp"
 #include "Numeric.hpp"
@@ -11,7 +11,6 @@
 class HandleMessage;
 class Client;
 class Numeric;
-class handleMessage;
 
 class Server{
 

@@ -112,17 +112,18 @@ void Server::clientEvent(int fd)
 	}catch(std::exception &e){
 		return ;
 	}
-	client.setMsg(msg);
+	// client.setMsg(msg);
 	HandleMessage _handlemsg;
 	if (!_handlemsg.handleMsg(*this,client,msg))
 		return ;
-	_handlemsg.clientMsgProcess(*this,client);
-	if (_handlemsg.getCommandMap().size() != 0){
-		std::map<std::string, ICommand *>::iterator it;
-		it = _handlemsg.getCommandMap().find(client.getMap().front().first);
-		if (it != _handlemsg.getCommandMap().end())
-			it->second->execute(*this,client);
-	}
+	return ;
+	// _handlemsg.clientMsgProcess(*this,client);
+	// if (_handlemsg.getCommandMap().size() != 0){
+	// 	std::map<std::string, ICommand *>::iterator it;
+	// 	it = _handlemsg.getCommandMap().find(client.getMap().front().first);
+	// 	if (it != _handlemsg.getCommandMap().end())
+	// 		it->second->execute(*this,client);
+	// }
 }
 
 void Server::serverInvoke()

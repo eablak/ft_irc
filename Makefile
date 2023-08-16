@@ -23,6 +23,7 @@ SRCS        :=      main.cpp \
 						Server.cpp\
 						HandleMessage.cpp \
 						commands/Pass.cpp \
+						Utils.cpp \
                           
 OBJS        := ${SRCS:.cpp=.o}
 

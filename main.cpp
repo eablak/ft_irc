@@ -1,4 +1,4 @@
-#include "includes/librarys.hpp"
+#include "includes/libraries.hpp"
 #include "includes/Server.hpp"
 #include "includes/checks.hpp"
 
