@@ -8,25 +8,19 @@ PASS::~PASS(){}
 
 void PASS::execute(Server &server, Client &client){
 
-    std::cout << "paSS" << std::endl;
-    (void) server;
-    (void) client;
+    if (client.getParams().empty()){
+        client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(client.getMap().front().second),client,server);
+        return;
+    }
 
-    // client.setMapSecondEnd();
-    // if (client.getMap().front().second == ""){
-    //     client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(client.getMap().front().second),client,server);
-    //     return ;
-    // }
-    // if (client.getMap().front().second == server.getPassword())
-    // {
-    //     client.setAuthStatus(AUTHENTICATE);
-    //     std::cout << "auth oldu" << std::endl;
-    //     return ;
-    // }
-    // else
-    // {
-    //     client.getNums().handleNumeric("464", ERR_PASSWDMISMATCH(),
-    //             client, server);
-    //     return ;
-    // }
+    client.setParamsEnd();
+    if (client.getParams()[0] == server.getPassword())
+    {
+        client.setAuthStatus(AUTHENTICATE);
+        server.messageToClient(client.getClientFd(),"Password is correct!\n");
+        return ;
+    }else{
+        client.getNums().handleNumeric("464", ERR_PASSWDMISMATCH(),client,server);
+        return ;
+    }
 }

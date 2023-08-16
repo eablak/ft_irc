@@ -33,7 +33,7 @@ class Client{
     void setClientMessage(std::string, std::string);
     std::list<std::pair<std::string, std::string> > getMap();
     void printMap();
-    void setMapSecondEnd();
+    void setParamsEnd();
     Numeric &getNums();
     std::string getNickname();
     std::string getUsername();

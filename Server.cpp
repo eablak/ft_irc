@@ -110,12 +110,9 @@ void Server::clientEvent(int fd)
 {
 	Client &client = getClient(fd);
 	std::string msg;
-	try
-	{
+	try{
 		msg = readMessage(client.getClientFd());
-	}
-	catch (std::exception &e)
-	{
+	}catch (std::exception &e){
 		return;
 	}
 	HandleMessage _handlemsg;
@@ -124,17 +121,7 @@ void Server::clientEvent(int fd)
 	if (_handlemsg.clientMsgProcess(*this, client) == 0)
 		return ;
 	ICommand *command = _handlemsg.getCommand(client.getCommand());
-
-	try
-	{
-		command->execute(*this, client);
-	}
-	catch (std::exception &e)
-	{
-		std::cout << "hata" << e.what() << std::endl;
-	}
-
-	printf("*\n");
+	command->execute(*this, client);
 	std::vector<std::string> &params = client.getParams();
 	params.clear();
 }

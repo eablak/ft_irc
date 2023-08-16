@@ -9,7 +9,7 @@ int HandleMessage::processNotAuthenticated(Server &server, Client &client)
 {
 	(void) server;
    if (client.getCommand() != "PASS"){
-	std::cout << "HAtayı buraya ver only pass" << std::endl; 
+	server.messageToClient(client.getClientFd(),"You can send only PASS\n");
 	return 0;
    }
 	_commandMap.insert(std::make_pair("PASS",new PASS()));
@@ -28,7 +28,7 @@ void HandleMessage::processAuthenticate(Server &server, Client &client)
 		}
 		else
 		{
-			client.setMapSecondEnd();
+			client.setParamsEnd(); //
 			if (client.getMap().front().first == "NICK")
 			{
 				checks::checkNick(client.getMap().front().second);

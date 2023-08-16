@@ -43,9 +43,10 @@ void Client::printMap(){
     std::cout << "ikinci değer: " << client_message.begin()->second << std::endl;
 }
 
-void Client::setMapSecondEnd(){
-    if (client_message.front().second[client_message.front().second.length()-1] == '\r')
-          client_message.front().second.pop_back();
+void Client::setParamsEnd(){
+    size_t len = params.size();
+    if (params[len -1][params[len -1].size() - 1] == '\r')
+        params[len -1][params[len -1].size() - 1] = '\0';
 }
 
 Numeric &Client::getNums(){
