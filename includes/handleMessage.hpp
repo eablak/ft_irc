@@ -9,7 +9,7 @@ class Server;
 class Client;
 class ICommand;
 
-class handleMessage{
+class HandleMessage{
 
     private:
     // ICommand'ekle

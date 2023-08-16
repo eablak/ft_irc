@@ -113,7 +113,7 @@ void Server::clientEvent(int fd)
 		return ;
 	}
 	client.setMsg(msg);
-	handleMessage _handlemsg;
+	HandleMessage _handlemsg;
 	if (!_handlemsg.handleMsg(*this,client,msg))
 		return ;
 	_handlemsg.clientMsgProcess(*this,client);

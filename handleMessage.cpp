@@ -1,10 +1,10 @@
-#include "includes/handleMessage.hpp"
+#include "includes/HandleMessage.hpp"
 
-std::map<std::string, ICommand *> handleMessage::getCommandMap(){
+std::map<std::string, ICommand *> HandleMessage::getCommandMap(){
 	return (_commandMap);
 }
 
-void handleMessage::processNotAuthenticated(Server &server, Client &client)
+void HandleMessage::processNotAuthenticated(Server &server, Client &client)
 {
     if (!client.getMap().empty())
 	{
@@ -15,7 +15,7 @@ void handleMessage::processNotAuthenticated(Server &server, Client &client)
     }
 }
 
-void handleMessage::processAuthenticate(Server &server, Client &client)
+void HandleMessage::processAuthenticate(Server &server, Client &client)
 {
 	if (!client.getMap().empty())
 	{
@@ -44,14 +44,14 @@ void handleMessage::processAuthenticate(Server &server, Client &client)
 	}
 }
 
-void handleMessage::processRegistered(Server &server, Client &client)
+void HandleMessage::processRegistered(Server &server, Client &client)
 {
     (void) server;
 	(void)client;
 	return ;
 }
 
-void handleMessage::clientMsgProcess(Server &server, Client &client){
+void HandleMessage::clientMsgProcess(Server &server, Client &client){
     if (client.getAuthStatus() == NOTAUTHENTICATED)
     	processNotAuthenticated(server,client);
     else if (client.getAuthStatus() == AUTHENTICATE)
@@ -60,7 +60,7 @@ void handleMessage::clientMsgProcess(Server &server, Client &client){
     	processRegistered(server,client);
 }
 
-int handleMessage::handleMsg(Server &server, Client &client, std::string msg){
+int HandleMessage::handleMsg(Server &server, Client &client, std::string msg){
     if (msg.size() > 512)
 	{
 		std::cout << "512" << std::endl; //kendisi handleliyo

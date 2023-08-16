@@ -6,9 +6,9 @@
 #include "error.hpp"
 #include "Numeric.hpp"
 #include "checks.hpp"
-#include "handleMessage.hpp" 
+#include "HandleMessage.hpp" 
 
-class handleMessage;
+class HandleMessage;
 class Client;
 class Numeric;
 class handleMessage;

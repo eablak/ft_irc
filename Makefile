@@ -21,7 +21,7 @@ SRCS        :=      main.cpp \
 						Client.cpp\
 						Numeric.cpp \
 						Server.cpp\
-						handleMessage.cpp \
+						HandleMessage.cpp \
 						commands/Pass.cpp \
                           
 OBJS        := ${SRCS:.cpp=.o}
