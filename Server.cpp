@@ -80,11 +80,21 @@ std::string Server::readMessage(int fd)
 	if (bytesRead == -1)
 	{
 		std::cerr << "Receive error." << std::endl;
-		return (NULL);
+		throw std::out_of_range("t");
 	}
 	if (bytesRead == 0)
 	{
 		std::cout << "fd " << fd << " disconnect" << std::endl;
+		for(size_t i = 0; i < _clients.size(); i++){
+			if (_clients[i].getClientFd() == fd){
+				_clients.erase(_clients.begin() + i);
+			}
+		}
+		for(size_t i = 0; i < _pollfds.size(); i++){
+			if (_pollfds[i].fd == fd){
+				_pollfds.erase(_pollfds.begin() + i);
+			}
+		}
 		close(fd);
 	}
 	if (buffer.data()[bytesRead - 1] == 10 || buffer.data()[bytesRead
@@ -96,7 +106,12 @@ std::string Server::readMessage(int fd)
 void Server::clientEvent(int fd)
 {
 	Client &client = getClient(fd);
-	std::string msg = readMessage(client.getClientFd());
+	std::string msg ;
+	try{
+		msg = readMessage(client.getClientFd());
+	}catch(std::exception &e){
+		return ;
+	}
 	client.setMsg(msg);
 	handleMessage _handlemsg;
 	if (!_handlemsg.handleMsg(*this,client,msg))
