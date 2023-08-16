@@ -23,6 +23,7 @@ class HandleMessage{
     void processRegistered(Server &server, Client &client);
     void setCommandMap(std::string, ICommand command);
     std::map<std::string, ICommand *> getCommandMap();
+    ICommand * getCommand(std::string command);
 };
 
 #endif

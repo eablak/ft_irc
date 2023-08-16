@@ -72,7 +72,7 @@ std::string Client::getCommand(){
     return command;
 }
 
-std::vector<std::string> Client::getParams(){
+std::vector<std::string> &Client::getParams(){
     return params;
 }
 
@@ -80,4 +80,8 @@ void Client::setParams(std::vector<std::string> tmp){
     for(size_t i = 0; i< tmp.size(); i++){
         params.push_back(tmp[i]);
     }
+}
+
+void Client::setCommand(std::string _command){
+    command = _command;
 }

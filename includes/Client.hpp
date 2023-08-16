@@ -41,9 +41,9 @@ class Client{
     void setUsername(std::string _username);
 
     std::string getCommand();
-    std::vector<std::string> getParams();
+    std::vector<std::string> &getParams();
     void setParams(std::vector<std::string> tmp);
-
+    void setCommand(std::string _command);
 };
 
 #endif

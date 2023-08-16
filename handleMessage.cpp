@@ -7,13 +7,16 @@ std::map<std::string, ICommand *> HandleMessage::getCommandMap(){
 
 void HandleMessage::processNotAuthenticated(Server &server, Client &client)
 {
-    if (!client.getMap().empty())
-	{
-		if (client.getMap().front().first == "PASS")
-			_commandMap.insert(std::make_pair("PASS",new PASS()));
-		else
-			server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
-    }
+    // if (!client.getMap().empty())	
+	// {
+	// 	if (client.getMap().front().first == "PASS")
+	// 		_commandMap.insert(std::make_pair("PASS",new PASS()));
+	// 	else
+	// 		server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
+    // }
+	(void) client;
+	(void) server;
+	_commandMap.insert(std::make_pair("PASS",new PASS()));
 }
 
 void HandleMessage::processAuthenticate(Server &server, Client &client)
@@ -78,22 +81,15 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg){
 	std::string second;
 
     if (findPos == std::string::npos){
-		first = msg;
-		second = "";
-		if (client.getAuthStatus() == NOTAUTHENTICATED && first != "PASS"){
-			server.messageToClient(client.getClientFd(),"Error: you can only send PASS\n");
-			return (0);
-		}else if (client.getAuthStatus() == AUTHENTICATE && (first != "NICK" || first != "USER")){
-			server.messageToClient(client.getClientFd(),"Error: you can only send NICK or USER\n");
-			return (0);
-		}
+		client.setCommand(msg);
+		return 1;
 	}
 
     first = msg.substr(0, findPos);
 	second = msg.substr(findPos + 1);
-	client.getCommand() = first;
+	client.setCommand(first);
 	size_t firstNonSpace = second.find_first_not_of(" ");
-	
+
     if (firstNonSpace != std::string::npos)
         second.erase(0, firstNonSpace);
     else
@@ -105,4 +101,11 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg){
 		client.setParams(Utils::split(second,' '));
 
     return (1);
+}
+
+ICommand *HandleMessage::getCommand(std::string command){
+	std::map<std::string, ICommand *>::iterator it;
+	it = this->_commandMap.find(command);
+	//nulsa kontrol
+	return it->second;
 }
