@@ -1,6 +1,7 @@
 #include "includes/HandleMessage.hpp"
 #include "includes/Utils.hpp"
 #include "includes/Pass.hpp"
+#include "includes/Nick.hpp"
 
 std::map<std::string, ICommand *> HandleMessage::getCommandMap(){
 	return (_commandMap);
@@ -17,11 +18,12 @@ void HandleMessage::processNotAuthenticated(Server &server, Client &client)
 void HandleMessage::processAuthenticate(Server &server, Client &client)
 {
 
-	std::cout << "HERE\n";
-
-	if (client.getCommand() != "NICK" || client.getCommand() != "USER"){
+	if (client.getCommand() != "NICK" && client.getCommand() != "USER")
 		return ;
-	}
+
+	if (client.getCommand() == "NICK")
+		_commandMap.insert(std::make_pair("NICK",new Nick()));
+
 	(void) server;
 	(void) client;
 
