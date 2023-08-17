@@ -24,6 +24,7 @@ class HandleMessage{
     std::map<std::string, ICommand *> getCommandMap();
     ICommand * getCommand(std::string command);
     int checkAuthCommand(Server &server,Client &client);
+    void removeParams(Client &client);
 };
 
 #endif

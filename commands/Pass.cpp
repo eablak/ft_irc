@@ -21,11 +21,4 @@ void Pass::execute(Server &server, Client &client){
     }else {
         client.getNums().handleNumeric("464", ERR_PASSWDMISMATCH(),client,server);
     }
-
-    if (!client.getParams().empty()) {
-        while (client.getParams().size() > 1) {
-            client.getParams().pop_back();
-        }
-    }
-
 }

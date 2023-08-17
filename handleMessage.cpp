@@ -23,36 +23,7 @@ void HandleMessage::processAuthenticate(Server &server, Client &client)
 
 	if (client.getCommand() == "NICK")
 		_commandMap.insert(std::make_pair("NICK",new Nick()));
-
 	(void) server;
-	(void) client;
-
-
-	// if (!client.getMap().empty())
-	// {
-	// 	if (client.getMap().front().first != "NICK"
-	// 		&& client.getMap().front().first != "USER")
-	// 	{
-	// 		server.messageToClient(client.getClientFd(),
-	// 				"Error: you can only send NICK or USER\n");
-	// 	}
-	// 	else
-	// 	{
-	// 		client.setParamsEnd(); //
-	// 		if (client.getMap().front().first == "NICK")
-	// 		{
-	// 			checks::checkNick(client.getMap().front().second);
-	// 			client.setNickname(client.getMap().front().second);
-	// 		}
-	// 		else
-	// 			client.setUsername(client.getMap().front().second);
-	// 	}
-	// }
-	// if (!(client.getNickname() == "" || client.getUsername() == ""))
-	// {
-	// 	client.setAuthStatus(REGISTERED);
-	// 	std::cout << "registered" << std::endl;
-	// }
 }
 
 void HandleMessage::processRegistered(Server &server, Client &client)
@@ -160,4 +131,11 @@ int HandleMessage::checkAuthCommand(Server &server, Client &client){
 	}
 	_allCommands.clear();
 	return 0;
+}
+
+void HandleMessage::removeParams(Client &client){
+	while (!client.getParams().empty()) {
+		// std::cout << "Silinen değer " << client.getParams().back() << std::endl;
+        client.getParams().pop_back();
+    }
 }

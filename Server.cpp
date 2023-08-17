@@ -125,7 +125,7 @@ void Server::clientEvent(int fd)
 		return ;
 	}
 	command->execute(*this, client);
-	
+	_handlemsg.removeParams(client);
 }
 
 void Server::serverInvoke()
