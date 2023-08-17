@@ -1,12 +1,12 @@
 #include "../includes/Pass.hpp"
 
-PASS::PASS(){
+Pass::Pass(){
 
 }
 
-PASS::~PASS(){}
+Pass::~Pass(){}
 
-void PASS::execute(Server &server, Client &client){
+void Pass::execute(Server &server, Client &client){
 
     if (client.getParams().empty()){
         client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(client.getMap().front().second),client,server);

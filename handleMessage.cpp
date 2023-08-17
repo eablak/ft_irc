@@ -10,7 +10,7 @@ void HandleMessage::processNotAuthenticated(Server &server, Client &client)
 	(void) server;
    	if (client.getCommand() != "PASS")
 		return ;
-	_commandMap.insert(std::make_pair("PASS",new PASS()));
+	_commandMap.insert(std::make_pair("PASS",new Pass()));
 }
 
 void HandleMessage::processAuthenticate(Server &server, Client &client)

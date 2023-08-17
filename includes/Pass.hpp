@@ -3,11 +3,11 @@
 
 #include "ICommand.hpp"
 
-class PASS : public ICommand {
+class Pass : public ICommand {
 
     public:
-    PASS();
-    ~PASS();
+    Pass();
+    ~Pass();
     void execute(Server &server, Client &client);
 };
 
