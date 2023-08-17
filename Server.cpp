@@ -126,8 +126,8 @@ void Server::clientEvent(int fd)
 		return ;
 	}
 	command->execute(*this, client);
-	std::vector<std::string> &params = client.getParams();
-	params.clear();
+	// std::vector<std::string> &params = client.getParams();
+	// params.clear();
 }
 
 void Server::serverInvoke()
