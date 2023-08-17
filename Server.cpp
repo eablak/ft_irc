@@ -169,3 +169,7 @@ void Server::setHostname()
 		error::error_func("Host Error\n");
 	this->hostname = hostname_c;
 }
+
+std::vector<Client > &Server::getClients(){
+	return (this->_clients);
+}

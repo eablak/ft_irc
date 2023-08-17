@@ -35,6 +35,8 @@ class Server{
     std::string getPassword();
     void setHostname();
     std::string getHostname();
+
+    std::vector<Client > &getClients();
 };
 
 
