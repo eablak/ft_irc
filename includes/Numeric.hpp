@@ -18,7 +18,6 @@
 // #define ERR_NOTONCHANNEL(channel) Numeric::createNumeric("442", channel + " :You're not on that channel")
 // #define ERR_USERONCHANNEL(nick, channel) Numeric::createNumeric("443", nick + " " + channel + " :is already on channel")
 // #define ERR_NOTREGISTERED Numeric::createNumeric("451", ":You have not registered")
-// #define ERR_ALREADYREGISTRED Numeric::createNumeric("462", ":Unauthorized command (already registered)")
 // #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
 #define RPL_WELCOME(nick, user, host) ("001", ":Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
@@ -28,6 +27,7 @@
 #define ERR_NONICKNAMEGIVEN() ("431 :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nick) ("432", nick + " :Erroneus nickname")
 #define ERR_UNKNOWNCOMMAND(cmd) ("421 " + cmd + " :Unknown command\r\n")
+#define ERR_ALREADYREGISTRED() ("462 :You may not reregister\r\n") //USER veya PASS'i bi daha gönderirse
 
 class Client;
 class Server;

@@ -85,3 +85,4 @@ void Client::setParams(std::vector<std::string> tmp){
 void Client::setCommand(std::string _command){
     command = _command;
 }
+
