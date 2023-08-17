@@ -8,12 +8,9 @@ std::map<std::string, ICommand *> HandleMessage::getCommandMap(){
 void HandleMessage::processNotAuthenticated(Server &server, Client &client)
 {
 	(void) server;
-   if (client.getCommand() != "PASS"){
-	// server.messageToClient(client.getClientFd(),"You can only send PASS\n");
-	return ;
-   }
+   	if (client.getCommand() != "PASS")
+		return ;
 	_commandMap.insert(std::make_pair("PASS",new PASS()));
-	return;
 }
 
 void HandleMessage::processAuthenticate(Server &server, Client &client)

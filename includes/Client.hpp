@@ -14,7 +14,6 @@ class Client{
 
     private:
     int fd;
-    // std::string current_msg;
     std::string command;
     std::vector<std::string> params;
     _auth client_auth;
@@ -27,7 +26,6 @@ class Client{
     Client();
     Client(int fd);
     int getClientFd();
-    // void setMsg(std::string msg);
     _auth getAuthStatus();
     void setAuthStatus(_auth status);
     void setClientMessage(std::string, std::string);

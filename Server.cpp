@@ -82,6 +82,9 @@ std::string Server::readMessage(int fd)
 	if (bytesRead == 0)
 	{
 		std::cout << "fd " << fd << " disconnect" << std::endl;
+		Client &client = getClient(fd);
+		std::vector<std::string> &params = client.getParams();
+		params.clear();
 		for (size_t i = 0; i < _clients.size(); i++)
 		{
 			if (_clients[i].getClientFd() == fd)
@@ -92,9 +95,7 @@ std::string Server::readMessage(int fd)
 		for (size_t i = 0; i < _pollfds.size(); i++)
 		{
 			if (_pollfds[i].fd == fd)
-			{
 				_pollfds.erase(_pollfds.begin() + i);
-			}
 		}
 		close(fd);
 	}
@@ -116,15 +117,13 @@ void Server::clientEvent(int fd)
 	if (!_handlemsg.handleMsg(*this, client, msg))
 		return;
 	_handlemsg.clientMsgProcess(*this, client);
-	
 	ICommand *command = _handlemsg.getCommand(client.getCommand());
 	if (command == NULL){
 		client.getNums().handleNumeric("421",ERR_UNKNOWNCOMMAND(client.getCommand()),client,*this);
 		return ;
 	}
 	command->execute(*this, client);
-	// std::vector<std::string> &params = client.getParams();
-	// params.clear();
+	
 }
 
 void Server::serverInvoke()

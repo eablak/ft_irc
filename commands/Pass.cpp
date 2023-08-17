@@ -14,13 +14,18 @@ void PASS::execute(Server &server, Client &client){
     }
 
     client.setParamsEnd();
-    if (client.getParams()[0] == server.getPassword())
-    {
+
+    if (client.getParams()[client.getParams().size() - 1] == server.getPassword()){
         client.setAuthStatus(AUTHENTICATE);
         server.messageToClient(client.getClientFd(),"Password is correct!\n");
-        return ;
-    }else{
+    }else {
         client.getNums().handleNumeric("464", ERR_PASSWDMISMATCH(),client,server);
-        return ;
     }
+
+    if (!client.getParams().empty()) {
+        while (client.getParams().size() > 1) {
+            client.getParams().pop_back();
+        }
+    }
+
 }
