@@ -3,7 +3,6 @@
 
 #include "Server.hpp"
 #include "ICommand.hpp"
-#include "Pass.hpp"
 
 class Server;
 class Client;

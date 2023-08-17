@@ -1,14 +1,18 @@
 #ifndef ICOMMAND_HPP
 #define ICOMMAND_HPP
 
-#include "ICommand.hpp"
+// #include "Pass.hpp"
+// #include "Nick.hpp"
 #include "Server.hpp"
 
 class Server;
+// class Pass;
+// class Nick;
 
-class ICommand{
+class ICommand
+{
 
-    public:
+public:
     virtual ~ICommand(){};
     virtual void execute(Server &server, Client &client) = 0;
 };

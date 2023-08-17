@@ -1,14 +1,14 @@
-#ifndef PASS_HPP
-#define PASS_HPP
+#ifndef NICK_HPP
+#define NICK_HPP
 
 #include "ICommand.hpp"
 
-class Pass : public ICommand
+class Nick : public ICommand
 {
 
 public:
-    Pass();
-    ~Pass();
+    Nick();
+    ~Nick();
     void execute(Server &server, Client &client);
 };
 
