@@ -25,6 +25,7 @@ SRCS        :=      main.cpp \
 						commands/Pass.cpp \
 						Utils.cpp \
 						commands/Nick.cpp \
+						commands/User.cpp \
                           
 OBJS        := ${SRCS:.cpp=.o}
 
