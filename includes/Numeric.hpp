@@ -24,7 +24,7 @@
 #define ERR_INPUTTOOLONG() ("417 :Input line was too long\r\n")
 #define ERR_PASSWDMISMATCH() ("464 :Password incorrect\r\n")
 #define ERR_NONICKNAMEGIVEN() ("431 :No nickname given\r\n")
-#define ERR_ERRONEUSNICKNAME(nick) ("432", nick + " :Erroneus nickname")
+#define ERR_ERRONEUSNICKNAME(nick) ("432 " + nick + " :Erroneus nickname\r\n")
 #define ERR_UNKNOWNCOMMAND(cmd) ("421 " + cmd + " :Unknown command\r\n")
 #define ERR_ALREADYREGISTRED() ("462 :You may not reregister\r\n") //USER veya PASS'i bi daha gönderirse
 #define ERR_NICKNAMEINUSE(nick) ("433 " + nick + " :Nickname is already in use\r\n")

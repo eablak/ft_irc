@@ -119,13 +119,15 @@ void Server::clientEvent(int fd)
 	_handlemsg.clientMsgProcess(*this, client);
 	ICommand *command = _handlemsg.getCommand(client.getCommand());
 	if (command == NULL){
-		if (_handlemsg.checkAuthCommand(*this, client) == 1)
+		if (_handlemsg.checkAuthCommand(*this, client) == 1){
+			_handlemsg.removeParams(client);
 			return ;
+		}
 		client.getNums().handleNumeric("421",ERR_UNKNOWNCOMMAND(client.getCommand()),client,*this);
+		_handlemsg.removeParams(client);
 		return ;
 	}
 	command->execute(*this, client);
-	_handlemsg.removeParams(client);
 }
 
 void Server::serverInvoke()

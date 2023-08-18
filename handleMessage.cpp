@@ -115,6 +115,8 @@ int HandleMessage::checkAuthCommand(Server &server, Client &client){
 
 			if (client.getCommand() == "PASS"){
 				client.getNums().handleNumeric("462",ERR_ALREADYREGISTRED(),client,server);
+				HandleMessage _handlemsg;
+				_handlemsg.removeParams(client);
 				_allCommands.clear();
 				return 1;
 			}
