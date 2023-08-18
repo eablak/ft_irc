@@ -8,8 +8,11 @@ User::~User(){}
 
 void User::execute(Server &server, Client &client){
 
+    if (client.getParams().empty()){
+        client.getNums().handleNumeric("461",ERR_NONICKNAMEGIVEN(),client,server);
+        return;
+    }
     HandleMessage _handlemsg;
-
     std::vector<std::string> new_params;
     std::string all;
     for(size_t i = 0; i < client.getParams().size(); i++){
@@ -32,7 +35,11 @@ void User::execute(Server &server, Client &client){
         return ;
     }
 
-    std::cout << "işle\n";
+    client.setUsername(new_params[0]);
+    client.setRealname(new_params[4]);
+    client.setAuthStatus(REGISTERED);
+    
+    client.getNums().handleNumeric("001",RPL_WELCOME(client.getNickname(),client.getUsername(),server.getHostname()),client,server);
 
     _handlemsg.removeParams(client);
     new_params.clear();

@@ -86,3 +86,6 @@ void Client::setCommand(std::string _command){
     command = _command;
 }
 
+void Client::setRealname(std::string _realname){
+    realname = _realname;
+}

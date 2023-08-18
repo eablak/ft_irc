@@ -96,6 +96,7 @@ ICommand *HandleMessage::getCommand(std::string command){
 int HandleMessage::checkAuthCommand(Server &server, Client &client){
 
 	std::vector<std::string> _allCommands;
+	HandleMessage _handlemsg;
 
 	_allCommands.push_back("PASS");
 	_allCommands.push_back("NICK");
@@ -118,7 +119,6 @@ int HandleMessage::checkAuthCommand(Server &server, Client &client){
 
 			if (client.getCommand() == "PASS"){
 				client.getNums().handleNumeric("462",ERR_ALREADYREGISTRED(),client,server);
-				HandleMessage _handlemsg;
 				_handlemsg.removeParams(client);
 				_allCommands.clear();
 				return 1;
@@ -133,6 +133,13 @@ int HandleMessage::checkAuthCommand(Server &server, Client &client){
 			_allCommands.clear();
 			return 1;
 		}
+	}else if (client.getAuthStatus() == REGISTERED){
+		if (client.getCommand() == "USER"){
+				client.getNums().handleNumeric("462",ERR_ALREADYREGISTRED(),client,server);
+				_handlemsg.removeParams(client);
+				_allCommands.clear();
+				return 1;
+			}
 	}
 	_allCommands.clear();
 	return 0;

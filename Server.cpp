@@ -55,6 +55,8 @@ void Server::clientAccept()
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
 		messageToClient(client_fd, "Welcome to IRC. Please Enter Password\r\n");
 	}
+
+	setHostname();
 }
 
 Client &Server::getClient(int fd)

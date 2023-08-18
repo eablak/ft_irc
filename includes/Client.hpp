@@ -38,6 +38,7 @@ class Client{
     std::string getUsername();
     void setNickname(std::string _nickname);
     void setUsername(std::string _username);
+    void setRealname(std::string _realname);
 
     std::string getCommand();
     std::vector<std::string> &getParams();
