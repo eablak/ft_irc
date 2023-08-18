@@ -20,7 +20,7 @@
 // #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
 #define RPL_WELCOME(nick, user, host) ("001", ":Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
-#define ERR_NEEDMOREPARAMS(cmd) ("461 " + cmd + " :Not enough parameters\r\n")
+#define ERR_NEEDMOREPARAMS(cmd) ("461 " + cmd + " :Not enough parameters\rif\n")
 #define ERR_INPUTTOOLONG() ("417 :Input line was too long\r\n")
 #define ERR_PASSWDMISMATCH() ("464 :Password incorrect\r\n")
 #define ERR_NONICKNAMEGIVEN() ("431 :No nickname given\r\n")

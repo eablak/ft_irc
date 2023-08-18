@@ -15,7 +15,7 @@ void Pass::execute(Server &server, Client &client){
 
     client.setParamsEnd();
     HandleMessage _handlmsg;
-
+    // : doğru say size 1 se
     if (client.getParams()[0] == server.getPassword()){
         client.setAuthStatus(AUTHENTICATE);
         _handlmsg.removeParams(client);

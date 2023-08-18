@@ -21,6 +21,7 @@ class Client{
     Numeric _nums;
     std::string nickname;
     std::string username;
+    std::string realname;
    
     public:
     Client();
