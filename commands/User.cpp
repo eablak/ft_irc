@@ -8,6 +8,10 @@ User::~User(){}
 
 void User::execute(Server &server, Client &client){
 
+    if(client.getAuthStatus() == REGISTERED){
+        client.getNums().handleNumeric("462",ERR_ALREADYREGISTRED(),client,server);
+        return;
+    }
     if (client.getParams().empty()){
         client.getNums().handleNumeric("461",ERR_NONICKNAMEGIVEN(),client,server);
         return;
@@ -38,7 +42,7 @@ void User::execute(Server &server, Client &client){
     client.setUsername(new_params[0]);
     client.setRealname(new_params[4]);
     client.setAuthStatus(REGISTERED);
-    
+
     client.getNums().handleNumeric("001",RPL_WELCOME(client.getNickname(),client.getUsername(),server.getHostname()),client,server);
 
     _handlemsg.removeParams(client);

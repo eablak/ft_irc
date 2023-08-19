@@ -8,6 +8,10 @@ Pass::~Pass(){}
 
 void Pass::execute(Server &server, Client &client){
 
+    if(client.getAuthStatus() != NOTAUTHENTICATED){
+        client.getNums().handleNumeric("462",ERR_ALREADYREGISTRED(),client,server);
+        return;
+    }
     if (client.getParams().empty()){
         client.getNums().handleNumeric("461",ERR_NEEDMOREPARAMS(client.getMap().front().second),client,server);
         return;

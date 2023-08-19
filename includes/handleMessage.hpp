@@ -17,9 +17,9 @@ class HandleMessage{
     public:
     int handleMsg(Server &server, Client &client, std::string msg);
     void clientMsgProcess(Server &server, Client &client);
-    void processNotAuthenticated(Server &server, Client &client);
-    void processAuthenticate(Server &server, Client &client);
-    void processRegistered(Server &server, Client &client);
+    void processNotAuthenticated();
+    void processAuthenticate();
+    void processRegistered();
     void setCommandMap(std::string, ICommand command);
     std::map<std::string, ICommand *> getCommandMap();
     ICommand * getCommand(std::string command);
