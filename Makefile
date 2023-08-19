@@ -1,6 +1,6 @@
 #  |  |  ___ \    \  |         |
-#  |  |     ) |  |\/ |   _  |  |  /   _ 
-# ___ __|  __/   |   |  (   |    <    __/ 
+#  |  |     ) |  |\/ |   _  |  |  /   _
+# ___ __|  __/   |   |  (   |    <    __/
 #    _|  _____| _|  _| \__,_| _|\_\ \___|
 #                              by jcluzet
 ################################################################################
@@ -10,7 +10,7 @@
 NAME        := ircserv
 CC         := c++
 FLAGS    := -Wall -Wextra -Werror -std=c++98
- 
+
 ################################################################################
 #                                 PROGRAM'S SRCS                               #
 ################################################################################
@@ -21,12 +21,14 @@ SRCS        :=      main.cpp \
 						Client.cpp\
 						Numeric.cpp \
 						Server.cpp\
+						Channel.cpp\
 						HandleMessage.cpp \
 						commands/Pass.cpp \
 						Utils.cpp \
 						commands/Nick.cpp \
 						commands/User.cpp \
-                          
+						commands/Join.cpp \
+
 OBJS        := ${SRCS:.cpp=.o}
 
 .cpp.o:

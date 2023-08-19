@@ -5,6 +5,7 @@ class Server;
 
 #include "libraries.hpp"
 #include "Numeric.hpp"
+#include "Channel.hpp"
 
 enum _auth {AUTHENTICATE, NOTAUTHENTICATED, REGISTERED};
 
@@ -21,7 +22,7 @@ class Client{
     std::string nickname;
     std::string username;
     std::string realname;
-
+    std::vector<Channel> joinedChannels;
     public:
     Client();
     Client(int fd);
@@ -32,13 +33,11 @@ class Client{
     std::list<std::pair<std::string, std::string> > getMap();
     void printMap();
     void setParamsEnd();
-    Numeric &getNums();
     std::string getNickname();
     std::string getUsername();
     void setNickname(std::string _nickname);
     void setUsername(std::string _username);
     void setRealname(std::string _realname);
-
     std::string getCommand();
     std::vector<std::string> &getParams();
     void setParams(std::vector<std::string> tmp);

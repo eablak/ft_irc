@@ -3,7 +3,7 @@
 #include "includes/Pass.hpp"
 #include "includes/Nick.hpp"
 #include "includes/User.hpp"
-
+#include "includes/Join.hpp"
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
 	return (_commandMap);
@@ -23,7 +23,10 @@ void HandleMessage::processAuthenticate()
 
 void HandleMessage::processRegistered()
 {
-	return;
+	_commandMap.insert(std::make_pair("PASS", new Pass()));
+	_commandMap.insert(std::make_pair("NICK", new Nick()));
+	_commandMap.insert(std::make_pair("USER", new User()));
+	_commandMap.insert(std::make_pair("JOIN", new Join()));
 }
 
 void HandleMessage::clientMsgProcess(Server &server, Client &client)
