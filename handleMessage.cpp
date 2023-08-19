@@ -42,7 +42,7 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg)
 	if (msg.size() > 512)
 	{
 		std::cout << "512" << std::endl; // kendisi handleliyo
-		client.getNums().handleNumeric("417", "ERR_INPUTTOOLONG", client, server);
+		Numeric::printNumeric(client, server, ERR_INPUTTOOLONG());
 		msg[511] = '\r';
 		msg[512] = '\n';
 	}
@@ -139,8 +139,5 @@ int HandleMessage::checkAuthCommand(Server &server, Client &client)
 void HandleMessage::removeParams(Client &client)
 {
 	while (!client.getParams().empty())
-	{
-		// std::cout << "Silinen değer " << client.getParams().back() << std::endl;
 		client.getParams().pop_back();
-	}
 }

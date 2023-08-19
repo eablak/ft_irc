@@ -18,11 +18,10 @@ class Client{
     std::vector<std::string> params;
     _auth client_auth;
     std::list<std::pair<std::string, std::string> >client_message;
-    Numeric _nums;
     std::string nickname;
     std::string username;
     std::string realname;
-   
+
     public:
     Client();
     Client(int fd);

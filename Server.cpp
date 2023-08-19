@@ -126,7 +126,7 @@ void Server::clientEvent(int fd)
 			_handlemsg.removeParams(client);
 			return ;
 		}
-		client.getNums().handleNumeric("421",ERR_UNKNOWNCOMMAND(client.getCommand()),client,*this);
+		Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client.getCommand()));
 		_handlemsg.removeParams(client);
 		return ;
 	}

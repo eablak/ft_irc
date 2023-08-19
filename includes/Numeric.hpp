@@ -5,8 +5,6 @@
 // #include "Client.hpp"
 // #include "Server.hpp"
 
-// #define RPL_YOURHOST(nick, host) Numeric::createNumeric("002", ":Your host is " + host + ", running version " + VERSION)
-// #define RPL_CREATED(nick, date) Numeric::createNumeric("003", ":This server was created " + date)
 // #define RPL_NOTOPIC(nick, channel) Numeric::createNumeric("331", channel + " :No topic is set")
 // #define RPL_TOPIC(nick, channel, topic) Numeric::createNumeric("332", channel + " :" + topic)
 // #define RPL_NAMEREPLY(nick, channel, users) Numeric::createNumeric("353", "= " + channel + " :" + users)
@@ -28,19 +26,16 @@
 #define ERR_UNKNOWNCOMMAND(cmd) ("421 " + cmd + " :Unknown command\r\n")
 #define ERR_ALREADYREGISTRED() ("462 :You may not reregister\r\n") // USER veya PASS'i bi daha gönderirse
 #define ERR_NICKNAMEINUSE(nick) ("433 " + nick + " :Nickname is already in use\r\n")
+#define RPL_YOURHOST(nick, host) ("002", ":Your host is " + host + ", running version 1.0 \r\n")
+#define RPL_CREATED(nick, date) ("003", ":This server was created " + date + "\r\n")
 
 class Client;
 class Server;
 
 class Numeric
 {
-private:
-    std::map<std::string, std::string> numericMap;
-
 public:
-    void handleNumeric(std::string errNo, std::string _define, Client &client, Server &server);
-    void createNumeric(std::string errNo, std::string _define);
-    void printNumeric(std::string errNo, Client &client, Server &server);
+    static void printNumeric(Client &client, Server &server,std::string errMessage);
 };
 
 #endif

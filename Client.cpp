@@ -48,10 +48,6 @@ void Client::setParamsEnd(){
     }
 }
 
-Numeric &Client::getNums(){
-    return (_nums);
-}
-
 std::string Client::getNickname(){
     return (nickname);
 }

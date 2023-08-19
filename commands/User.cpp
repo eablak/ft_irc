@@ -9,11 +9,13 @@ User::~User(){}
 void User::execute(Server &server, Client &client){
 
     if(client.getAuthStatus() == REGISTERED){
-        client.getNums().handleNumeric("462",ERR_ALREADYREGISTRED(),client,server);
+        Numeric::printNumeric(client, server, ERR_ALREADYREGISTRED());
+
         return;
     }
     if (client.getParams().empty()){
-        client.getNums().handleNumeric("461",ERR_NONICKNAMEGIVEN(),client,server);
+        Numeric::printNumeric(client, server, ERR_NONICKNAMEGIVEN());
+
         return;
     }
     HandleMessage _handlemsg;
@@ -42,8 +44,9 @@ void User::execute(Server &server, Client &client){
     client.setUsername(new_params[0]);
     client.setRealname(new_params[4]);
     client.setAuthStatus(REGISTERED);
-
-    client.getNums().handleNumeric("001",RPL_WELCOME(client.getNickname(),client.getUsername(),server.getHostname()),client,server);
+    Numeric::printNumeric(client, server, RPL_WELCOME(client.getNickname(),client.getUsername(),server.getHostname()));
+    Numeric::printNumeric(client, server, RPL_YOURHOST(client.getNickname(),server.getHostname()));
+    Numeric::printNumeric(client, server, RPL_CREATED(client.getNickname(),std::string("tempDate")));
 
     _handlemsg.removeParams(client);
     new_params.clear();
