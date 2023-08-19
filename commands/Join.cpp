@@ -62,31 +62,12 @@ void Join::execute(Server &server, Client &client)
         handleMultipleChannels(server, client, params);
         return;
     }
-    checkChannelName(params[0]);
-    std::string channelName = params[0];
-    std::vector<Channel> &channels = server.getChannels();
-    std::vector<Channel>::iterator it;
-    for (it = channels.begin(); it != channels.end(); it++)
-    {
-        if (it->getName() == channelName)
-        {
-            if (it->isClientInChannel(client))
-            {
-                server.messageToClient(client.getClientFd(), "You are already in " + channelName + "\n");
-                return;
-            }
-            it->addClient(client);
-            sendSuccessNumerics(server, client, *it);
-            return;
-        }
-    }
-    Channel newChannel(channelName, client);
-    channels.push_back(newChannel);
-    sendSuccessNumerics(server, client, newChannel);
+    handleWithParams(server,client,params);
 }
 
 void Join::sendSuccessNumerics(Server &server, Client &client, Channel &channel)
 {
+
     server.messageToClient(client.getClientFd(), "You joined " + channel.getName() + "\n");
     Numeric::printNumeric(client, server, channel.getTopic().size() > 0 ? RPL_TOPIC(channel.getName(), channel.getTopic()) : RPL_NOTOPIC(channel.getName()));
     for (std::vector<Client>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++){

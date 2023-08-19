@@ -38,6 +38,14 @@ public:
     std::string getHostname();
     std::vector<Channel> &getChannels();
     std::vector<Client> &getClients();
+    void removeClient(Client &client);
+    class ClientDisconnectedException : public std::exception
+    {
+        virtual const char *what() const throw()
+        {
+            return "Client Disconnected";
+        }
+    };
 };
 
 #endif

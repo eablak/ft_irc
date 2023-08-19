@@ -1,2 +1,3 @@
 *.o
 ircserv
+valgrind.rpt
