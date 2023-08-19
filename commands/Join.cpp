@@ -1,5 +1,6 @@
 #include "../includes/Join.hpp"
 #include "../includes/Numeric.hpp"
+#include  <cstdio>
 Join::~Join()
 {
 }
@@ -28,25 +29,25 @@ void Join::handleWithParams(Server &server, Client &client, std::vector<std::str
     }
     checkChannelName(params[0]);
     std::string channelName = params[0];
-    std::vector<Channel> &channels = server.getChannels();
-    std::vector<Channel>::iterator it;
-    for (it = channels.begin(); it != channels.end(); it++)
+    if(client.isInChannel(channelName))
     {
-        if (it->getName() == channelName)
-        {
-            if (it->isClientInChannel(client))
-            {
-                server.messageToClient(client.getClientFd(), "You are already in " + channelName + "\n");
-                return;
-            }
-            it->addClient(client);
-            sendSuccessNumerics(server, client, *it);
-            return;
-        }
+        server.messageToClient(client.getClientFd(), "You are already in this channel\n");
+        return;
     }
-    Channel newChannel(channelName, client);
-    channels.push_back(newChannel);
-    sendSuccessNumerics(server, client, newChannel);
+    try
+    {
+        Channel &ch = server.getChannel(channelName);
+        ch.addClient(client);
+        sendSuccessNumerics(server, client, ch);
+
+    }
+    catch(Server::ChannelNotFoundException &e)
+    {
+        server.addChannel(channelName, client);
+        Channel &newChannel = server.getChannel(channelName);
+        client.addChannel(newChannel);
+        sendSuccessNumerics(server, client, newChannel);
+    }
 }
 
 void Join::execute(Server &server, Client &client)

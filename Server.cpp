@@ -196,3 +196,17 @@ std::vector<Channel> &Server::getChannels()
 {
 	return (this->_channels);
 }
+
+Channel &Server::getChannel(std::string &channelName)
+{
+	for (size_t i = 0; i < _channels.size(); i++)
+	{
+		if (_channels[i].getName() == channelName)
+			return (_channels[i]);
+	}
+	throw ChannelNotFoundException();
+}
+void Server::addChannel(std::string channelName, Client &client)
+{
+	_channels.push_back(Channel(channelName, client));
+}
