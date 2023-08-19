@@ -28,6 +28,7 @@ SRCS        :=      main.cpp \
 						commands/Nick.cpp \
 						commands/User.cpp \
 						commands/Join.cpp \
+						commands/Topic.cpp\
 
 OBJS        := ${SRCS:.cpp=.o}
 

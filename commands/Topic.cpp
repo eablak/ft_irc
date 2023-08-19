@@ -1,5 +1,8 @@
 #include "../includes/Topic.hpp"
-
+ Topic::Topic()
+ {}
+Topic::~Topic()
+ {}
 void Topic::execute(Server &server, Client &client)
 {
     (void)server;

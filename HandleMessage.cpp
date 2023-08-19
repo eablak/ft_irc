@@ -4,7 +4,7 @@
 #include "includes/Nick.hpp"
 #include "includes/User.hpp"
 #include "includes/Join.hpp"
-#include "../includes/Topic.hpp"
+#include "includes/Topic.hpp"
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
 	return (_commandMap);
