@@ -79,7 +79,6 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg)
 		client.getParams().push_back(second);
 	else
 		client.setParams(Utils::split(second, ' '));
-
 	return (1);
 }
 
