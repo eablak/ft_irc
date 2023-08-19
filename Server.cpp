@@ -115,6 +115,7 @@ void Server::clientEvent(int fd)
 	}catch (std::exception &e){
 		return;
 	}
+	std::cout << "Message: " << msg << std::endl;
 	HandleMessage _handlemsg;
 	if (!_handlemsg.handleMsg(*this, client, msg))
 		return;

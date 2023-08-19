@@ -20,7 +20,6 @@ class HandleMessage{
     void processNotAuthenticated();
     void processAuthenticate();
     void processRegistered();
-    void setCommandMap(std::string, ICommand command);
     std::map<std::string, ICommand *> getCommandMap();
     ICommand * getCommand(std::string command);
     int checkAuthCommand(Server &server,Client &client);

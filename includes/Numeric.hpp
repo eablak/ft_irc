@@ -19,25 +19,26 @@
 // #define ERR_NOTREGISTERED Numeric::createNumeric("451", ":You have not registered")
 // #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
-#define RPL_WELCOME(nick, user, host) ("001 :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
+#define RPL_WELCOME(nick, user, host) ("001 :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host + "\r\n")
 #define ERR_NEEDMOREPARAMS(cmd) ("461 " + cmd + " :Not enough parameters\r\n")
 #define ERR_INPUTTOOLONG() ("417 :Input line was too long\r\n")
 #define ERR_PASSWDMISMATCH() ("464 :Password incorrect\r\n")
 #define ERR_NONICKNAMEGIVEN() ("431 :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nick) ("432 " + nick + " :Erroneus nickname\r\n")
 #define ERR_UNKNOWNCOMMAND(cmd) ("421 " + cmd + " :Unknown command\r\n")
-#define ERR_ALREADYREGISTRED() ("462 :You may not reregister\r\n") //USER veya PASS'i bi daha gönderirse
+#define ERR_ALREADYREGISTRED() ("462 :You may not reregister\r\n") // USER veya PASS'i bi daha gönderirse
 #define ERR_NICKNAMEINUSE(nick) ("433 " + nick + " :Nickname is already in use\r\n")
 
 class Client;
 class Server;
 
-class Numeric{
-    private:
+class Numeric
+{
+private:
     std::map<std::string, std::string> numericMap;
 
-    public:
-    void handleNumeric(std::string errNo,std::string _define, Client &client,Server &server);
+public:
+    void handleNumeric(std::string errNo, std::string _define, Client &client, Server &server);
     void createNumeric(std::string errNo, std::string _define);
     void printNumeric(std::string errNo, Client &client, Server &server);
 };
