@@ -18,7 +18,6 @@ void User::execute(Server &server, Client &client){
 
         return;
     }
-    HandleMessage _handlemsg;
     std::vector<std::string> new_params;
     std::string all;
     for(size_t i = 0; i < client.getParams().size(); i++){
@@ -37,7 +36,6 @@ void User::execute(Server &server, Client &client){
 
     if (new_params.size() != 4 || (new_params[1] != "0" || new_params[2] != "*")){
         server.messageToClient(client.getClientFd(),"Error: Missing parameter\n");
-        _handlemsg.removeParams(client);
         return ;
     }
 
@@ -48,6 +46,5 @@ void User::execute(Server &server, Client &client){
     Numeric::printNumeric(client, server, RPL_YOURHOST(client.getNickname(),server.getHostname()));
     Numeric::printNumeric(client, server, RPL_CREATED(client.getNickname(),std::string("tempDate")));
 
-    _handlemsg.removeParams(client);
     new_params.clear();
 }

@@ -26,12 +26,10 @@ void Pass::execute(Server &server, Client &client)
     if (client.getParams()[0] == server.getPassword())
     {
         client.setAuthStatus(AUTHENTICATE);
-        _handlmsg.removeParams(client);
         server.messageToClient(client.getClientFd(), "Password is correct!\n");
     }
     else
     {
         Numeric::printNumeric(client, server, ERR_PASSWDMISMATCH());
-        _handlmsg.removeParams(client);
     }
 }

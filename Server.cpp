@@ -130,7 +130,9 @@ void Server::clientEvent(int fd)
 		_handlemsg.removeParams(client);
 		return ;
 	}
+	client.setParamsEnd();
 	command->execute(*this, client);
+	_handlemsg.removeParams(client);
 }
 
 void Server::serverInvoke()

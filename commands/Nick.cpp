@@ -16,30 +16,27 @@ void Nick::execute(Server &server, Client &client)
     }
     else
     {
-        HandleMessage _handlemsg;
-
         for (size_t i = 0; i < server.getClients().size(); i++)
         {
             if (server.getClients()[i].getNickname() == client.getParams()[0])
             {
                 Numeric::printNumeric(client, server, ERR_NICKNAMEINUSE(client.getParams()[0]));
-                _handlemsg.removeParams(client);
                 return;
             }
         }
 
         if ((client.getParams()[0][0] == ':' && client.getParams().size() == 1) || client.getParams().size() != 1)
         {
-            server.messageToClient(client.getClientFd(), "Error: no leading colon (:)\n");
-            _handlemsg.removeParams(client);
+            std::cout << "size " << client.getParams().size() << std::endl;
+            server.messageToClient(client.getClientFd(), "Error: Invalid nickname\n");
             return;
         }
 
         try
         {
             std::stoi(std::string(1, client.getParams()[0][0]));
+            std::cout << "first char is number\n" << std::endl;
             Numeric::printNumeric(client, server, ERR_ERRONEUSNICKNAME(client.getParams()[0]));
-            _handlemsg.removeParams(client);
             return;
         }
         catch (std::exception &e)
@@ -48,10 +45,9 @@ void Nick::execute(Server &server, Client &client)
 
         for (unsigned long i = 0; i < client.getParams()[0].size(); i++)
         {
-            if (!std::isprint(client.getParams()[0][i]))
+            if (!std::isprint(client.getParams()[0][i]) && client.getParams()[0][i] != '\r' && client.getParams()[0][i] != '\n')
             {
                 Numeric::printNumeric(client, server, ERR_ERRONEUSNICKNAME(client.getParams()[0]));
-                _handlemsg.removeParams(client);
                 return;
             }
         }
@@ -61,12 +57,10 @@ void Nick::execute(Server &server, Client &client)
             std::string msg = client.getNickname() + " changed his nickname to " + client.getParams()[0] + "\n";
             server.messageToClient(client.getClientFd(), msg);
             client.setNickname(client.getParams()[0]);
-            _handlemsg.removeParams(client);
             return;
         }
 
         client.setNickname(client.getParams()[0]);
         server.messageToClient(client.getClientFd(), "Requesting the new nick \"" + client.getNickname() + "\".\n");
-        _handlemsg.removeParams(client);
     }
 }
