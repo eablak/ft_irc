@@ -62,10 +62,34 @@ void Privmsg::handleMultipleTargets(Server &server, Client &client, std::vector<
         handleWithParams(server, client, newParams);
     }
 }
-
+std::vector<std::string> Privmsg::fixParams(std::vector<std::string> &params)
+{
+    std::vector<std::string> newParams;
+    newParams.push_back(params[0]);
+    for(size_t i = 1 ;i < params.size(); i++)
+    {
+        if(params[i][0] == ':')
+        {
+            std::string tmp = params[i];
+            tmp.erase(0,1);
+            for(size_t j = i + 1; j < params.size(); j++)
+            {
+                tmp += " " + params[j];
+            }
+            newParams.push_back(tmp);
+            break;
+        }
+    }
+    return newParams;
+}
 void Privmsg::execute(Server &server, Client &client)
 {
     std::vector<std::string> params = client.getParams();
+    params = fixParams(params);
+    for (size_t i = 0; i < params.size(); i++)
+    {
+        std::cout << "params[" << i << "] = " << params[i] << std::endl;
+    }
     if (params.size() < 2)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS("PRIVMSG"));

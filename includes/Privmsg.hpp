@@ -6,6 +6,7 @@ class Privmsg : public ICommand
 {
 
 private:
+    std::vector <std::string> fixParams(std::vector<std::string> &params);
     void handleMultipleTargets(Server &server, Client &client, std::vector<std::string> params);
     void handleWithParams(Server &server, Client &client, std::vector<std::string> params);
     void sendMessageToChannel(Server &server, Client &client,std::vector<std::string> params);
