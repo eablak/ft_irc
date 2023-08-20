@@ -18,6 +18,7 @@ public:
     std::string getTopic() const;
     std::vector<Client> &getClients();
     std::vector<Client> &getOperators();
+    void setTopic(std::string topic);
     void addClient(Client &client);
     void removeClient(Client &client);
     bool isClientInChannel(Client &client);
