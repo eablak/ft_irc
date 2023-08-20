@@ -121,3 +121,16 @@ void Client::addChannel(Channel &channel)
 {
     joinedChannels.push_back(channel);
 }
+
+void Client::removeChannel(Channel &channel)
+{
+    std::vector<Channel>::iterator it;
+    for (it = joinedChannels.begin(); it != joinedChannels.end(); it++)
+    {
+        if (it->getName() == channel.getName())
+        {
+            joinedChannels.erase(it);
+            return;
+        }
+    }
+}
