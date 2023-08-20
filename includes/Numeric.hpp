@@ -13,7 +13,6 @@
 // #define ERR_NOTREGISTERED Numeric::createNumeric("451", ":You have not registered")
 // #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
-
 #define ERR_NOSUCHCHANNEL(channel) "403 " + channel + " :No such channel" + "\r\n"
 #define ERR_NOTONCHANNEL(channel) "442 " + channel + " :You're not on that channel" + "\r\n"
 #define RPL_TOPIC(channel, topic) "332 " + channel + " :" + topic + "\r\n"
@@ -31,6 +30,7 @@
 #define RPL_CREATED(nick, date) (std::string("003 ") + ":This server was created " + date + "\r\n")
 #define RPL_NAMREPLY(channel, nicknames) "353 " + channel + " : " + nicknames + "\r\n"
 #define RPL_ENDOFNAMES(channel) "366 " + channel + " :End of NAMES list" + "\r\n"
+#define ERR_NOSUCHNICK(nickname) "401 " + nickname + " :No such nick/channel" + "\r\n"
 class Client;
 class Server;
 

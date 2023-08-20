@@ -1,13 +1,9 @@
 #ifndef ICOMMAND_HPP
 #define ICOMMAND_HPP
 
-// #include "Pass.hpp"
-// #include "Nick.hpp"
 #include "Server.hpp"
 
 class Server;
-// class Pass;
-// class Nick;
 
 class ICommand
 {

@@ -11,7 +11,6 @@ void User::execute(Server &server, Client &client)
     if (client.getAuthStatus() == REGISTERED)
     {
         Numeric::printNumeric(client, server, ERR_ALREADYREGISTRED());
-
         return;
     }
     if (client.getParams().empty())
@@ -42,7 +41,6 @@ void User::execute(Server &server, Client &client)
         }
         else
             new_params.push_back(client.getParams()[i]);
-        
     }
     if (new_params.size() != 4 || (new_params[1] != "0" || new_params[2] != "*"))
     {

@@ -210,3 +210,12 @@ void Server::addChannel(std::string channelName, Client &client)
 {
 	_channels.push_back(Channel(channelName, client));
 }
+Client &Server::getClientByNickname(std::string nickname)
+{
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i].getNickname() == nickname)
+			return (_clients[i]);
+	}
+	throw ClientNotFoundException();
+}
