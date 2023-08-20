@@ -101,6 +101,14 @@ void Server::removeClient(Client &client)
 			break;
 		}
 	}
+	for(size_t i =0 ; i < _channels.size(); i++)
+	{
+		if(_channels[i].isClientInChannel(client))
+		{
+			_channels[i].removeClient(client);
+			client.removeChannel(_channels[i]);
+		}
+	}
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i].getClientFd() == client.getClientFd())

@@ -51,6 +51,7 @@ void User::execute(Server &server, Client &client)
     client.setUsername(new_params[0]);
     client.setRealname(new_params[3]);
     client.setAuthStatus(REGISTERED);
+    server.messageToClient(client.getClientFd(),"001 test \r\n");
     Numeric::printNumeric(client, server, RPL_WELCOME(client.getNickname(), client.getUsername(), server.getHostname()));
     Numeric::printNumeric(client, server, RPL_YOURHOST(client.getNickname(), server.getHostname()));
     Numeric::printNumeric(client, server, RPL_CREATED(client.getNickname(), std::string("tempDate")));
