@@ -4,7 +4,9 @@
 #include "includes/Nick.hpp"
 #include "includes/User.hpp"
 #include "includes/Join.hpp"
+#include "includes/Topic.hpp"
 #include "includes/Part.hpp"
+
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
 	return (_commandMap);
@@ -24,6 +26,7 @@ void HandleMessage::processAuthenticate()
 
 void HandleMessage::processRegistered()
 {
+	_commandMap.insert(std::make_pair("TOPIC", new Topic()));
 	_commandMap.insert(std::make_pair("PASS", new Pass()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("USER", new User()));

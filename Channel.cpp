@@ -33,6 +33,11 @@ std::vector<Client> &Channel::getOperators()
     return (this->operators);
 }
 
+void Channel::setTopic(std::string topic)
+{
+    this->topic = topic;
+}
+
 void Channel::addClient(Client &client)
 {
     this->clients.push_back(client);
