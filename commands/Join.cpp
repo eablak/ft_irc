@@ -38,6 +38,7 @@ void Join::handleWithParams(Server &server, Client &client, std::vector<std::str
     {
         Channel &ch = server.getChannel(channelName);
         ch.addClient(client);
+        client.addChannel(ch);
         sendSuccessNumerics(server, client, ch);
 
     }

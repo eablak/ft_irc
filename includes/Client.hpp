@@ -51,6 +51,7 @@ public:
     void setCommand(std::string _command);
     bool isInChannel(std::string &channelName) const;
     void addChannel(Channel &channel);
+    void removeChannel(Channel &channel);
 };
 
 #endif

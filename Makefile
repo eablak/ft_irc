@@ -22,13 +22,14 @@ SRCS        :=      main.cpp \
 						Numeric.cpp \
 						Server.cpp\
 						Channel.cpp\
+						Utils.cpp \
 						HandleMessage.cpp \
 						commands/Pass.cpp \
-						Utils.cpp \
 						commands/Nick.cpp \
 						commands/User.cpp \
 						commands/Join.cpp \
 						commands/Topic.cpp\
+						commands/Part.cpp\
 
 OBJS        := ${SRCS:.cpp=.o}
 
