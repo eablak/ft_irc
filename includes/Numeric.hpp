@@ -31,7 +31,6 @@
 #define RPL_CREATED(nick, date) (std::string("003 ") + ":This server was created " + date + "\r\n")
 #define RPL_NAMREPLY(channel, nicknames) "353 " + channel + " : " + nicknames + "\r\n"
 #define RPL_ENDOFNAMES(channel) "366 " + channel + " :End of NAMES list" + "\r\n"
-#define ERR_NOTONCHANNEL(channel) ("442" + channel + " :You're not on that channel")
 class Client;
 class Server;
 
