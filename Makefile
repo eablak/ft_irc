@@ -30,6 +30,7 @@ SRCS        :=      main.cpp \
 						commands/Join.cpp \
 						commands/Topic.cpp\
 						commands/Part.cpp\
+						commands/Privmsg.cpp\
 
 OBJS        := ${SRCS:.cpp=.o}
 

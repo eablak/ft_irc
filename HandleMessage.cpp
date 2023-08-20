@@ -6,7 +6,7 @@
 #include "includes/Join.hpp"
 #include "includes/Topic.hpp"
 #include "includes/Part.hpp"
-
+#include "includes/Privmsg.hpp"
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
 	return (_commandMap);
@@ -32,6 +32,7 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("USER", new User()));
 	_commandMap.insert(std::make_pair("JOIN", new Join()));
 	_commandMap.insert(std::make_pair("PART", new Part()));
+	_commandMap.insert(std::make_pair("PRIVMSG", new Privmsg()));
 }
 
 void HandleMessage::clientMsgProcess(Server &server, Client &client)
@@ -84,15 +85,15 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg)
 		client.setParams(Utils::split(second, ' '));
 	return (1);
 }
-
+// dont forget to delete the commands
 ICommand *HandleMessage::getCommand(std::string command)
 {
 	std::map<std::string, ICommand *>::iterator it;
 	it = this->_commandMap.find(command);
 	if (it == this->_commandMap.end())
-	{
+
 		return NULL;
-	}
+
 	return it->second;
 }
 

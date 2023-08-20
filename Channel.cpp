@@ -77,3 +77,13 @@ bool Channel::isClientOperator(Client &client)
     }
     return (false);
 }
+
+void Channel::sendMessageToChannel(Server &server, Client &client, std::string message)
+{
+    std::vector<Client>::iterator it;
+    for (it = this->clients.begin(); it != this->clients.end(); it++)
+    {
+        if (it->getClientFd() != client.getClientFd())
+            server.messageToClient(it->getClientFd(), message);
+    }
+}

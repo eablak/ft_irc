@@ -41,6 +41,8 @@ public:
     void removeClient(Client &client);
     Channel &getChannel(std::string &channelName);
     void addChannel(std::string channelName, Client &client);
+    void removeChannel(std::string channelName);
+    Client &getClientByNickname(std::string nickname);
     class ClientDisconnectedException : public std::exception
     {
         virtual const char *what() const throw()
@@ -53,6 +55,13 @@ public:
         virtual const char *what() const throw()
         {
             return "Channel not found";
+        }
+    };
+    class ClientNotFoundException : public std::exception
+    {
+        virtual const char *what() const throw()
+        {
+            return "Client not found";
         }
     };
 };
