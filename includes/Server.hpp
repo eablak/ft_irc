@@ -38,6 +38,23 @@ public:
     std::string getHostname();
     std::vector<Channel> &getChannels();
     std::vector<Client> &getClients();
+    void removeClient(Client &client);
+    Channel &getChannel(std::string &channelName);
+    void addChannel(std::string channelName, Client &client);
+    class ClientDisconnectedException : public std::exception
+    {
+        virtual const char *what() const throw()
+        {
+            return "Client Disconnected";
+        }
+    };
+    class ChannelNotFoundException : public std::exception
+    {
+        virtual const char *what() const throw()
+        {
+            return "Channel not found";
+        }
+    };
 };
 
 #endif

@@ -2,7 +2,7 @@
 
 Server::Server(std::string _port, std::string _password)
 {
-	this->port = std::stoi(_port);
+	this->port = std::atoi(_port.c_str());
 	this->password = _password;
 	createSocket();
 }
@@ -50,6 +50,7 @@ void Server::clientAccept()
 	{
 		poll_client.fd = client_fd;
 		poll_client.events = POLLIN;
+		poll_client.revents = 0;
 		_pollfds.push_back(poll_client);
 		_clients.push_back(Client(client_fd));
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
@@ -82,38 +83,45 @@ std::string Server::readMessage(int fd)
 		throw std::out_of_range("t");
 	}
 	if (bytesRead == 0)
-	{
-		std::cout << "fd " << fd << " disconnect" << std::endl;
-		Client &client = getClient(fd);
-		std::vector<std::string> &params = client.getParams();
-		params.clear();
-		for (size_t i = 0; i < _clients.size(); i++)
-		{
-			if (_clients[i].getClientFd() == fd)
-			{
-				_clients.erase(_clients.begin() + i);
-			}
-		}
-		for (size_t i = 0; i < _pollfds.size(); i++)
-		{
-			if (_pollfds[i].fd == fd)
-				_pollfds.erase(_pollfds.begin() + i);
-		}
-		close(fd);
-	}
+		throw ClientDisconnectedException();
 	if (buffer.data()[bytesRead - 1] == 10 || buffer.data()[bytesRead - 1] == 13)
 		buffer.data()[bytesRead - 1] = '\0';
 	return (buffer.data());
+}
+
+void Server::removeClient(Client &client)
+{
+	std::cout << "Client " << client.getNickname() << " disconnected" << std::endl;
+	close(client.getClientFd());
+	for (size_t i = 0; i < _pollfds.size(); i++)
+	{
+		if (_pollfds[i].fd == client.getClientFd())
+		{
+			_pollfds.erase(_pollfds.begin() + i);
+			break;
+		}
+	}
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i].getClientFd() == client.getClientFd())
+		{
+			_clients.erase(_clients.begin() + i);
+			break;
+		}
+	}
 }
 
 void Server::clientEvent(int fd)
 {
 	Client &client = getClient(fd);
 	std::string msg;
-	try{
+	try
+	{
 		msg = readMessage(client.getClientFd());
-	}catch (std::exception &e){
-		return;
+	}
+	catch (std::exception &e)
+	{
+		removeClient(client);
 	}
 	std::cout << "Message: " << msg << std::endl;
 	HandleMessage _handlemsg;
@@ -121,14 +129,16 @@ void Server::clientEvent(int fd)
 		return;
 	_handlemsg.clientMsgProcess(*this, client);
 	ICommand *command = _handlemsg.getCommand(client.getCommand());
-	if (command == NULL){
-		if (_handlemsg.checkAuthCommand(*this, client) == 1){
+	if (command == NULL)
+	{
+		if (_handlemsg.checkAuthCommand(*this, client) == 1)
+		{
 			_handlemsg.removeParams(client);
-			return ;
+			return;
 		}
 		Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client.getCommand()));
 		_handlemsg.removeParams(client);
-		return ;
+		return;
 	}
 	client.setParamsEnd();
 	command->execute(*this, client);
@@ -177,10 +187,26 @@ void Server::setHostname()
 	this->hostname = hostname_c;
 }
 
-std::vector<Client > &Server::getClients(){
+std::vector<Client> &Server::getClients()
+{
 	return (this->_clients);
 }
 
-std::vector<Channel> &Server::getChannels(){
+std::vector<Channel> &Server::getChannels()
+{
 	return (this->_channels);
+}
+
+Channel &Server::getChannel(std::string &channelName)
+{
+	for (size_t i = 0; i < _channels.size(); i++)
+	{
+		if (_channels[i].getName() == channelName)
+			return (_channels[i]);
+	}
+	throw ChannelNotFoundException();
+}
+void Server::addChannel(std::string channelName, Client &client)
+{
+	_channels.push_back(Channel(channelName, client));
 }

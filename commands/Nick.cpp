@@ -32,16 +32,13 @@ void Nick::execute(Server &server, Client &client)
             return;
         }
 
-        try
-        {
-            std::stoi(std::string(1, client.getParams()[0][0]));
+            if(std::isdigit(client.getParams()[0][0])){
+
             std::cout << "first char is number\n" << std::endl;
             Numeric::printNumeric(client, server, ERR_ERRONEUSNICKNAME(client.getParams()[0]));
             return;
-        }
-        catch (std::exception &e)
-        {
-        }
+            }
+        
 
         for (unsigned long i = 0; i < client.getParams()[0].size(); i++)
         {

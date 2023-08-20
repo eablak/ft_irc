@@ -7,23 +7,30 @@ class Server;
 #include "Numeric.hpp"
 #include "Channel.hpp"
 
-enum _auth {AUTHENTICATE, NOTAUTHENTICATED, REGISTERED};
+enum _auth
+{
+    AUTHENTICATE,
+    NOTAUTHENTICATED,
+    REGISTERED
+};
 
 class Numeric;
 
-class Client{
+class Client
+{
 
-    private:
+private:
     int fd;
     std::string command;
     std::vector<std::string> params;
     _auth client_auth;
-    std::list<std::pair<std::string, std::string> >client_message;
+    std::list<std::pair<std::string, std::string> > client_message;
     std::string nickname;
     std::string username;
     std::string realname;
     std::vector<Channel> joinedChannels;
-    public:
+
+public:
     Client();
     Client(int fd);
     int getClientFd();
@@ -42,6 +49,8 @@ class Client{
     std::vector<std::string> &getParams();
     void setParams(std::vector<std::string> tmp);
     void setCommand(std::string _command);
+    bool isInChannel(std::string &channelName) const;
+    void addChannel(Channel &channel);
 };
 
 #endif
