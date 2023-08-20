@@ -26,12 +26,9 @@ void Names::handleWithParams(Server &server, Client &client, std::vector<std::st
     try
     {
         Channel &channel = server.getChannel(channelName);
-        std::cout << "channel name: " << channelName << std::endl;
-        std::cout << "client nickname: " << client.getNickname() << "fd " << client.getClientFd() << std::endl;
         std::vector<Client> &clients = channel.getClients();
         for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
         {
-            std::cout << "client nickname: " << it->getNickname() << "fd " << it->getClientFd() << std::endl;
             Numeric::printNumeric(client, server, RPL_NAMREPLY(channelName, it->getNickname()));
         }
         Numeric::printNumeric(client, server, RPL_ENDOFNAMES(channelName));
