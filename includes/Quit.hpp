@@ -1,13 +1,13 @@
-#ifndef TOPIC_HPP
-#define TOPIC_HPP
+#ifndef QUIT_HPP
+#define QUIT_HPP
 
 #include "ICommand.hpp"
 
-class Topic : public ICommand
+class Quit : public ICommand
 {
     public:
-        Topic();
-        ~Topic();
+        Quit();
+        ~Quit();
         void execute(Server &server, Client &client);
 };
 
