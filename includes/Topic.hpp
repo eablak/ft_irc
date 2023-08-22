@@ -5,10 +5,6 @@
 
 class Topic : public ICommand
 {
-
-    private:
-        void denemeFunc();
-
     public:
         Topic();
         ~Topic();

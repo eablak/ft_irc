@@ -7,6 +7,8 @@
 #include "includes/Topic.hpp"
 #include "includes/Part.hpp"
 #include "includes/Privmsg.hpp"
+#include "includes/Quit.hpp"
+
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
 	return (_commandMap);
@@ -33,6 +35,7 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("JOIN", new Join()));
 	_commandMap.insert(std::make_pair("PART", new Part()));
 	_commandMap.insert(std::make_pair("PRIVMSG", new Privmsg()));
+	_commandMap.insert(std::make_pair("QUIT", new Quit()));
 }
 
 void HandleMessage::clientMsgProcess(Server &server, Client &client)
