@@ -39,3 +39,4 @@ void Topic::execute(Server &server, Client &client)
         else
             Numeric::printNumeric(client, server, ERR_NOTONCHANNEL(params[0]));
     }
+}

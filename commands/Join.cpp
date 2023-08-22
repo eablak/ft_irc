@@ -71,7 +71,8 @@ void Join::sendSuccessNumerics(Server &server, Client &client, Channel &channel)
 {
 
     server.messageToClient(client.getClientFd(), "You joined " + channel.getName() + "\n");
-    Numeric::printNumeric(client, server, channel.getTopic().size() > 0 ? RPL_TOPIC(channel.getName(), channel.getTopic()) : RPL_NOTOPIC(channel.getName()));
+    Numeric::printNumeric(client, server, channel.getTopic().size() > 0 ?
+     RPL_TOPIC(channel.getName(), channel.getTopic()) : RPL_NOTOPIC(channel.getName()));
     for (std::vector<Client>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++){
     std::string printedName = it->getNickname().empty() ? it->getUsername() : it->getNickname();
         Numeric::printNumeric(client, server, RPL_NAMREPLY(channel.getName(), printedName));
