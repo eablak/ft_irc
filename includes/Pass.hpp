@@ -9,7 +9,7 @@ class Pass : public ICommand
 public:
     Pass();
     ~Pass();
-    void execute(Server &server, Client &client);
+    void execute(Server &server, Client *client);
 };
 
 #endif

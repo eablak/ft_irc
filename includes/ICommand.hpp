@@ -10,7 +10,7 @@ class ICommand
 
 public:
     virtual ~ICommand(){};
-    virtual void execute(Server &server, Client &client) = 0;
+    virtual void execute(Server &server, Client *client) = 0;
 };
 
 #endif

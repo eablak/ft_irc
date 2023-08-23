@@ -7,13 +7,13 @@ Privmsg::Privmsg()
 Privmsg::~Privmsg()
 {
 }
-void Privmsg::sendMessageToClient(Server &server, Client &client, std::vector<std::string> params)
+void Privmsg::sendMessageToClient(Server &server, Client *client, std::vector<std::string> params)
 {
     try
     {
-        Client &target = server.getClientByNickname(params[0]);
-        std::string message = ":" + client.getNickname() + " PRIVMSG " + params[0] + " :" + params[1] + "\r\n";
-        server.messageToClient(target.getClientFd(), message);
+        Client *target = server.getClientByNickname(params[0]);
+        std::string message = ":" + client->getNickname() + " PRIVMSG " + params[0] + " :" + params[1];
+        server.messageToClient(target->getClientFd(), message);
     }
     catch (Server::ClientNotFoundException &e)
     {
@@ -21,7 +21,7 @@ void Privmsg::sendMessageToClient(Server &server, Client &client, std::vector<st
         return;
     }
 }
-void Privmsg::sendMessageToChannel(Server &server, Client &client, std::vector<std::string> params)
+void Privmsg::sendMessageToChannel(Server &server, Client *client, std::vector<std::string> params)
 {
     try
     {
@@ -31,7 +31,7 @@ void Privmsg::sendMessageToChannel(Server &server, Client &client, std::vector<s
             Numeric::printNumeric(client, server, ERR_NOTONCHANNEL(params[0]));
             return;
         }
-        std::string message = ":" + client.getNickname() + " PRIVMSG " + params[0] + " :" + params[1] + "\r\n";
+        std::string message = ":" + client->getNickname() + " PRIVMSG " + params[0] + " :" + params[1] + "\r\n";
         ch.sendMessageToChannel(server, client, message);
     }
     catch (Server::ChannelNotFoundException &e)
@@ -41,7 +41,7 @@ void Privmsg::sendMessageToChannel(Server &server, Client &client, std::vector<s
     }
 }
 
-void Privmsg::handleWithParams(Server &server, Client &client, std::vector<std::string> params)
+void Privmsg::handleWithParams(Server &server, Client *client, std::vector<std::string> params)
 {
     if (params[0][0] == '#')
         sendMessageToChannel(server, client, params);
@@ -50,7 +50,7 @@ void Privmsg::handleWithParams(Server &server, Client &client, std::vector<std::
         sendMessageToClient(server, client, params);
     
 }
-void Privmsg::handleMultipleTargets(Server &server, Client &client, std::vector<std::string> params)
+void Privmsg::handleMultipleTargets(Server &server, Client *client, std::vector<std::string> params)
 {
     std::vector<std::string> targets = Utils::split(params[0], ',');
     std::vector<std::string>::iterator it;
@@ -82,9 +82,9 @@ std::vector<std::string> Privmsg::fixParams(std::vector<std::string> &params)
     }
     return newParams;
 }
-void Privmsg::execute(Server &server, Client &client)
+void Privmsg::execute(Server &server, Client *client)
 {
-    std::vector<std::string> params = client.getParams();
+    std::vector<std::string> params = client->getParams();
     params = fixParams(params);
     for (size_t i = 0; i < params.size(); i++)
     {

@@ -6,12 +6,12 @@
 class Part : public ICommand
 {
 private:
-    void handleMultipleChannels(Server &server, Client &client, std::vector<std::string> &params);
-    void handleWithParams(Server &server, Client &client, std::vector<std::string> &params);
+    void handleMultipleChannels(Server &server, Client *client, std::vector<std::string> &params);
+    void handleWithParams(Server &server, Client *client, std::vector<std::string> &params);
 
 public:
     Part();
     ~Part();
-    void execute(Server &server, Client &client);
+    void execute(Server &server, Client *client);
 };
 #endif

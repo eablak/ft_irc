@@ -5,12 +5,12 @@
 class Join : public ICommand
 {
 private:
-    void sendSuccessNumerics(Server &server, Client &client,Channel &channel);
-    void handleMultipleChannels(Server &server, Client &client, std::vector<std::string> &params);
-	void handleWithParams(Server &server, Client &client,std::vector<std::string>&params);
+    void sendSuccessNumerics(Server &server, Client *client,Channel &channel);
+    void handleMultipleChannels(Server &server, Client *client, std::vector<std::string> &params);
+	void handleWithParams(Server &server, Client *client,std::vector<std::string>&params);
 public:
     Join();
     ~Join();
-    void execute(Server &server, Client &client);
+    void execute(Server &server, Client *client);
 };
 #endif

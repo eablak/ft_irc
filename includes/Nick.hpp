@@ -9,7 +9,7 @@ class Nick : public ICommand
 public:
     Nick();
     ~Nick();
-    void execute(Server &server, Client &client);
+    void execute(Server &server, Client *client);
 };
 
 #endif

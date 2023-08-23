@@ -38,18 +38,18 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("QUIT", new Quit()));
 }
 
-void HandleMessage::clientMsgProcess(Server &server, Client &client)
+void HandleMessage::clientMsgProcess(Server &server, Client *client)
 {
 	(void)server;
-	if (client.getAuthStatus() == NOTAUTHENTICATED)
+	if (client->getAuthStatus() == NOTAUTHENTICATED)
 		processNotAuthenticated();
-	else if (client.getAuthStatus() == AUTHENTICATE)
+	else if (client->getAuthStatus() == AUTHENTICATE)
 		processAuthenticate();
 	else
 		processRegistered();
 }
 
-int HandleMessage::handleMsg(Server &server, Client &client, std::string msg)
+int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
 {
 	if (msg.size() > 512)
 	{
@@ -68,13 +68,13 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg)
 
 	if (findPos == std::string::npos)
 	{
-		client.setCommand(msg);
+		client->setCommand(msg);
 		return 1;
 	}
 
 	first = msg.substr(0, findPos);
 	second = msg.substr(findPos + 1);
-	client.setCommand(first);
+	client->setCommand(first);
 	size_t firstNonSpace = second.find_first_not_of(" ");
 
 	if (firstNonSpace != std::string::npos)
@@ -83,9 +83,9 @@ int HandleMessage::handleMsg(Server &server, Client &client, std::string msg)
 		second.clear();
 
 	if (second[0] == ':')
-		client.getParams().push_back(second);
+		client->getParams().push_back(second);
 	else
-		client.setParams(Utils::split(second, ' '));
+		client->setParams(Utils::split(second, ' '));
 	return (1);
 }
 // dont forget to delete the commands
@@ -100,7 +100,7 @@ ICommand *HandleMessage::getCommand(std::string command)
 	return it->second;
 }
 
-int HandleMessage::checkAuthCommand(Server &server, Client &client)
+int HandleMessage::checkAuthCommand(Server &server, Client *client)
 {
 
 	std::vector<std::string> _allCommands;
@@ -114,30 +114,30 @@ int HandleMessage::checkAuthCommand(Server &server, Client &client)
 	_allCommands.push_back("TOPIC");
 	_allCommands.push_back("PRIVMSG");
 
-	if (client.getAuthStatus() == NOTAUTHENTICATED)
+	if (client->getAuthStatus() == NOTAUTHENTICATED)
 	{
 		for (size_t i = 0; i < _allCommands.size(); i++)
 		{
-			if (client.getCommand() == _allCommands[i])
+			if (client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client.getClientFd(), "Error: You can only send PASS\n");
+				server.messageToClient(client->getClientFd(), "Error: You can only send PASS");
 				_allCommands.clear();
 				return 1;
 			}
 		}
 	}
-	else if (client.getAuthStatus() == AUTHENTICATE)
+	else if (client->getAuthStatus() == AUTHENTICATE)
 	{
 		for (size_t i = 0; i < _allCommands.size(); i++)
 		{
-			if (!(client.getCommand() == "NICK" || client.getCommand() == "USER") && client.getCommand() == _allCommands[i])
+			if (!(client->getCommand() == "NICK" || client->getCommand() == "USER") && client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client.getClientFd(), "Error: You can only send NICK or USER\n");
+				server.messageToClient(client->getClientFd(), "Error: You can only send NICK or USER");
 				_allCommands.clear();
 				return 1;
 			}
 		}
-		if (client.getCommand() == "NICK" || client.getCommand() == "USER")
+		if (client->getCommand() == "NICK" || client->getCommand() == "USER")
 		{
 			_allCommands.clear();
 			return 1;
@@ -147,8 +147,8 @@ int HandleMessage::checkAuthCommand(Server &server, Client &client)
 	return 0;
 }
 
-void HandleMessage::removeParams(Client &client)
+void HandleMessage::removeParams(Client *client)
 {
-	while (!client.getParams().empty())
-		client.getParams().pop_back();
+	while (!client->getParams().empty())
+		client->getParams().pop_back();
 }

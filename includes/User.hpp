@@ -9,7 +9,7 @@ class User : public ICommand
 public:
     User();
     ~User();
-    void execute(Server &server, Client &client);
+    void execute(Server &server, Client *client);
 };
 
 #endif

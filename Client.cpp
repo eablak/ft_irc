@@ -1,5 +1,5 @@
 #include "includes/Client.hpp"
-
+#include "includes/Server.hpp"
 Client::Client()
 {
 }
@@ -133,4 +133,9 @@ void Client::removeChannel(Channel &channel)
             return;
         }
     }
+}
+
+std::string Client::getPrefix(Server &server)
+{
+    return (":" + nickname + "!" + username + "@" + server.getHostname());
 }

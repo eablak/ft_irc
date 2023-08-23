@@ -8,7 +8,7 @@ class Topic : public ICommand
     public:
         Topic();
         ~Topic();
-        void execute(Server &server, Client &client);
+        void execute(Server &server, Client *client);
 };
 
 #endif

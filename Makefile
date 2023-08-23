@@ -32,6 +32,8 @@ SRCS        :=      main.cpp \
 						commands/Part.cpp\
 						commands/Privmsg.cpp\
 						commands/Quit.cpp\
+						commands/Kick.cpp\
+						commands/Names.cpp\
 
 OBJS        := ${SRCS:.cpp=.o}
 
