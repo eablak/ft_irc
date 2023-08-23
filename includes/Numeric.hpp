@@ -12,7 +12,6 @@
 // #define ERR_USERONCHANNEL(nick, channel) Numeric::createNumeric("443", nick + " " + channel + " :is already on channel")
 // #define ERR_NOTREGISTERED Numeric::createNumeric("451", ":You have not registered")
 // #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
-
 #define RPL_TOPIC(channel, topic) "332 " + channel + " :" + topic
 #define RPL_NOTOPIC(channel) "331 " + channel + " :No topic is set"
 #define RPL_WELCOME(nick, user, host) ("001 :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host)
@@ -34,6 +33,7 @@
 #define ERR_NOTONCHANNEL(channel) "442 " + channel + " :You're not on that channel"
 #define ERR_USERNOTINCHANNEL(nick, channel) "441 " + nick + " " + channel + " :They aren't on that channel"
 #define ERR_CHANOPRIVSNEEDED(channel) "482 " + channel + " :You're not channel operator"
+
 class Client;
 class Server;
 

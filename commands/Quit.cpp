@@ -8,8 +8,6 @@ Quit::~Quit()
 {
 }
 
-void Quit::execute(Server &server, Client *client)
-{
     std::vector<std::string> params = Utils::concatParams(client->getParams());
     if (params.size() != 1 && params.size() != 0)
         return; // değişcek

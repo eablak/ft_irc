@@ -36,7 +36,6 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("PART", new Part()));
 	_commandMap.insert(std::make_pair("PRIVMSG", new Privmsg()));
 	_commandMap.insert(std::make_pair("QUIT", new Quit()));
-
 }
 
 void HandleMessage::clientMsgProcess(Server &server, Client *client)
