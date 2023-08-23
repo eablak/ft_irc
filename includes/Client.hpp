@@ -1,7 +1,6 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-class Server;
 
 #include "libraries.hpp"
 #include "Numeric.hpp"
@@ -16,6 +15,7 @@ enum _auth
 
 class Numeric;
 
+class Server;
 class Client
 {
 
@@ -52,6 +52,7 @@ public:
     bool isInChannel(std::string &channelName) const;
     void addChannel(Channel &channel);
     void removeChannel(Channel &channel);
+    std::string getPrefix(Server &server);
 };
 
 #endif

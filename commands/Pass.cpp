@@ -26,7 +26,7 @@ void Pass::execute(Server &server, Client *client)
     if (client->getParams()[0] == server.getPassword())
     {
         client->setAuthStatus(AUTHENTICATE);
-        server.messageToClient(client->getClientFd(), "Password is correct!\n");
+        server.messageToClient(client->getClientFd(), "Password is correct!");
     }
     else
     {

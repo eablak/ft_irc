@@ -36,6 +36,7 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("PART", new Part()));
 	_commandMap.insert(std::make_pair("PRIVMSG", new Privmsg()));
 	_commandMap.insert(std::make_pair("QUIT", new Quit()));
+
 }
 
 void HandleMessage::clientMsgProcess(Server &server, Client *client)
@@ -120,7 +121,7 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 		{
 			if (client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client->getClientFd(), "Error: You can only send PASS\n");
+				server.messageToClient(client->getClientFd(), "Error: You can only send PASS");
 				_allCommands.clear();
 				return 1;
 			}
@@ -132,7 +133,7 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 		{
 			if (!(client->getCommand() == "NICK" || client->getCommand() == "USER") && client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client->getClientFd(), "Error: You can only send NICK or USER\n");
+				server.messageToClient(client->getClientFd(), "Error: You can only send NICK or USER");
 				_allCommands.clear();
 				return 1;
 			}

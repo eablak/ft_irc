@@ -25,5 +25,4 @@ class HandleMessage{
     int checkAuthCommand(Server &server,Client *client);
     void removeParams(Client *client);
 };
-
 #endif

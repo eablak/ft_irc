@@ -38,7 +38,7 @@ void Kick::execute(Server &server, Client *client)
         if (reason.empty())
             reason = client->getNickname() + " has kicked " + clientToKick->getNickname();
         std::cout << reason << std::endl;
-        channel.sendMessageToChannel(server, client, ":" + client->getNickname() + " KICK " + channelName + " " + clientToKick->getNickname() + " :" + reason + "\r\n");
+        channel.sendMessageToChannel(server, client, ":" + client->getNickname() + " KICK " + channelName + " " + clientToKick->getNickname() + " :" + reason);
     }
     catch (std::exception &e)
     {

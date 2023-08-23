@@ -31,7 +31,8 @@ void Server::createSocket()
 
 void Server::messageToClient(int fd, std::string msg)
 {
-	if (send(fd, msg.c_str(), msg.size(), 0) < 0)
+	std::string bf = msg + "\r\n";
+	if (send(fd, bf.c_str(), bf.size(), 0) < 0)
 		error::error_func("Send Error");
 }
 
@@ -54,7 +55,7 @@ void Server::clientAccept()
 		_pollfds.push_back(poll_client);
 		_clients.push_back(new Client(client_fd));
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
-		messageToClient(client_fd, "Welcome to IRC. Please Enter Password\r\n");
+		// messageToClient(client_fd, "Welcome to IRC. Please Enter Password");
 	}
 
 	setHostname();
@@ -136,7 +137,7 @@ void Server::clientEvent(int fd)
 			_handlemsg.removeParams(client);
 			return;
 		}
-		Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
+		// Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
 		_handlemsg.removeParams(client);
 		return;
 	}

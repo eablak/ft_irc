@@ -28,7 +28,7 @@ void Nick::execute(Server &server, Client *client)
         if ((client->getParams()[0][0] == ':' && client->getParams().size() == 1) || client->getParams().size() != 1)
         {
             std::cout << "size " << client->getParams().size() << std::endl;
-            server.messageToClient(client->getClientFd(), "Error: Invalid nickname\n");
+            server.messageToClient(client->getClientFd(), "Error: Invalid nickname");
             return;
         }
 
@@ -51,13 +51,13 @@ void Nick::execute(Server &server, Client *client)
 
         if (client->getNickname().size() != 0)
         {
-            std::string msg = client->getNickname() + " changed his nickname to " + client->getParams()[0] + "\n";
+            std::string msg = client->getNickname() + " changed his nickname to " + client->getParams()[0];
             server.messageToClient(client->getClientFd(), msg);
             client->setNickname(client->getParams()[0]);
             return;
         }
 
         client->setNickname(client->getParams()[0]);
-        server.messageToClient(client->getClientFd(), "Requesting the new nick \"" + client->getNickname() + "\".\n");
+        server.messageToClient(client->getClientFd(), "Requesting the new nick \"" + client->getNickname() + "\"");
     }
 }

@@ -44,7 +44,7 @@ void User::execute(Server &server, Client *client)
     }
     if (new_params.size() != 4 || (new_params[1] != "0" || new_params[2] != "*"))
     {
-        server.messageToClient(client->getClientFd(), "Error: Missing parameter\n");
+        server.messageToClient(client->getClientFd(), "Error: Missing parameter");
         return;
     }
 
