@@ -6,27 +6,27 @@ Pass::Pass()
 
 Pass::~Pass() {}
 
-void Pass::execute(Server &server, Client &client)
+void Pass::execute(Server &server, Client *client)
 {
 
-    if (client.getAuthStatus() != NOTAUTHENTICATED)
+    if (client->getAuthStatus() != NOTAUTHENTICATED)
     {
         Numeric::printNumeric(client, server, ERR_ALREADYREGISTRED());
         return;
     }
-    if (client.getParams().empty())
+    if (client->getParams().empty())
     {
-        Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS(client.getCommand()));
+        Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS(client->getCommand()));
         return;
     }
 
-    client.setParamsEnd();
+    client->setParamsEnd();
     HandleMessage _handlmsg;
     // : doğru say size 1 se
-    if (client.getParams()[0] == server.getPassword())
+    if (client->getParams()[0] == server.getPassword())
     {
-        client.setAuthStatus(AUTHENTICATE);
-        server.messageToClient(client.getClientFd(), "Password is correct!\n");
+        client->setAuthStatus(AUTHENTICATE);
+        server.messageToClient(client->getClientFd(), "Password is correct!\n");
     }
     else
     {

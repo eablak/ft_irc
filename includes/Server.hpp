@@ -20,7 +20,7 @@ private:
     std::string password;
     int socketfd;
     std::vector<pollfd> _pollfds;
-    std::vector<Client> _clients;
+    std::vector<Client*> _clients;
     std::string hostname;
     std::vector<Channel> _channels;
 
@@ -32,17 +32,17 @@ public:
     void messageToClient(int fd, std::string msg);
     void clientEvent(int fd);
     std::string readMessage(int fd);
-    Client &getClient(int fd);
+    Client *getClient(int fd);
     std::string getPassword();
     void setHostname();
     std::string getHostname();
     std::vector<Channel> &getChannels();
-    std::vector<Client> &getClients();
-    void removeClient(Client &client);
+    std::vector<Client *> &getClients();
+    void removeClient(Client *client);
     Channel &getChannel(std::string &channelName);
-    void addChannel(std::string channelName, Client &client);
+    void addChannel(std::string channelName, Client *client);
     void removeChannel(std::string channelName);
-    Client &getClientByNickname(std::string nickname);
+    Client *getClientByNickname(std::string nickname);
     class ClientDisconnectedException : public std::exception
     {
         virtual const char *what() const throw()

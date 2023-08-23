@@ -1,7 +1,7 @@
 #include "includes/Server.hpp"
 #include "includes/Channel.hpp"
 #include "includes/Numeric.hpp"
-Channel::Channel(std::string name, Client &client)
+Channel::Channel(std::string name, Client *client)
 {
     this->name = name;
     this->topic = "";
@@ -23,12 +23,12 @@ std::string Channel::getTopic() const
     return (this->topic);
 }
 
-std::vector<Client> &Channel::getClients()
+std::vector<Client *> &Channel::getClients()
 {
     return (this->clients);
 }
 
-std::vector<Client> &Channel::getOperators()
+std::vector<Client *> &Channel::getOperators()
 {
     return (this->operators);
 }
@@ -38,17 +38,17 @@ void Channel::setTopic(std::string topic)
     this->topic = topic;
 }
 
-void Channel::addClient(Client &client)
+void Channel::addClient(Client *client)
 {
     this->clients.push_back(client);
 }
 
-void Channel::removeClient(Client &client)
+void Channel::removeClient(Client *client)
 {
-    std::vector<Client>::iterator it;
+    std::vector<Client*>::iterator it;
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
-        if (it->getClientFd() == client.getClientFd())
+        if ((*it)->getClientFd() == client->getClientFd())
         {
             this->clients.erase(it);
             return;
@@ -56,34 +56,34 @@ void Channel::removeClient(Client &client)
     }
 }
 
-bool Channel::isClientInChannel(Client &client)
+bool Channel::isClientInChannel(Client *client)
 {
-    std::vector<Client>::iterator it;
+    std::vector<Client *>::iterator it;
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
-        if (it->getClientFd() == client.getClientFd())
+        if ((*it)->getClientFd() == client->getClientFd())
             return (true);
     }
     return (false);
 }
 
-bool Channel::isClientOperator(Client &client)
+bool Channel::isClientOperator(Client *client)
 {
-    std::vector<Client>::iterator it;
+    std::vector<Client *>::iterator it;
     for (it = this->operators.begin(); it != this->operators.end(); it++)
     {
-        if (it->getClientFd() == client.getClientFd())
+        if ((*it)->getClientFd() == client->getClientFd())
             return (true);
     }
     return (false);
 }
 
-void Channel::sendMessageToChannel(Server &server, Client &client, std::string message)
+void Channel::sendMessageToChannel(Server &server, Client *client, std::string message)
 {
-    std::vector<Client>::iterator it;
+    std::vector<Client *>::iterator it;
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
-        if (it->getClientFd() != client.getClientFd())
-            server.messageToClient(it->getClientFd(), message);
+        if ((*it)->getClientFd() != client->getClientFd())
+            server.messageToClient((*it)->getClientFd(), message);
     }
 }

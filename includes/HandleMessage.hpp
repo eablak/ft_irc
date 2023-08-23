@@ -15,15 +15,15 @@ class HandleMessage{
     std::map<std::string, ICommand *> _commandMap;
 
     public:
-    int handleMsg(Server &server, Client &client, std::string msg);
-    void clientMsgProcess(Server &server, Client &client);
+    int handleMsg(Server &server, Client *client, std::string msg);
+    void clientMsgProcess(Server &server, Client *client);
     void processNotAuthenticated();
     void processAuthenticate();
     void processRegistered();
     std::map<std::string, ICommand *> getCommandMap();
     ICommand * getCommand(std::string command);
-    int checkAuthCommand(Server &server,Client &client);
-    void removeParams(Client &client);
+    int checkAuthCommand(Server &server,Client *client);
+    void removeParams(Client *client);
 };
 
 #endif

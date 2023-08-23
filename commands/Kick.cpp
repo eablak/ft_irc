@@ -8,9 +8,9 @@ Kick::~Kick()
 {
 }
 
-void Kick::execute(Server &server, Client &client)
+void Kick::execute(Server &server, Client *client)
 {
-    std::vector<std::string> params = Utils::concatParams(client.getParams());
+    std::vector<std::string> params = Utils::concatParams(client->getParams());
     if (params.size() != 3)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS("KICK"));
@@ -22,7 +22,7 @@ void Kick::execute(Server &server, Client &client)
     try
     {
         Channel &channel = server.getChannel(channelName);
-        Client &clientToKick = server.getClientByNickname(nickname);
+        Client *clientToKick = server.getClientByNickname(nickname);
         if (!channel.isClientInChannel(clientToKick))
         {
             Numeric::printNumeric(client, server, ERR_USERNOTINCHANNEL(nickname, channelName));
@@ -34,11 +34,11 @@ void Kick::execute(Server &server, Client &client)
             return;
         }
         channel.removeClient(clientToKick);
-        clientToKick.removeChannel(channel);
+        clientToKick->removeChannel(channel);
         if (reason.empty())
-            reason = client.getNickname() + " has kicked " + clientToKick.getNickname();
+            reason = client->getNickname() + " has kicked " + clientToKick->getNickname();
         std::cout << reason << std::endl;
-        channel.sendMessageToChannel(server, client, ":" + client.getNickname() + " KICK " + channelName + " " + clientToKick.getNickname() + " :" + reason + "\r\n");
+        channel.sendMessageToChannel(server, client, ":" + client->getNickname() + " KICK " + channelName + " " + clientToKick->getNickname() + " :" + reason + "\r\n");
     }
     catch (std::exception &e)
     {

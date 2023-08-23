@@ -14,7 +14,7 @@
 // #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 
 #define RPL_TOPIC(channel, topic) "332 " + channel + " :" + topic + "\r\n"
-#define RPL_NOTOPIC(channel) "331 " + channel + " :No topic is set" + "\r\n"
+#define RPL_NOTOPIC(channel) "331 " + channel +  "\r\n"
 #define RPL_WELCOME(nick, user, host) ("001 :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host + "\r\n")
 #define RPL_YOURHOST(nick, host) (std::string("002 ") + ":Your host is " + host + ", running version 1.0 \r\n")
 #define RPL_CREATED(nick, date) (std::string("003 ") + ":This server was created " + date + "\r\n")
@@ -40,7 +40,7 @@ class Server;
 class Numeric
 {
 public:
-    static void printNumeric(Client &client, Server &server, std::string errMessage);
+    static void printNumeric(Client *client, Server &server, std::string errMessage);
 };
 
 #endif

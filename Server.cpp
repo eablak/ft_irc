@@ -52,7 +52,7 @@ void Server::clientAccept()
 		poll_client.events = POLLIN;
 		poll_client.revents = 0;
 		_pollfds.push_back(poll_client);
-		_clients.push_back(Client(client_fd));
+		_clients.push_back(new Client(client_fd));
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
 		messageToClient(client_fd, "Welcome to IRC. Please Enter Password\r\n");
 	}
@@ -60,11 +60,11 @@ void Server::clientAccept()
 	setHostname();
 }
 
-Client &Server::getClient(int fd)
+Client *Server::getClient(int fd)
 {
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
-		if (_clients[i].getClientFd() == fd)
+		if (_clients[i]->getClientFd() == fd)
 			return (_clients[i]);
 	}
 	std::cout << "getClient Error" << std::endl;
@@ -89,29 +89,21 @@ std::string Server::readMessage(int fd)
 	return (buffer.data());
 }
 
-void Server::removeClient(Client &client)
+void Server::removeClient(Client *client)
 {
-	std::cout << "Client " << client.getNickname() << " disconnected" << std::endl;
-	close(client.getClientFd());
+	std::cout << "Client " << client->getNickname() << " disconnected" << std::endl;
+	close(client->getClientFd());
 	for (size_t i = 0; i < _pollfds.size(); i++)
 	{
-		if (_pollfds[i].fd == client.getClientFd())
+		if (_pollfds[i].fd == client->getClientFd())
 		{
 			_pollfds.erase(_pollfds.begin() + i);
 			break;
 		}
 	}
-	for(size_t i =0 ; i < _channels.size(); i++)
-	{
-		if(_channels[i].isClientInChannel(client))
-		{
-			_channels[i].removeClient(client);
-			client.removeChannel(_channels[i]);
-		}
-	}
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
-		if (_clients[i].getClientFd() == client.getClientFd())
+		if (_clients[i]->getClientFd() == client->getClientFd())
 		{
 			_clients.erase(_clients.begin() + i);
 			break;
@@ -121,11 +113,11 @@ void Server::removeClient(Client &client)
 
 void Server::clientEvent(int fd)
 {
-	Client &client = getClient(fd);
+	Client *client = getClient(fd);
 	std::string msg;
 	try
 	{
-		msg = readMessage(client.getClientFd());
+		msg = readMessage(client->getClientFd());
 	}
 	catch (std::exception &e)
 	{
@@ -136,7 +128,7 @@ void Server::clientEvent(int fd)
 	if (!_handlemsg.handleMsg(*this, client, msg))
 		return;
 	_handlemsg.clientMsgProcess(*this, client);
-	ICommand *command = _handlemsg.getCommand(client.getCommand());
+	ICommand *command = _handlemsg.getCommand(client->getCommand());
 	if (command == NULL)
 	{
 		if (_handlemsg.checkAuthCommand(*this, client) == 1)
@@ -144,11 +136,11 @@ void Server::clientEvent(int fd)
 			_handlemsg.removeParams(client);
 			return;
 		}
-		Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client.getCommand()));
+		Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
 		_handlemsg.removeParams(client);
 		return;
 	}
-	client.setParamsEnd();
+	client->setParamsEnd();
 	command->execute(*this, client);
 	_handlemsg.removeParams(client);
 }
@@ -195,7 +187,7 @@ void Server::setHostname()
 	this->hostname = hostname_c;
 }
 
-std::vector<Client> &Server::getClients()
+std::vector<Client *> &Server::getClients()
 {
 	return (this->_clients);
 }
@@ -214,15 +206,15 @@ Channel &Server::getChannel(std::string &channelName)
 	}
 	throw ChannelNotFoundException();
 }
-void Server::addChannel(std::string channelName, Client &client)
+void Server::addChannel(std::string channelName, Client *client)
 {
 	_channels.push_back(Channel(channelName, client));
 }
-Client &Server::getClientByNickname(std::string nickname)
+Client *Server::getClientByNickname(std::string nickname)
 {
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
-		if (_clients[i].getNickname() == nickname)
+		if (_clients[i]->getNickname() == nickname)
 			return (_clients[i]);
 	}
 	throw ClientNotFoundException();
