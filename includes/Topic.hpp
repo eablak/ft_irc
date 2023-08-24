@@ -2,7 +2,7 @@
 #define TOPIC_HPP
 
 #include "ICommand.hpp"
-
+#include "Utils.hpp"
 class Topic : public ICommand
 {
     public:

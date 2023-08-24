@@ -8,6 +8,8 @@
 #include "includes/Part.hpp"
 #include "includes/Privmsg.hpp"
 #include "includes/Quit.hpp"
+#include "includes/Cap.hpp"
+
 
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
@@ -17,6 +19,9 @@ std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 void HandleMessage::processNotAuthenticated()
 {
 	_commandMap.insert(std::make_pair("PASS", new Pass()));
+	_commandMap.insert(std::make_pair("USER", new User()));
+	_commandMap.insert(std::make_pair("NICK", new Nick()));
+	_commandMap.insert(std::make_pair("CAP", new Cap()));
 }
 
 void HandleMessage::processAuthenticate()
@@ -24,6 +29,7 @@ void HandleMessage::processAuthenticate()
 	_commandMap.insert(std::make_pair("PASS", new Pass()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("USER", new User()));
+	_commandMap.insert(std::make_pair("CAP", new Cap()));
 }
 
 void HandleMessage::processRegistered()
@@ -61,31 +67,13 @@ int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
 
 	if (msg == "")
 		return 0;
-
-	size_t findPos = msg.find(' ');
-	std::string first;
-	std::string second;
-
-	if (findPos == std::string::npos)
-	{
-		client->setCommand(msg);
-		return 1;
-	}
-
-	first = msg.substr(0, findPos);
-	second = msg.substr(findPos + 1);
-	client->setCommand(first);
-	size_t firstNonSpace = second.find_first_not_of(" ");
-
-	if (firstNonSpace != std::string::npos)
-		second.erase(0, firstNonSpace);
-	else
-		second.clear();
-
-	if (second[0] == ':')
-		client->getParams().push_back(second);
-	else
-		client->setParams(Utils::split(second, ' '));
+	std::string executablePart = msg.substr(0, msg.find("\r\n"));
+	if (executablePart == "")
+		return 0;
+	std::vector<std::string> params = Utils::split(executablePart, ' ');
+	client->setCommand(params[0]);
+	params.erase(params.begin());
+	client->setParams(params);
 	return (1);
 }
 // dont forget to delete the commands
@@ -120,7 +108,7 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 		{
 			if (client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client->getClientFd(), "Error: You can only send PASS");
+				server.messageToClient(client, "Error: You can only send PASS");
 				_allCommands.clear();
 				return 1;
 			}
@@ -132,7 +120,7 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 		{
 			if (!(client->getCommand() == "NICK" || client->getCommand() == "USER") && client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client->getClientFd(), "Error: You can only send NICK or USER");
+				server.messageToClient(client, "Error: You can only send NICK or USER");
 				_allCommands.clear();
 				return 1;
 			}
@@ -147,8 +135,9 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 	return 0;
 }
 
-void HandleMessage::removeParams(Client *client)
+void HandleMessage::removeExecutedPart(std::string &msg)
 {
-	while (!client->getParams().empty())
-		client->getParams().pop_back();
+	size_t pos = msg.find("\r\n");
+	if (pos != std::string::npos)
+		msg.erase(0, pos + 2);
 }

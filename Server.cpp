@@ -4,6 +4,7 @@ Server::Server(std::string _port, std::string _password)
 {
 	this->port = std::atoi(_port.c_str());
 	this->password = _password;
+	setHostname();
 	createSocket();
 }
 
@@ -29,11 +30,20 @@ void Server::createSocket()
 	std::cout << "Server listening " << port << " port.." << std::endl;
 }
 
-void Server::messageToClient(int fd, std::string msg)
+void Server::messageToClient(Client *client, std::string msg, int mode)
 {
-	std::string bf = msg + "\r\n";
-	if (send(fd, bf.c_str(), bf.size(), 0) < 0)
+	if (mode == 1)
+	{
+		std::string bf = msg + "\r\n";
+		if (send(client->getClientFd(), bf.c_str(), bf.size(), 0) < 0)
+			error::error_func("Send Error");
+		std::cout << "Message to client: " << bf << std::endl;
+		return;
+	}
+	std::string bf = client->getPrefix() + " " + msg + "\r\n";
+	if (send(client->getClientFd(), bf.c_str(), bf.size(), 0) < 0)
 		error::error_func("Send Error");
+	std::cout << "Message to client: " << bf << std::endl;
 }
 
 void Server::clientAccept()
@@ -52,13 +62,12 @@ void Server::clientAccept()
 		poll_client.fd = client_fd;
 		poll_client.events = POLLIN;
 		poll_client.revents = 0;
+		Client *client = new Client(client_fd, this->hostname);
 		_pollfds.push_back(poll_client);
-		_clients.push_back(new Client(client_fd));
+		_clients.push_back(client);
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
-		messageToClient(client_fd, "Welcome to IRC. Please Enter Password");
+		messageToClient(client, "Welcome to IRC. Please Enter Password");
 	}
-
-	setHostname();
 }
 
 Client *Server::getClient(int fd)
@@ -85,9 +94,12 @@ std::string Server::readMessage(int fd)
 	}
 	if (bytesRead == 0)
 		throw ClientDisconnectedException();
-	if (buffer.data()[bytesRead - 1] == 10 || buffer.data()[bytesRead - 1] == 13)
-		buffer.data()[bytesRead - 1] = '\0';
-	return (buffer.data());
+	// while (bytesRead > 0 && (buffer[bytesRead - 1] == '\r' || buffer[bytesRead - 1] == '\n'))
+	// 	bytesRead--;
+
+	buffer[bytesRead] = '\0';
+
+	return std::string(buffer.data());
 }
 
 void Server::removeClient(Client *client)
@@ -124,26 +136,30 @@ void Server::clientEvent(int fd)
 	{
 		removeClient(client);
 	}
-	std::cout << "Message: " << msg << std::endl;
+	std::cout << "Message from client: " << msg << std::endl;
 	HandleMessage _handlemsg;
-	if (!_handlemsg.handleMsg(*this, client, msg))
-		return;
-	_handlemsg.clientMsgProcess(*this, client);
-	ICommand *command = _handlemsg.getCommand(client->getCommand());
-	if (command == NULL)
+	while (msg.size() > 0)
 	{
-		if (_handlemsg.checkAuthCommand(*this, client) == 1)
+		if (!_handlemsg.handleMsg(*this, client, msg))
+			return;
+		_handlemsg.clientMsgProcess(*this, client);
+		ICommand *command = _handlemsg.getCommand(client->getCommand());
+		if (command == NULL)
 		{
-			_handlemsg.removeParams(client);
+			if (_handlemsg.checkAuthCommand(*this, client) == 1)
+			{
+				// _handlemsg.removeParams(client);
+				_handlemsg.removeExecutedPart(msg);
+				continue;
+			}
+			Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
+			// _handlemsg.removeParams(client);
+			_handlemsg.removeExecutedPart(msg);
 			return;
 		}
-		Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
-		_handlemsg.removeParams(client);
-		return;
+		command->execute(*this, client);
+		_handlemsg.removeExecutedPart(msg);
 	}
-	client->setParamsEnd();
-	command->execute(*this, client);
-	_handlemsg.removeParams(client);
 }
 
 void Server::serverInvoke()

@@ -24,15 +24,15 @@ private:
     std::string command;
     std::vector<std::string> params;
     _auth client_auth;
-    std::list<std::pair<std::string, std::string> > client_message;
     std::string nickname;
     std::string username;
     std::string realname;
     std::vector<Channel> joinedChannels;
+    std::string hostname;    
 
 public:
     Client();
-    Client(int fd);
+    Client(int fd, std::string hostname);
     int getClientFd();
     _auth getAuthStatus();
     void setAuthStatus(_auth status);
@@ -45,6 +45,7 @@ public:
     void setNickname(std::string _nickname);
     void setUsername(std::string _username);
     void setRealname(std::string _realname);
+    std::string getRealname();
     std::string getCommand();
     std::vector<std::string> &getParams();
     void setParams(std::vector<std::string> tmp);
@@ -52,7 +53,8 @@ public:
     bool isInChannel(std::string &channelName) const;
     void addChannel(Channel &channel);
     void removeChannel(Channel &channel);
-    std::string getPrefix(Server &server);
+    std::string getPrefix();
+
 };
 
 #endif

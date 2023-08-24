@@ -20,7 +20,7 @@ private:
     std::string password;
     int socketfd;
     std::vector<pollfd> _pollfds;
-    std::vector<Client*> _clients;
+    std::vector<Client *> _clients;
     std::string hostname;
     std::vector<Channel> _channels;
 
@@ -29,7 +29,7 @@ public:
     void createSocket();
     void serverInvoke();
     void clientAccept();
-    void messageToClient(int fd, std::string msg);
+    void messageToClient(Client *client, std::string msg, int mode = 0);
     void clientEvent(int fd);
     std::string readMessage(int fd);
     Client *getClient(int fd);
