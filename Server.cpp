@@ -4,6 +4,7 @@ Server::Server(std::string _port, std::string _password)
 {
 	this->port = std::atoi(_port.c_str());
 	this->password = _password;
+	setHostname();
 	createSocket();
 }
 
@@ -34,6 +35,7 @@ void Server::messageToClient(Client *client, std::string msg)
 	std::string bf = client->getPrefix() + " " + msg + "\r\n";
 	if (send(client->getClientFd(), bf.c_str(), bf.size(), 0) < 0)
 		error::error_func("Send Error");
+	std::cout << "Message to client: " << bf << std::endl;
 }
 
 void Server::clientAccept()
@@ -59,7 +61,6 @@ void Server::clientAccept()
 		messageToClient(client, "Welcome to IRC. Please Enter Password");
 	}
 
-	setHostname();
 }
 
 Client *Server::getClient(int fd)

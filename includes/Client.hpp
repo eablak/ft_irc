@@ -45,6 +45,7 @@ public:
     void setNickname(std::string _nickname);
     void setUsername(std::string _username);
     void setRealname(std::string _realname);
+    std::string getRealname();
     std::string getCommand();
     std::vector<std::string> &getParams();
     void setParams(std::vector<std::string> tmp);

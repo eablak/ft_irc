@@ -46,4 +46,8 @@ void Nick::execute(Server &server, Client *client)
 
     client->setNickname(params[0]);
     server.messageToClient(client, "NICK Requesting the new nick " + client->getNickname());
+    if (client->getUsername().size() == 0 || client->getRealname().size() == 0)
+        return;
+    client->setAuthStatus(REGISTERED);
+    Numeric::printNumeric(client, server, RPL_WELCOME(client->getNickname(), client->getUsername(), server.getHostname()));
 }

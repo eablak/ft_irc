@@ -34,7 +34,9 @@ void User::execute(Server &server, Client *client)
 
     client->setUsername(new_params[0]);
     client->setRealname(new_params[3]);
+    if (client->getNickname().size() == 0)
+        return;
     client->setAuthStatus(REGISTERED);
-    Numeric::printNumeric(client,server, RPL_WELCOME(client->getNickname(), client->getUsername(), server.getHostname()));
+    Numeric::printNumeric(client, server, RPL_WELCOME(client->getNickname(), client->getUsername(), server.getHostname()));
     new_params.clear();
 }

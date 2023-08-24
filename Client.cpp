@@ -115,5 +115,10 @@ void Client::removeChannel(Channel &channel)
 
 std::string Client::getPrefix()
 {
-    return (":" + nickname + "!" + username + "@" + this->hostname);
+    return (":" + nickname + "!" + username + "@" + this->hostname + ":");
+}
+
+std::string Client::getRealname()
+{
+    return (realname);
 }

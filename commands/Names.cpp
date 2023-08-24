@@ -27,11 +27,17 @@ void Names::handleWithParams(Server &server, Client *client, std::vector<std::st
     {
         Channel &channel = server.getChannel(channelName);
         std::vector<Client *> &clients = channel.getClients();
-        for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
+        std::string names;
+        for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
         {
-            Numeric::printNumeric(client, server, RPL_NAMREPLY(channelName, (*it)->getNickname()));
+            if (channel.isClientOperator(*it))
+                names += "@";
+            names += (*it)->getNickname().empty() ? (*it)->getUsername() : (*it)->getNickname();
+            if (it != channel.getClients().end() - 1)
+                names += " ";
         }
-        Numeric::printNumeric(client, server, RPL_ENDOFNAMES(channelName));
+        Numeric::printNumeric(client, server, RPL_NAMREPLY(client->getNickname(),channel.getName(), names));
+        Numeric::printNumeric(client, server, RPL_ENDOFNAMES(client->getNickname(),channel.getName()));
     }
     catch (Server::ChannelNotFoundException &e)
     {

@@ -8,7 +8,7 @@ Topic::~Topic()
 void Topic::execute(Server &server, Client *client)
 {
 
-    std::vector<std::string> params = client->getParams();
+    std::vector<std::string> params = Utils::concatParams(client->getParams());
     if (params.size() != 1 && params.size() != 2)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS(std::string("TOPIC")));
@@ -20,9 +20,9 @@ void Topic::execute(Server &server, Client *client)
         if (params.size() == 1)
         {
             if (ch.getTopic() != "")
-                Numeric::printNumeric(client, server, RPL_TOPIC(params[0], ch.getTopic()));
+                Numeric::printNumeric(client, server, RPL_TOPIC(client->getNickname(), params[0], ch.getTopic()));
             else
-                Numeric::printNumeric(client, server, RPL_NOTOPIC(params[0]));
+                Numeric::printNumeric(client, server, RPL_NOTOPIC(client->getNickname(), params[0]));
         }
         else if (params.size() == 2 && ch.isClientOperator(client))
         {
@@ -30,7 +30,7 @@ void Topic::execute(Server &server, Client *client)
                 ch.setTopic(params[1]);
             else
                 ch.setTopic(params[1]);
-            Numeric::printNumeric(client, server, RPL_TOPIC(params[0], params[1]));
+            Numeric::printNumeric(client, server, RPL_TOPIC(client->getNickname(), params[0], params[1]));
         }
         else if (ch.isClientOperator(client) == 0)
         {
