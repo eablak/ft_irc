@@ -38,8 +38,11 @@ void Nick::execute(Server &server, Client *client)
     }
     if (client->getNickname().size() != 0)
     {
-        std::string msg = client->getNickname() + " NICK changed his nickname to " + params[0];
-        server.messageToClient(client, client, msg);
+        std::vector<Channel> &channels = client->getChannels();
+        for (size_t i = 0; i < channels.size(); i++)
+            server.messageToClient(client, client, " NICK " + params[0]);
+        for (size_t i = 0; i < server.getClients().size(); i++)
+            server.messageToClient(client, server.getClients()[i], " NICK " + params[0]);
         client->setNickname(params[0]);
         return;
     }

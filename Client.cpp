@@ -121,3 +121,8 @@ std::string Client::getRealname()
 {
     return (realname);
 }
+
+std::vector<Channel> &Client::getChannels()
+{
+    return (joinedChannels);
+}
