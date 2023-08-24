@@ -108,7 +108,7 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 		{
 			if (client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client->getClientFd(), "Error: You can only send PASS");
+				server.messageToClient(client, "Error: You can only send PASS");
 				_allCommands.clear();
 				return 1;
 			}
@@ -120,7 +120,7 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 		{
 			if (!(client->getCommand() == "NICK" || client->getCommand() == "USER") && client->getCommand() == _allCommands[i])
 			{
-				server.messageToClient(client->getClientFd(), "Error: You can only send NICK or USER");
+				server.messageToClient(client, "Error: You can only send NICK or USER");
 				_allCommands.clear();
 				return 1;
 			}

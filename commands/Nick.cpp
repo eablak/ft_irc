@@ -25,7 +25,7 @@ void Nick::execute(Server &server, Client *client)
     }
     if (params[0][0] == ':' || std::isdigit(params[0][0]))
     {
-        server.messageToClient(client->getClientFd(), ERR_ERRONEUSNICKNAME(params[0]));
+        server.messageToClient(client, ERR_ERRONEUSNICKNAME(params[0]));
         return;
     }
     for (unsigned long i = 0; i < params[0].size(); i++)
@@ -38,12 +38,12 @@ void Nick::execute(Server &server, Client *client)
     }
     if (client->getNickname().size() != 0)
     {
-        std::string msg = client->getNickname() + " NICK :changed his nickname to " + params[0];
-        server.messageToClient(client->getClientFd(), msg);
+        std::string msg = client->getNickname() + " NICK changed his nickname to " + params[0];
+        server.messageToClient(client, msg);
         client->setNickname(params[0]);
         return;
     }
 
     client->setNickname(params[0]);
-    server.messageToClient(client->getClientFd(), client->getPrefix(server) + " NICK Requesting the new nick " + client->getNickname());
+    server.messageToClient(client, "NICK Requesting the new nick " + client->getNickname());
 }

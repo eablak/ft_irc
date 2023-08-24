@@ -29,10 +29,10 @@ void Server::createSocket()
 	std::cout << "Server listening " << port << " port.." << std::endl;
 }
 
-void Server::messageToClient(int fd, std::string msg)
+void Server::messageToClient(Client *client, std::string msg)
 {
-	std::string bf = msg + "\r\n";
-	if (send(fd, bf.c_str(), bf.size(), 0) < 0)
+	std::string bf = client->getPrefix() + " " + msg + "\r\n";
+	if (send(client->getClientFd(), bf.c_str(), bf.size(), 0) < 0)
 		error::error_func("Send Error");
 }
 
@@ -52,10 +52,11 @@ void Server::clientAccept()
 		poll_client.fd = client_fd;
 		poll_client.events = POLLIN;
 		poll_client.revents = 0;
+		Client *client = new Client(client_fd, this->hostname);
 		_pollfds.push_back(poll_client);
-		_clients.push_back(new Client(client_fd));
+		_clients.push_back(client);
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
-		messageToClient(client_fd, "Welcome to IRC. Please Enter Password");
+		messageToClient(client, "Welcome to IRC. Please Enter Password");
 	}
 
 	setHostname();

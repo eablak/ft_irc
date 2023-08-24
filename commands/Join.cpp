@@ -31,7 +31,7 @@ void Join::handleWithParams(Server &server, Client *client, std::vector<std::str
     std::string channelName = params[0];
     if (client->isInChannel(channelName))
     {
-        server.messageToClient(client->getClientFd(), "You are already in this channel");
+        server.messageToClient(client, "You are already in this channel");
         return;
     }
     try
@@ -70,7 +70,7 @@ void Join::execute(Server &server, Client *client)
 void Join::sendSuccessNumerics(Server &server, Client *client, Channel &channel)
 {
 
-    server.messageToClient(client->getClientFd(), "You joined " + channel.getName());
+    server.messageToClient(client, "JOIN You joined " + channel.getName());
     Numeric::printNumeric(client, server, channel.getTopic().size() > 0 ? RPL_TOPIC(channel.getName(), channel.getTopic()) : RPL_NOTOPIC(channel.getName()));
     std::string names;
     for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)

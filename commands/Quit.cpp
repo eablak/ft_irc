@@ -18,7 +18,7 @@ void Quit::execute(Server &server, Client *client)
     {
         std::vector<Client *> clients = server.getClients();
         for (size_t i = 0; i < clients.size(); i++)
-            server.messageToClient(clients[i]->getClientFd(), client->getNickname() + " " + "QUIT " + params[0]);
+            server.messageToClient(clients[i], client->getNickname() + " " + "QUIT " + params[0]);
         server.removeClient(client);
     }
 }
