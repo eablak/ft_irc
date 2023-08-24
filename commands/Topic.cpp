@@ -5,6 +5,11 @@ Topic::Topic()
 Topic::~Topic()
 {
 }
+void Topic::sendTopicToChannel(Server &server, Channel &channel)
+{
+    for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
+        Numeric::printNumeric(*it, server, RPL_TOPIC((*it)->getNickname(), channel.getName(), channel.getTopic()));
+}
 void Topic::execute(Server &server, Client *client)
 {
 
@@ -30,7 +35,7 @@ void Topic::execute(Server &server, Client *client)
                 ch.setTopic(params[1]);
             else
                 ch.setTopic(params[1]);
-            Numeric::printNumeric(client, server, RPL_TOPIC(client->getNickname(), params[0], params[1]));
+            sendTopicToChannel(server, ch);
         }
         else if (ch.isClientOperator(client) == 0)
         {

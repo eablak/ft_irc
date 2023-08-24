@@ -5,10 +5,12 @@
 #include "Utils.hpp"
 class Topic : public ICommand
 {
-    public:
-        Topic();
-        ~Topic();
-        void execute(Server &server, Client *client);
+private:
+    void sendTopicToChannel(Server &server,  Channel &channel);
+public:
+    Topic();
+    ~Topic();
+    void execute(Server &server, Client *client);
 };
 
 #endif
