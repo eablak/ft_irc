@@ -25,7 +25,7 @@ void Nick::execute(Server &server, Client *client)
     }
     if (params[0][0] == ':' || std::isdigit(params[0][0]))
     {
-        server.messageToClient(client, ERR_ERRONEUSNICKNAME(params[0]));
+        server.messageToClient(client, client, ERR_ERRONEUSNICKNAME(params[0]));
         return;
     }
     for (unsigned long i = 0; i < params[0].size(); i++)
@@ -39,13 +39,13 @@ void Nick::execute(Server &server, Client *client)
     if (client->getNickname().size() != 0)
     {
         std::string msg = client->getNickname() + " NICK changed his nickname to " + params[0];
-        server.messageToClient(client, msg);
+        server.messageToClient(client, client, msg);
         client->setNickname(params[0]);
         return;
     }
 
     client->setNickname(params[0]);
-    server.messageToClient(client, "NICK Requesting the new nick " + client->getNickname());
+    server.messageToClient(client, client, "NICK Requesting the new nick " + client->getNickname());
     if (client->getUsername().size() == 0 || client->getRealname().size() == 0)
         return;
     client->setAuthStatus(REGISTERED);

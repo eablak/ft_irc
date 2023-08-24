@@ -29,7 +29,7 @@ public:
     void createSocket();
     void serverInvoke();
     void clientAccept();
-    void messageToClient(Client *client, std::string msg, int mode = 0);
+    void messageToClient(Client *sender, Client *target, std::string msg);
     void clientEvent(int fd);
     std::string readMessage(int fd);
     Client *getClient(int fd);

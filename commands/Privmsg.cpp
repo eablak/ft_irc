@@ -12,8 +12,8 @@ void Privmsg::sendMessageToClient(Server &server, Client *client, std::vector<st
     try
     {
         Client *target = server.getClientByNickname(params[0]);
-        std::string message = ":" + client->getNickname() + " PRIVMSG " + params[0] + " :" + params[1];
-        server.messageToClient(target, message);
+        std::string message = " PRIVMSG " + params[0] + " :" + params[1];
+        server.messageToClient(client, target, message);
     }
     catch (Server::ClientNotFoundException &e)
     {

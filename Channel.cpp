@@ -84,6 +84,6 @@ void Channel::sendMessageToChannel(Server &server, Client *client, std::string m
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
         if ((*it)->getClientFd() != client->getClientFd())
-            server.messageToClient(*it, client->getPrefix() + " " + message, 1);
+            server.messageToClient(client, *it, message);
     }
 }

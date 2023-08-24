@@ -3,5 +3,5 @@
 
 void Numeric::printNumeric(Client *client, Server &server, std::string errMessage)
 {
-    server.messageToClient(client, errMessage);
+    server.messageToClient(client, client, errMessage);
 }

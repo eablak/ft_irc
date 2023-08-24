@@ -28,7 +28,7 @@ void User::execute(Server &server, Client *client)
     // * yerine hostname gelebiliyor silindi
     if (new_params.size() != 4 || (new_params[1] != "0"))
     {
-        server.messageToClient(client, "Error: Missing parameter");
+        server.messageToClient(client, client, "Error: Missing parameter");
         return;
     }
 
