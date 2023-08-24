@@ -19,30 +19,14 @@ void User::execute(Server &server, Client *client)
 
         return;
     }
-    if (client->getParams().size() != 4)
+    if (client->getParams().size() < 4)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS("USER"));
         return;
     }
-    std::vector<std::string> new_params;
-    std::string all;
-    for (size_t i = 0; i < client->getParams().size(); i++)
-    {
-        if (client->getParams()[i][0] == ':')
-        {
-            while (i < client->getParams().size())
-            {
-                all += client->getParams()[i];
-                if (i != client->getParams().size() - 1)
-                    all += " ";
-                i++;
-            }
-            new_params.push_back(all);
-        }
-        else
-            new_params.push_back(client->getParams()[i]);
-    }
-    if (new_params.size() != 4 || (new_params[1] != "0" || new_params[2] != "*"))
+    std::vector<std::string> new_params = Utils::concatParams(client->getParams());
+    // * yerine hostname gelebiliyor silindi
+    if (new_params.size() != 4 || (new_params[1] != "0"))
     {
         server.messageToClient(client->getClientFd(), "Error: Missing parameter");
         return;
@@ -51,9 +35,6 @@ void User::execute(Server &server, Client *client)
     client->setUsername(new_params[0]);
     client->setRealname(new_params[3]);
     client->setAuthStatus(REGISTERED);
-    Numeric::printNumeric(client, server, RPL_WELCOME(client->getNickname(), client->getUsername(), server.getHostname()));
-    Numeric::printNumeric(client, server, RPL_YOURHOST(client->getNickname(), server.getHostname()));
-    Numeric::printNumeric(client, server, RPL_CREATED(client->getNickname(), std::string("tempDate")));
-
+    Numeric::printNumeric(client, server, client->getPrefix(server) + " " +RPL_WELCOME(client->getNickname(), client->getUsername(), server.getHostname()));
     new_params.clear();
 }

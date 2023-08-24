@@ -53,6 +53,7 @@ public:
     void addChannel(Channel &channel);
     void removeChannel(Channel &channel);
     std::string getPrefix(Server &server);
+    std::string getMessage();
 };
 
 #endif

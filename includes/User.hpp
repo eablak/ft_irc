@@ -2,7 +2,7 @@
 #define USER_HPP
 
 #include "ICommand.hpp"
-
+#include "Utils.hpp"
 class User : public ICommand
 {
 

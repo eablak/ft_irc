@@ -91,10 +91,8 @@ std::vector<std::string> &Client::getParams()
 
 void Client::setParams(std::vector<std::string> tmp)
 {
-    for (size_t i = 0; i < tmp.size(); i++)
-    {
-        params.push_back(tmp[i]);
-    }
+    params.clear();
+    params = tmp;
 }
 
 void Client::setCommand(std::string _command)

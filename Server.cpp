@@ -85,9 +85,12 @@ std::string Server::readMessage(int fd)
 	}
 	if (bytesRead == 0)
 		throw ClientDisconnectedException();
-	if (buffer.data()[bytesRead - 1] == 10 || buffer.data()[bytesRead - 1] == 13)
-		buffer.data()[bytesRead - 1] = '\0';
-	return (buffer.data());
+	// while (bytesRead > 0 && (buffer[bytesRead - 1] == '\r' || buffer[bytesRead - 1] == '\n'))
+	// 	bytesRead--;
+
+	buffer[bytesRead] = '\0';
+
+	return std::string(buffer.data());
 }
 
 void Server::removeClient(Client *client)
@@ -124,26 +127,30 @@ void Server::clientEvent(int fd)
 	{
 		removeClient(client);
 	}
-	std::cout << "Message: " << msg << std::endl;
+	std::cout << "Message from client: " << msg << std::endl;
 	HandleMessage _handlemsg;
-	if (!_handlemsg.handleMsg(*this, client, msg))
-		return;
-	_handlemsg.clientMsgProcess(*this, client);
-	ICommand *command = _handlemsg.getCommand(client->getCommand());
-	if (command == NULL)
+	while (msg.size() > 0)
 	{
-		if (_handlemsg.checkAuthCommand(*this, client) == 1)
+		if (!_handlemsg.handleMsg(*this, client, msg))
+			return;
+		_handlemsg.clientMsgProcess(*this, client);
+		ICommand *command = _handlemsg.getCommand(client->getCommand());
+		if (command == NULL)
 		{
-			_handlemsg.removeParams(client);
+			if (_handlemsg.checkAuthCommand(*this, client) == 1)
+			{
+				// _handlemsg.removeParams(client);
+				_handlemsg.removeExecutedPart(msg);
+				continue;
+			}
+			Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
+			// _handlemsg.removeParams(client);
+			_handlemsg.removeExecutedPart(msg);
 			return;
 		}
-		Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
-		_handlemsg.removeParams(client);
-		return;
+		command->execute(*this, client);
+		_handlemsg.removeExecutedPart(msg);
 	}
-	client->setParamsEnd();
-	command->execute(*this, client);
-	_handlemsg.removeParams(client);
 }
 
 void Server::serverInvoke()

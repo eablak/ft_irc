@@ -21,15 +21,12 @@ void Pass::execute(Server &server, Client *client)
     }
 
     client->setParamsEnd();
-    HandleMessage _handlmsg;
-    // : doğru say size 1 se
     if (client->getParams()[0] == server.getPassword())
     {
         client->setAuthStatus(AUTHENTICATE);
-        server.messageToClient(client->getClientFd(), "Password is correct!");
+        server.messageToClient(client->getClientFd(),"Password is correct!");
     }
     else
-    {
         Numeric::printNumeric(client, server, ERR_PASSWDMISMATCH());
-    }
+    
 }

@@ -86,10 +86,6 @@ void Privmsg::execute(Server &server, Client *client)
 {
     std::vector<std::string> params = client->getParams();
     params = fixParams(params);
-    for (size_t i = 0; i < params.size(); i++)
-    {
-        std::cout << "params[" << i << "] = " << params[i] << std::endl;
-    }
     if (params.size() < 2)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS("PRIVMSG"));
