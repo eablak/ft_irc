@@ -30,8 +30,16 @@ void Server::createSocket()
 	std::cout << "Server listening " << port << " port.." << std::endl;
 }
 
-void Server::messageToClient(Client *client, std::string msg)
+void Server::messageToClient(Client *client, std::string msg, int mode)
 {
+	if (mode == 1)
+	{
+		std::string bf = msg + "\r\n";
+		if (send(client->getClientFd(), bf.c_str(), bf.size(), 0) < 0)
+			error::error_func("Send Error");
+		std::cout << "Message to client: " << bf << std::endl;
+		return;
+	}
 	std::string bf = client->getPrefix() + " " + msg + "\r\n";
 	if (send(client->getClientFd(), bf.c_str(), bf.size(), 0) < 0)
 		error::error_func("Send Error");
@@ -60,7 +68,6 @@ void Server::clientAccept()
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
 		messageToClient(client, "Welcome to IRC. Please Enter Password");
 	}
-
 }
 
 Client *Server::getClient(int fd)

@@ -45,7 +45,7 @@ void Channel::addClient(Client *client)
 
 void Channel::removeClient(Client *client)
 {
-    std::vector<Client*>::iterator it;
+    std::vector<Client *>::iterator it;
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
         if ((*it)->getClientFd() == client->getClientFd())
@@ -84,6 +84,6 @@ void Channel::sendMessageToChannel(Server &server, Client *client, std::string m
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
         if ((*it)->getClientFd() != client->getClientFd())
-            server.messageToClient(*it, message);
+            server.messageToClient(*it,client->getPrefix() + " " + message, 1);
     }
 }

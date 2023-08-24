@@ -31,7 +31,7 @@ void Privmsg::sendMessageToChannel(Server &server, Client *client, std::vector<s
             Numeric::printNumeric(client, server, ERR_NOTONCHANNEL(params[0]));
             return;
         }
-        std::string message = ":" + client->getNickname() + " PRIVMSG " + params[0] + " :" + params[1] + "\r\n";
+        std::string message = "PRIVMSG " + params[0] + " :" + params[1] + "\r\n";
         ch.sendMessageToChannel(server, client, message);
     }
     catch (Server::ChannelNotFoundException &e)

@@ -26,7 +26,6 @@ void Client::setAuthStatus(_auth status)
     this->client_auth = status;
 }
 
-
 void Client::setParamsEnd()
 {
     if (!params.empty())

@@ -9,7 +9,7 @@ Part::~Part()
 
 void Part::handleWithParams(Server &server, Client *client, std::vector<std::string> &params)
 {
-    if (params.size() != 1)
+    if (params.size() != 2)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS(std::string("PART")));
         return;
@@ -24,7 +24,7 @@ void Part::handleWithParams(Server &server, Client *client, std::vector<std::str
         Channel &ch = server.getChannel(params[0]);
         ch.removeClient(client);
         client->removeChannel(ch);
-        server.messageToClient(client, "You left " + params[0]);
+        server.messageToClient(client, "PART " + params[0]);
     }
     catch(Server::ChannelNotFoundException &e)
     {
@@ -46,7 +46,7 @@ void Part::handleMultipleChannels(Server &server, Client *client, std::vector<st
 
 void Part::execute(Server &server, Client *client)
 {
-    std::vector<std::string> params = client->getParams();
+    std::vector<std::string> params = Utils::concatParams(client->getParams());
     if (params.size() == 0)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS("PART"));
