@@ -11,7 +11,7 @@ Kick::~Kick()
 void Kick::execute(Server &server, Client *client)
 {
     std::vector<std::string> params = Utils::concatParams(client->getParams());
-    if (params.size() != 3)
+    if (params.size() < 2)
     {
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS("KICK"));
         return;

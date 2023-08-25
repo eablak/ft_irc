@@ -10,6 +10,7 @@
 #include "includes/Quit.hpp"
 #include "includes/Cap.hpp"
 #include "includes/Who.hpp"
+#include "includes/Kick.hpp"
 
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
@@ -35,6 +36,7 @@ void HandleMessage::processAuthenticate()
 void HandleMessage::processRegistered()
 {
 	_commandMap.insert(std::make_pair("TOPIC", new Topic()));
+	_commandMap.insert(std::make_pair("KICK", new Kick()));
 	_commandMap.insert(std::make_pair("PASS", new Pass()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("USER", new User()));
