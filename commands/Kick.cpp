@@ -18,7 +18,10 @@ void Kick::execute(Server &server, Client *client)
     }
     std::string channelName = params[0];
     std::string nickname = params[1];
-    std::string reason = params[2];
+    std::string reason = "";
+    if (params.size() > 2)
+        reason = params[2];
+
     try
     {
         Channel &channel = server.getChannel(channelName);
@@ -33,12 +36,9 @@ void Kick::execute(Server &server, Client *client)
             Numeric::printNumeric(client, server, ERR_CHANOPRIVSNEEDED(channelName));
             return;
         }
+        channel.sendMessageToChannel(server, client, "KICK " + channelName + " " + clientToKick->getNickname() + " :" + reason);
         channel.removeClient(clientToKick);
         clientToKick->removeChannel(channel);
-        if (reason.empty())
-            reason = client->getNickname() + " has kicked " + clientToKick->getNickname();
-        std::cout << reason << std::endl;
-        channel.sendMessageToChannel(server, client, ":" + client->getNickname() + " KICK " + channelName + " " + clientToKick->getNickname() + " :" + reason);
     }
     catch (std::exception &e)
     {

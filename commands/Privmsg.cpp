@@ -32,7 +32,11 @@ void Privmsg::sendMessageToChannel(Server &server, Client *client, std::vector<s
             return;
         }
         std::string message = "PRIVMSG " + params[0] + " :" + params[1] + "\r\n";
-        ch.sendMessageToChannel(server, client, message);
+        for (size_t i = 0; i < ch.getClients().size(); i++)
+        {
+            if (ch.getClients()[i]->getClientFd() != client->getClientFd())
+                server.messageToClient(client, ch.getClients()[i], message);
+        }
     }
     catch (Server::ChannelNotFoundException &e)
     {

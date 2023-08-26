@@ -9,3 +9,4 @@ public:
     ~Mode();
     void execute(Server &server, Client *client);
 };
+#endif
