@@ -11,6 +11,7 @@
 #include "includes/Cap.hpp"
 #include "includes/Who.hpp"
 #include "includes/Kick.hpp"
+#include "includes/Mode.hpp"
 
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
@@ -45,6 +46,7 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("PRIVMSG", new Privmsg()));
 	_commandMap.insert(std::make_pair("QUIT", new Quit()));
 	_commandMap.insert(std::make_pair("WHO", new Who()));
+	_commandMap.insert(std::make_pair("MODE", new Mode()));
 }
 
 void HandleMessage::clientMsgProcess(Server &server, Client *client)

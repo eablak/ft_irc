@@ -21,6 +21,7 @@
 #define RPL_ENDOFNAMES(nickname, channel) "366 " + nickname + " " + channel + " :End of /NAMES list"
 #define RPL_WHOREPLY(nickname, channel, user, host, server, nick, status, hopcount, realname) "352 " + nickname + " " + channel + " " + user + " " + host + " " + server + " " + nick + " " + status + " " + hopcount + " :" + realname
 #define RPL_ENDOFWHO(nickname, channel) "315 " + nickname + " " + channel + " :End of /WHO list"
+#define RPL_CHANNELMODEIS(channel, mode) "324 " + channel + " " + mode
 
 #define ERR_NEEDMOREPARAMS(cmd) (std::string("461 ") + cmd + " :Not enough parameter")
 #define ERR_INPUTTOOLONG() ("417 :Input line was too long")
