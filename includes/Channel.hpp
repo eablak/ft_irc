@@ -6,9 +6,8 @@
 class Client;
 typedef enum Modes
 {
-    TOPIC_LOCKED = 'c',
+    TOPIC_LOCKED = 't',
     SECRET = 's',
-    
 } Modes;
 class Channel
 {
@@ -34,6 +33,7 @@ public:
     void sendMessageToChannel(Server &server, Client *client, std::string message);
     void addMode(Modes mode);
     void removeMode(Modes mode);
-    void checkMode(Modes mode);
+    bool checkMode(Modes mode);
+    std::string getMode();
 };
 #endif

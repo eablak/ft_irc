@@ -7,6 +7,7 @@ Channel::Channel(std::string name, Client *client)
     this->topic = "";
     this->operators.push_back(client);
     this->clients.push_back(client);
+    addMode(TOPIC_LOCKED);
 }
 
 Channel::~Channel()
@@ -77,13 +78,13 @@ bool Channel::isClientOperator(Client *client)
     }
     return (false);
 }
-//sends a the message to AlL of the channel members including the client
+// sends a the message to AlL of the channel members including the client
 void Channel::sendMessageToChannel(Server &server, Client *client, std::string message)
 {
     std::vector<Client *>::iterator it;
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
-            server.messageToClient(client, *it, message);
+        server.messageToClient(client, *it, message);
     }
 }
 
@@ -105,7 +106,7 @@ void Channel::removeMode(Modes mode)
     }
 }
 
-bool  Channel::checkMode(Modes mode)
+bool Channel::checkMode(Modes mode)
 {
     std::vector<Modes>::iterator it;
     for (it = this->modes.begin(); it != this->modes.end(); it++)
@@ -114,4 +115,14 @@ bool  Channel::checkMode(Modes mode)
             return (true);
     }
     return (false);
+}
+
+std::string Channel::getMode()
+{
+    std::string mode = "+";
+    std::vector<Modes>::iterator it;
+    for (it = this->modes.begin(); it != this->modes.end(); it++)
+        mode += *it;
+
+    return (mode);
 }

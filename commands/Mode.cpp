@@ -8,7 +8,23 @@ Mode::Mode()
 Mode::~Mode()
 {
 }
-
+void Mode::checkMode(Server &server,Channel &channel,  Client *client,char mode)
+{
+	if(mode == TOPIC_LOCKED)
+	{
+		if(server.getChannel(client->getParams()[0]).isClientOperator(client))
+			server.getChannel(client->getParams()[0]).addMode(TOPIC_LOCKED);
+		else
+			Numeric::printNumeric(client, server, ERR_CHANOPRIVSNEEDED(client->getParams()[0]));
+	}
+	else if(mode == SECRET)
+	{
+		if(server.getChannel(client->getParams()[0]).isClientOperator(client))
+			server.getChannel(client->getParams()[0]).addMode(SECRET);
+		else
+			Numeric::printNumeric(client, server, ERR_CHANOPRIVSNEEDED(client->getParams()[0]));
+	}
+}
 void Mode::handleClient(Server &server, Client *client, std::vector<std::string> &params)
 {
 	Client *clientToChange;
@@ -30,6 +46,16 @@ void Mode::handleChannel(Server &server, Client *client, std::vector<std::string
 		{
 			Numeric::printNumeric(client, server, RPL_CHANNELMODEIS(channel.getName(), channel.getMode()));
 			return;
+		}
+		std::string modes = params[1].substr(1, params[1].size() - 1);
+		for(size_t i = 0; i < modes.size(); i++)
+		{
+			if(modes[i] == '+')
+				continue;
+			else if(modes[i] == '-')
+				continue;
+			else
+				checkMode(server,channel ,client ,modes[i]);
 		}
 	}
 	catch(Server::ChannelNotFoundException &e)
