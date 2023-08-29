@@ -9,6 +9,7 @@
 #include "includes/Privmsg.hpp"
 #include "includes/Quit.hpp"
 #include "includes/Cap.hpp"
+#include "includes/Notice.hpp"
 
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
@@ -41,6 +42,7 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("PART", new Part()));
 	_commandMap.insert(std::make_pair("PRIVMSG", new Privmsg()));
 	_commandMap.insert(std::make_pair("QUIT", new Quit()));
+	_commandMap.insert(std::make_pair("NOTICE", new Notice()));
 }
 
 void HandleMessage::clientMsgProcess(Server &server, Client *client)
