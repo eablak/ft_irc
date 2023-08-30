@@ -16,13 +16,22 @@ void Mode::handleChannel(Server &server, Client *client, std::vector<std::string
 		Channel &channel = server.getChannel(params[0]);
 		if (params.size() < 2)
 		{
-			Numeric::printNumeric(client, server, RPL_CHANNELMODEIS(channel.getName(),"+nt"));
+			Numeric::printNumeric(client, server, RPL_CHANNELMODEIS(channel.getName(), "+nt"));
 			return;
 		}
-		if (channel.isClientOperator(client) == false)
+		if (params[1].find("+o") != std::string::npos)
 		{
-			Numeric::printNumeric(client, server, ERR_CHANOPRIVSNEEDED(channel.getName()));
-			return;
+			try
+			{
+				Client *clientToMode = server.getClientByNickname(params[2]);
+				channel.sendMessageToChannel(server, client, "MODE " + channel.getName() + " +o " + params[2]);
+				channel.addOperator(clientToMode);
+			}
+			catch (Server::ClientNotFoundException &e)
+			{
+				Numeric::printNumeric(client, server, ERR_NOSUCHNICK(params[2]));
+				return;
+			}
 		}
 	}
 	catch (Server::ChannelNotFoundException &e)

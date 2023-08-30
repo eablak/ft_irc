@@ -26,5 +26,7 @@ public:
     bool isClientInChannel(Client *client);
     bool isClientOperator(Client *client);
     void sendMessageToChannel(Server &server, Client *client, std::string message);
+    void addOperator(Client *client);
+    void removeOperator(Client *client);
 };
 #endif

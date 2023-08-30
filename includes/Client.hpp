@@ -1,7 +1,6 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-
 #include "libraries.hpp"
 #include "Numeric.hpp"
 #include "Channel.hpp"
@@ -28,7 +27,8 @@ private:
     std::string username;
     std::string realname;
     std::vector<Channel> joinedChannels;
-    std::string hostname;    
+    std::string hostname;
+    std::string message;
 
 public:
     Client();
@@ -52,6 +52,8 @@ public:
     void removeChannel(Channel &channel);
     std::vector<Channel> &getChannels();
     std::string getPrefix();
+    void setMessage(std::string message);
+    std::string getMessage();
 };
 
 #endif

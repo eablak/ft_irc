@@ -86,3 +86,21 @@ void Channel::sendMessageToChannel(Server &server, Client *client, std::string m
         server.messageToClient(client, *it, message);
     }
 }
+
+void Channel::addOperator(Client *client)
+{
+    this->operators.push_back(client);
+}
+
+void Channel::removeOperator(Client *client)
+{
+    std::vector<Client *>::iterator it;
+    for (it = this->operators.begin(); it != this->operators.end(); it++)
+    {
+        if ((*it)->getClientFd() == client->getClientFd())
+        {
+            this->operators.erase(it);
+            return;
+        }
+    }
+}

@@ -13,9 +13,9 @@ class HandleMessage{
     private:
     // ICommand'ekle
     std::map<std::string, ICommand *> _commandMap;
-
     public:
     int handleMsg(Server &server, Client *client, std::string msg);
+    ~HandleMessage();
     void clientMsgProcess(Server &server, Client *client);
     void processNotAuthenticated();
     void processAuthenticate();

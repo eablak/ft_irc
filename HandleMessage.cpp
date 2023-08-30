@@ -26,6 +26,7 @@ void HandleMessage::processNotAuthenticated()
 	_commandMap.insert(std::make_pair("USER", new User()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("CAP", new Cap()));
+	_commandMap.insert(std::make_pair("PING", new Ping()));
 }
 
 void HandleMessage::processAuthenticate()
@@ -34,6 +35,7 @@ void HandleMessage::processAuthenticate()
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("USER", new User()));
 	_commandMap.insert(std::make_pair("CAP", new Cap()));
+	_commandMap.insert(std::make_pair("PING", new Ping()));
 }
 
 void HandleMessage::processRegistered()
@@ -76,7 +78,10 @@ int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
 
 	if (msg == "")
 		return 0;
-	std::string executablePart = msg.substr(0, msg.find("\r\n"));
+	size_t pos = msg.find("\r\n");
+	if (pos == std::string::npos)
+		pos = msg.find("\n");
+	std::string executablePart = msg.substr(0, pos);
 	if (executablePart == "")
 		return 0;
 	std::vector<std::string> params = Utils::split(executablePart, ' ');
@@ -91,9 +96,7 @@ ICommand *HandleMessage::getCommand(std::string command)
 	std::map<std::string, ICommand *>::iterator it;
 	it = this->_commandMap.find(command);
 	if (it == this->_commandMap.end())
-
 		return NULL;
-
 	return it->second;
 }
 
@@ -146,7 +149,23 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 
 void HandleMessage::removeExecutedPart(std::string &msg)
 {
+	int deleteCount = 2;
 	size_t pos = msg.find("\r\n");
+	if (pos == std::string::npos)
+	{
+		pos = msg.find("\n");
+		deleteCount = 1;
+	}
 	if (pos != std::string::npos)
-		msg.erase(0, pos + 2);
+		msg.erase(0, pos + deleteCount);
+}
+
+HandleMessage::~HandleMessage()
+{
+	std::map<std::string, ICommand *>::iterator it;
+	for (it = _commandMap.begin(); it != _commandMap.end(); it++)
+	{
+		delete it->second;
+	}
+	_commandMap.clear();
 }
