@@ -22,9 +22,9 @@ void Part::handleWithParams(Server &server, Client *client, std::vector<std::str
     try
     {
         Channel &ch = server.getChannel(params[0]);
+        ch.sendMessageToChannel(server,client, "PART " + ch.getName() + " :" + params[1]);
         ch.removeClient(client);
         client->removeChannel(ch);
-        server.messageToClient(client, client, "PART " + params[0]);
     }
     catch (Server::ChannelNotFoundException &e)
     {

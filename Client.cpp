@@ -126,3 +126,13 @@ std::vector<Channel> &Client::getChannels()
 {
     return (joinedChannels);
 }
+void Client::setMessage(std::string message)
+{
+    this->message = message;
+}
+
+std::string Client::getMessage()
+{
+    return (this->message);
+}
+

@@ -26,6 +26,7 @@ private:
 
 public:
     Server(std::string av1, std::string av2);
+    ~Server();
     void createSocket();
     void serverInvoke();
     void clientAccept();

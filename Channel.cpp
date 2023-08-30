@@ -54,6 +54,8 @@ void Channel::removeClient(Client *client)
             return;
         }
     }
+    if (isClientOperator(client))
+        removeOperator(client);
 }
 
 bool Channel::isClientInChannel(Client *client)
@@ -84,5 +86,23 @@ void Channel::sendMessageToChannel(Server &server, Client *client, std::string m
     for (it = this->clients.begin(); it != this->clients.end(); it++)
     {
         server.messageToClient(client, *it, message);
+    }
+}
+
+void Channel::addOperator(Client *client)
+{
+    this->operators.push_back(client);
+}
+
+void Channel::removeOperator(Client *client)
+{
+    std::vector<Client *>::iterator it;
+    for (it = this->operators.begin(); it != this->operators.end(); it++)
+    {
+        if ((*it)->getClientFd() == client->getClientFd())
+        {
+            this->operators.erase(it);
+            return;
+        }
     }
 }

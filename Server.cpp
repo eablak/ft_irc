@@ -82,13 +82,10 @@ std::string Server::readMessage(int fd)
 	if (bytesRead == -1)
 	{
 		std::cerr << "Receive error." << std::endl;
-		throw std::out_of_range("t");
+		exit(1);
 	}
 	if (bytesRead == 0)
 		throw ClientDisconnectedException();
-	// while (bytesRead > 0 && (buffer[bytesRead - 1] == '\r' || buffer[bytesRead - 1] == '\n'))
-	// 	bytesRead--;
-
 	buffer[bytesRead] = '\0';
 
 	return std::string(buffer.data());
@@ -106,6 +103,11 @@ void Server::removeClient(Client *client)
 			break;
 		}
 	}
+	for (size_t i = 0; i < _channels.size(); i++)
+	{
+		if (_channels[i].isClientInChannel(client))
+			_channels[i].removeClient(client);
+	}
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i]->getClientFd() == client->getClientFd())
@@ -122,36 +124,37 @@ void Server::clientEvent(int fd)
 	std::string msg;
 	try
 	{
-		msg = readMessage(client->getClientFd());
+		client->setMessage(client->getMessage() + readMessage(fd));
 	}
-	catch (std::exception &e)
+	catch (ClientDisconnectedException &e)
 	{
 		removeClient(client);
 	}
+	if (client->getMessage().find("\n") == std::string::npos)
+		return;
+	msg = client->getMessage();
 	std::cout << "Message from client: " << msg << std::endl;
-	HandleMessage _handlemsg;
+	HandleMessage _handlemsg(client);
 	while (msg.size() > 0)
 	{
 		if (!_handlemsg.handleMsg(*this, client, msg))
 			return;
-		_handlemsg.clientMsgProcess(*this, client);
 		ICommand *command = _handlemsg.getCommand(client->getCommand());
 		if (command == NULL)
 		{
 			if (_handlemsg.checkAuthCommand(*this, client) == 1)
 			{
-				// _handlemsg.removeParams(client);
 				_handlemsg.removeExecutedPart(msg);
 				continue;
 			}
 			Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
-			// _handlemsg.removeParams(client);
 			_handlemsg.removeExecutedPart(msg);
-			return;
+			continue;
 		}
 		command->execute(*this, client);
 		_handlemsg.removeExecutedPart(msg);
 	}
+	client->setMessage("");
 }
 
 void Server::serverInvoke()
@@ -188,7 +191,7 @@ std::string Server::getHostname()
 }
 
 void Server::setHostname()
-{ // !
+{
 	char hostname_c[1024];
 	int rtn = gethostname(hostname_c, 1024);
 	if (rtn == -1)
@@ -227,4 +230,8 @@ Client *Server::getClientByNickname(std::string nickname)
 			return (_clients[i]);
 	}
 	throw ClientNotFoundException();
+}
+
+Server::~Server()
+{
 }
