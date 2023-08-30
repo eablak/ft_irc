@@ -32,8 +32,6 @@ void Notice::sendToMessageUser(Server &server, Client *client, std::vector<std::
 
 void Notice::execute(Server &server, Client *client)
 {
-    (void)client;
-    (void)server;
     std::vector<std::string> params = Utils::concatParams(client->getParams());
     params = Utils::concatParams(params);
     if (params.size() < 2)
