@@ -2,7 +2,9 @@
 #define CHANNEL_HPP
 #include "./libraries.hpp"
 #include "./Client.hpp"
+
 class Client;
+
 class Channel
 {
 private:

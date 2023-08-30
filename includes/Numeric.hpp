@@ -2,23 +2,16 @@
 #define NUMERIC_HPP
 
 #include "libraries.hpp"
-// #include "Client.hpp"
-// #include "Server.hpp"
-
-// #define RPL_NAMEREPLY(nick, channel, users) ("353", "= " + channel + " :" + users)
-// #define ERR_NOSUCHNICK(nick) Numeric::createNumeric("401", nick + " :No such nick/channel")
-// #define ERR_NOSUCHCHANNEL(channel) Numeric::createNumeric("403", channel + " :No such channel")
-// #define ERR_USERNOTINCHANNEL(nick, channel) Numeric::createNumeric("441", nick + " " + channel + " :They aren't on that channel")
-// #define ERR_USERONCHANNEL(nick, channel) Numeric::createNumeric("443", nick + " " + channel + " :is already on channel")
-// #define ERR_NOTREGISTERED Numeric::createNumeric("451", ":You have not registered")
-// #define ERR_CHANOPRIVSNEEDED(channel) Numeric::createNumeric("482", channel + " :You're not channel operator")
 #define RPL_TOPIC(nickname, channel, topic) "332 " + nickname + " " + channel + " " + topic
-#define RPL_NOTOPIC(nickname, channel) "331 "+ nickname + " " + channel + " :No topic is set"
+#define RPL_NOTOPIC(nickname, channel) "331 " + nickname + " " + channel + " :No topic is set"
 #define RPL_WELCOME(nick, user, host) std::string("001 ") + nick + " :Welcome to the Internet Relay Network " + "!" + user + "@" + host
 #define RPL_YOURHOST(nick, host) (std::string("002 ") + ":Your host is " + host + ", running version 1.0")
 #define RPL_CREATED(nick, date) (std::string("003 ") + ":This server was created " + date)
 #define RPL_NAMREPLY(nickname, channel, nicknames) "353 " + nickname + " = " + channel + " :" + nicknames
 #define RPL_ENDOFNAMES(nickname, channel) "366 " + nickname + " " + channel + " :End of /NAMES list"
+#define RPL_WHOREPLY(nickname, channel, user, host, server, nick, status, hopcount, realname) "352 " + nickname + " " + channel + " " + user + " " + host + " " + server + " " + nick + " " + status + " " + hopcount + " :" + realname
+#define RPL_ENDOFWHO(nickname, channel) "315 " + nickname + " " + channel + " :End of /WHO list"
+#define RPL_CHANNELMODEIS(channel, mode) "324 " + channel + " " + mode
 
 #define ERR_NEEDMOREPARAMS(cmd) (std::string("461 ") + cmd + " :Not enough parameter")
 #define ERR_INPUTTOOLONG() ("417 :Input line was too long")

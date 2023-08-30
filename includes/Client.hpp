@@ -36,9 +36,6 @@ public:
     int getClientFd();
     _auth getAuthStatus();
     void setAuthStatus(_auth status);
-    void setClientMessage(std::string, std::string);
-    std::list<std::pair<std::string, std::string> > getMap();
-    void printMap();
     void setParamsEnd();
     std::string getNickname();
     std::string getUsername();
@@ -53,8 +50,8 @@ public:
     bool isInChannel(std::string &channelName) const;
     void addChannel(Channel &channel);
     void removeChannel(Channel &channel);
+    std::vector<Channel> &getChannels();
     std::string getPrefix();
-
 };
 
 #endif

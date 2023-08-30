@@ -35,6 +35,8 @@ SRCS        :=      main.cpp \
 						commands/Kick.cpp\
 						commands/Names.cpp\
 						commands/Cap.cpp\
+						commands/Who.cpp\
+						commands/Mode.cpp\
 						commands/Notice.cpp\
 						commands/Ping.cpp\
 

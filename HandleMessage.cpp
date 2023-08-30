@@ -9,6 +9,9 @@
 #include "includes/Privmsg.hpp"
 #include "includes/Quit.hpp"
 #include "includes/Cap.hpp"
+#include "includes/Who.hpp"
+#include "includes/Kick.hpp"
+#include "includes/Mode.hpp"
 #include "includes/Notice.hpp"
 #include "includes/Ping.hpp"
 
@@ -36,6 +39,7 @@ void HandleMessage::processAuthenticate()
 void HandleMessage::processRegistered()
 {
 	_commandMap.insert(std::make_pair("TOPIC", new Topic()));
+	_commandMap.insert(std::make_pair("KICK", new Kick()));
 	_commandMap.insert(std::make_pair("PASS", new Pass()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("USER", new User()));
@@ -43,6 +47,8 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("PART", new Part()));
 	_commandMap.insert(std::make_pair("PRIVMSG", new Privmsg()));
 	_commandMap.insert(std::make_pair("QUIT", new Quit()));
+	_commandMap.insert(std::make_pair("WHO", new Who()));
+	_commandMap.insert(std::make_pair("MODE", new Mode()));
 	_commandMap.insert(std::make_pair("NOTICE", new Notice()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
 }

@@ -74,16 +74,16 @@ void Join::sendSuccessNumerics(Server &server, Client *client, Channel &channel)
     std::string names;
     for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
     {
+
+        for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
         {
-            for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
-            {
-                if (channel.isClientOperator(*it))
-                    names += "@";
-                names += (*it)->getNickname().empty() ? (*it)->getUsername() : (*it)->getNickname();
-                if (it != channel.getClients().end() - 1)
-                    names += " ";
-            }
+            if (channel.isClientOperator(*it))
+                names += "@";
+            names += (*it)->getNickname().empty() ? (*it)->getUsername() : (*it)->getNickname();
+            if (it != channel.getClients().end() - 1)
+                names += " ";
         }
+
         Numeric::printNumeric(*it, server, RPL_NAMREPLY(client->getNickname(), channel.getName(), names));
         Numeric::printNumeric(*it, server, RPL_ENDOFNAMES(client->getNickname(), channel.getName()));
         names = "";
