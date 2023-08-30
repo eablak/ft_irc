@@ -9,9 +9,10 @@ class Notice : public ICommand
 public:
     Notice();
     ~Notice();
-    void ChannelOrUser(Server &server, Client *client, std::vector<std::string> params);
+    void channelOrUser(Server &server, Client *client, std::vector<std::string> params);
     void sendToMessageChannel(Server &server, Client *client, std::vector<std::string> params);
     void sendToMessageUser(Server &server, Client *client, std::vector<std::string> params);
+    void multipleTargets(Server &server, Client *client, std::vector<std::string> params);
     void execute(Server &server, Client *client);
 };
 

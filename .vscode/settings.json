@@ -83,6 +83,7 @@
         "cinttypes": "cpp",
         "typeindex": "cpp",
         "variant": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "__bits": "cpp"
     }
 }
