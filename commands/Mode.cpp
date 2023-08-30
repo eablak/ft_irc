@@ -16,7 +16,7 @@ void Mode::handleChannel(Server &server, Client *client, std::vector<std::string
 		Channel &channel = server.getChannel(params[0]);
 		if (params.size() < 2)
 		{
-			Numeric::printNumeric(client, server, RPL_CHANNELMODEIS(channel.getName(), channel.getMode()));
+			Numeric::printNumeric(client, server, RPL_CHANNELMODEIS(channel.getName(),"+nt"));
 			return;
 		}
 		if (channel.isClientOperator(client) == false)

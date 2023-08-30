@@ -7,7 +7,6 @@ Channel::Channel(std::string name, Client *client)
     this->topic = "";
     this->operators.push_back(client);
     this->clients.push_back(client);
-    addMode(TOPIC_LOCKED);
 }
 
 Channel::~Channel()
@@ -86,43 +85,4 @@ void Channel::sendMessageToChannel(Server &server, Client *client, std::string m
     {
         server.messageToClient(client, *it, message);
     }
-}
-
-void Channel::addMode(Modes mode)
-{
-    this->modes.push_back(mode);
-}
-
-void Channel::removeMode(Modes mode)
-{
-    std::vector<Modes>::iterator it;
-    for (it = this->modes.begin(); it != this->modes.end(); it++)
-    {
-        if (*it == mode)
-        {
-            this->modes.erase(it);
-            return;
-        }
-    }
-}
-
-bool Channel::checkMode(Modes mode)
-{
-    std::vector<Modes>::iterator it;
-    for (it = this->modes.begin(); it != this->modes.end(); it++)
-    {
-        if (*it == mode)
-            return (true);
-    }
-    return (false);
-}
-
-std::string Channel::getMode()
-{
-    std::string mode = "+";
-    std::vector<Modes>::iterator it;
-    for (it = this->modes.begin(); it != this->modes.end(); it++)
-        mode += *it;
-
-    return (mode);
 }

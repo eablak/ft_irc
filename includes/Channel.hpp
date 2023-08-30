@@ -4,11 +4,7 @@
 #include "./Client.hpp"
 
 class Client;
-typedef enum Modes
-{
-    TOPIC_LOCKED = 't',
-    SECRET = 's',
-} Modes;
+
 class Channel
 {
 private:
@@ -16,7 +12,6 @@ private:
     std::string topic;
     std::vector<Client *> clients;
     std::vector<Client *> operators;
-    std::vector<Modes> modes;
 
 public:
     Channel(std::string name, Client *client);
@@ -31,9 +26,5 @@ public:
     bool isClientInChannel(Client *client);
     bool isClientOperator(Client *client);
     void sendMessageToChannel(Server &server, Client *client, std::string message);
-    void addMode(Modes mode);
-    void removeMode(Modes mode);
-    bool checkMode(Modes mode);
-    std::string getMode();
 };
 #endif
