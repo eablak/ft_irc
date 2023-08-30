@@ -36,6 +36,7 @@ SRCS        :=      main.cpp \
 						commands/Names.cpp\
 						commands/Cap.cpp\
 						commands/Notice.cpp\
+						commands/Ping.cpp\
 
 OBJS        := ${SRCS:.cpp=.o}
 
