@@ -103,6 +103,11 @@ void Server::removeClient(Client *client)
 			break;
 		}
 	}
+	for (size_t i = 0; i < _channels.size(); i++)
+	{
+		if (_channels[i].isClientInChannel(client))
+			_channels[i].removeClient(client);
+	}
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i]->getClientFd() == client->getClientFd())
@@ -129,12 +134,11 @@ void Server::clientEvent(int fd)
 		return;
 	msg = client->getMessage();
 	std::cout << "Message from client: " << msg << std::endl;
-	HandleMessage _handlemsg;
+	HandleMessage _handlemsg(client);
 	while (msg.size() > 0)
 	{
 		if (!_handlemsg.handleMsg(*this, client, msg))
 			return;
-		_handlemsg.clientMsgProcess(*this, client);
 		ICommand *command = _handlemsg.getCommand(client->getCommand());
 		if (command == NULL)
 		{
@@ -226,4 +230,8 @@ Client *Server::getClientByNickname(std::string nickname)
 			return (_clients[i]);
 	}
 	throw ClientNotFoundException();
+}
+
+Server::~Server()
+{
 }

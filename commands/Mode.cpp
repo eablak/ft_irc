@@ -33,6 +33,20 @@ void Mode::handleChannel(Server &server, Client *client, std::vector<std::string
 				return;
 			}
 		}
+		else if (params[1].find("-o") != std::string::npos)
+		{
+			try
+			{
+				Client *clientToMode = server.getClientByNickname(params[2]);
+				channel.sendMessageToChannel(server, client, "MODE " + channel.getName() + " -o " + params[2]);
+				channel.removeOperator(clientToMode);
+			}
+			catch (Server::ClientNotFoundException &e)
+			{
+				Numeric::printNumeric(client, server, ERR_NOSUCHNICK(params[2]));
+				return;
+			}
+		}
 	}
 	catch (Server::ChannelNotFoundException &e)
 	{

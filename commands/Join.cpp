@@ -72,9 +72,6 @@ void Join::sendSuccessNumerics(Server &server, Client *client, Channel &channel)
     Numeric::printNumeric(client, server, channel.getTopic().size() > 0 ? RPL_TOPIC(client->getNickname(), channel.getName(), channel.getTopic()) : RPL_NOTOPIC(client->getNickname(), channel.getName()));
     server.messageToClient(client, client, "JOIN You are now in channel " + channel.getName());
     std::string names;
-    for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
-    {
-
         for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
         {
             if (channel.isClientOperator(*it))
@@ -83,11 +80,9 @@ void Join::sendSuccessNumerics(Server &server, Client *client, Channel &channel)
             if (it != channel.getClients().end() - 1)
                 names += " ";
         }
-
-        Numeric::printNumeric(*it, server, RPL_NAMREPLY(client->getNickname(), channel.getName(), names));
-        Numeric::printNumeric(*it, server, RPL_ENDOFNAMES(client->getNickname(), channel.getName()));
+        channel.sendMessageToChannel(server,client,RPL_NAMREPLY(client->getNickname(), channel.getName(), names));
+        channel.sendMessageToChannel(server,client,RPL_ENDOFNAMES(client->getNickname(), channel.getName()));
         names = "";
-    }
 }
 
 void Join::handleMultipleChannels(Server &server, Client *client, std::vector<std::string> &params)

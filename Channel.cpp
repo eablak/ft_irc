@@ -54,6 +54,8 @@ void Channel::removeClient(Client *client)
             return;
         }
     }
+    if (isClientOperator(client))
+        removeOperator(client);
 }
 
 bool Channel::isClientInChannel(Client *client)

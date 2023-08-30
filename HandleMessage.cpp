@@ -15,6 +15,16 @@
 #include "includes/Notice.hpp"
 #include "includes/Ping.hpp"
 
+HandleMessage::HandleMessage(Client *client)
+{
+	if (client->getAuthStatus() == NOTAUTHENTICATED)
+		processNotAuthenticated();
+	else if (client->getAuthStatus() == AUTHENTICATE)
+		processAuthenticate();
+	else
+		processRegistered();
+}
+
 std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 {
 	return (_commandMap);
@@ -55,16 +65,6 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("PING", new Ping()));
 }
 
-void HandleMessage::clientMsgProcess(Server &server, Client *client)
-{
-	(void)server;
-	if (client->getAuthStatus() == NOTAUTHENTICATED)
-		processNotAuthenticated();
-	else if (client->getAuthStatus() == AUTHENTICATE)
-		processAuthenticate();
-	else
-		processRegistered();
-}
 
 int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
 {
@@ -104,7 +104,6 @@ int HandleMessage::checkAuthCommand(Server &server, Client *client)
 {
 
 	std::vector<std::string> _allCommands;
-	HandleMessage _handlemsg;
 
 	_allCommands.push_back("PASS");
 	_allCommands.push_back("NICK");
