@@ -5,7 +5,6 @@
 class Mode : public ICommand
 {
 private:
-    void handleClient(Server &server, Client *client, std::vector<std::string> &params);
     void handleChannel(Server &server, Client *client, std::vector<std::string> &params);
     void addModes(Server &server, Channel &channel, Client *client, std::string &modes);
     void removeModes(Server &server, Channel &channel, Client *client, std::string &modes);
