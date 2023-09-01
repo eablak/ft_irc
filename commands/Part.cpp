@@ -34,26 +34,20 @@ void Part::handleWithParams(Server &server, Client *client, std::vector<std::str
             is_op = 1;
         if (is_op == 1 && ch.getOperators().size() > 1)
             any_other_op = 1;
+        ch.removeClient(client);
         Client *new_op;
-        if (is_op == 1 && any_other_op == 0 && ch.getClients().size() != 1)
+        if (is_op == 1 && any_other_op == 0 && ch.getClients().size() != 0)
         {
             std::srand(std::time(0));
-            size_t rand_op = std::rand() % ch.getClients().size() + 1;
-            for (size_t i = 0; i < ch.getClients().size(); i++)
-            {
-                if (i == rand_op)
-                {
-                    new_op = ch.getClients()[i];
-                    std::cout << " new_op " << ch.getClients()[i]->getNickname() << std::endl;
-                }
-            }
-            ch.addOperator(new_op);
-            ch.sendMessageToChannel(server, client, "MODE " + ch.getName() + " +o " + new_op->getNickname());
-        }
+            size_t rand_op = std::rand() % ch.getClients().size();
 
+            new_op = ch.getClients()[rand_op];
+            ch.addOperator(new_op);
+            ch.sendMessageToChannel(server, new_op, "MODE " + ch.getName() + " +o " + new_op->getNickname());
+        }
         ch.removeClient(client);
         client->removeChannel(ch);
-        if(ch.getClients().size() == 0)
+        if (ch.getClients().size() == 0)
             server.removeChannel(ch);
     }
     catch (Server::ChannelNotFoundException &e)
