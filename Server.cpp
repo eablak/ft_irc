@@ -235,3 +235,15 @@ Client *Server::getClientByNickname(std::string nickname)
 Server::~Server()
 {
 }
+
+void Server::removeChannel(Channel &channel)
+{
+	for (size_t i = 0; i < _channels.size(); i++)
+	{
+		if (_channels[i].getName() == channel.getName())
+		{
+			_channels.erase(_channels.begin() + i);
+			break;
+		}
+	}
+}
