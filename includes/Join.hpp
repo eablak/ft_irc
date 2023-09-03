@@ -5,6 +5,7 @@
 class Join : public ICommand
 {
 private:
+    bool checkChannelName(std::string &channelName);
     void sendSuccessNumerics(Server &server, Client *client,Channel &channel);
     void handleMultipleChannels(Server &server, Client *client, std::vector<std::string> &params);
 	void handleWithParams(Server &server, Client *client,std::vector<std::string>&params);

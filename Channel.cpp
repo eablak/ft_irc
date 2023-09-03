@@ -74,7 +74,7 @@ bool Channel::isClientOperator(Client *client)
     std::vector<Client *>::iterator it;
     for (it = this->operators.begin(); it != this->operators.end(); it++)
     {
-        if ((*it)->getClientFd() == client->getClientFd())
+        if ((*it) == client)
             return (true);
     }
     return (false);

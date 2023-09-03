@@ -9,16 +9,17 @@ Join::Join()
 {
 }
 
-void checkChannelName(std::string &channelName)
+bool Join::checkChannelName(std::string &channelName)
 {
     const char invalidChars[] = {' ', ','};
     for (unsigned long int i = 0; i < sizeof(invalidChars); i++)
     {
         if (channelName.find(invalidChars[i]) != std::string::npos)
-            throw std::invalid_argument("Invalid channel name");
+            return false;
     }
     if (channelName[0] != '#')
-        throw std::invalid_argument("Invalid channel name");
+        return false;
+    return true;
 }
 void Join::handleWithParams(Server &server, Client *client, std::vector<std::string> &params)
 {
@@ -27,7 +28,9 @@ void Join::handleWithParams(Server &server, Client *client, std::vector<std::str
         Numeric::printNumeric(client, server, ERR_NEEDMOREPARAMS(std::string("JOIN")));
         return;
     }
-    checkChannelName(params[0]);
+    if (!checkChannelName(params[0]))
+        return;
+
     std::string channelName = params[0];
     if (client->isInChannel(channelName))
     {
@@ -69,20 +72,20 @@ void Join::execute(Server &server, Client *client)
 void Join::sendSuccessNumerics(Server &server, Client *client, Channel &channel)
 {
 
-    Numeric::printNumeric(client, server, channel.getTopic().size() > 0 ? RPL_TOPIC(client->getNickname(), channel.getName(), channel.getTopic()) : RPL_NOTOPIC(client->getNickname(), channel.getName()));
     server.messageToClient(client, client, "JOIN You are now in channel " + channel.getName());
+    Numeric::printNumeric(client, server, channel.getTopic().size() > 0 ? RPL_TOPIC(client->getNickname(), channel.getName(), channel.getTopic()) : RPL_NOTOPIC(client->getNickname(), channel.getName()));
     std::string names;
-        for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
-        {
-            if (channel.isClientOperator(*it))
-                names += "@";
-            names += (*it)->getNickname().empty() ? (*it)->getUsername() : (*it)->getNickname();
-            if (it != channel.getClients().end() - 1)
-                names += " ";
-        }
-        channel.sendMessageToChannel(server,client,RPL_NAMREPLY(client->getNickname(), channel.getName(), names));
-        channel.sendMessageToChannel(server,client,RPL_ENDOFNAMES(client->getNickname(), channel.getName()));
-        names = "";
+    for (std::vector<Client *>::iterator it = channel.getClients().begin(); it != channel.getClients().end(); it++)
+    {
+        if (channel.isClientOperator(*it))
+            names += "@";
+        names += (*it)->getNickname().empty() ? (*it)->getUsername() : (*it)->getNickname();
+        if (it != channel.getClients().end() - 1)
+            names += " ";
+    }
+    channel.sendMessageToChannel(server, client, RPL_NAMREPLY(client->getNickname(), channel.getName(), names));
+    channel.sendMessageToChannel(server, client, RPL_ENDOFNAMES(client->getNickname(), channel.getName()));
+    names = "";
 }
 
 void Join::handleMultipleChannels(Server &server, Client *client, std::vector<std::string> &params)

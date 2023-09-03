@@ -8,7 +8,8 @@ class Part : public ICommand
 private:
     void handleMultipleChannels(Server &server, Client *client, std::vector<std::string> &params);
     void handleWithParams(Server &server, Client *client, std::vector<std::string> &params);
-
+    void partFromAllChannels(Server &server, Client *client);
+    void checkLastOperator(Server &server, Client *client, Channel &ch);
 public:
     Part();
     ~Part();
