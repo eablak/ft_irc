@@ -9,7 +9,7 @@ Pass::~Pass() {}
 void Pass::execute(Server &server, Client *client)
 {
 
-    if (client->getAuthStatus() != NOTAUTHENTICATED)
+    if (client->getAuthStatus() == AUTHENTICATE)
     {
         Numeric::printNumeric(client, server, ERR_ALREADYREGISTRED());
         return;
@@ -25,7 +25,10 @@ void Pass::execute(Server &server, Client *client)
     {
         client->setAuthStatus(AUTHENTICATE);
         server.messageToClient(client, client, "Password is correct!");
+        Numeric::printNumeric(client, server, RPL_WELCOME(client->getNickname(),client->getUsername(),server.getHostname()));
     }
     else
         Numeric::printNumeric(client, server, ERR_PASSWDMISMATCH());
+
+
 }

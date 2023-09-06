@@ -25,7 +25,7 @@ void User::execute(Server &server, Client *client)
         return;
     }
     std::vector<std::string> new_params = Utils::concatParams(client->getParams());
-    // * yerine hostname gelebiliyor silindi
+   
     if (new_params.size() != 4 || (new_params[1] != "0"))
     {
         server.messageToClient(client, client, "Error: Missing parameter");
@@ -37,6 +37,5 @@ void User::execute(Server &server, Client *client)
     if (client->getNickname().size() == 0)
         return;
     client->setAuthStatus(REGISTERED);
-    Numeric::printNumeric(client, server, RPL_WELCOME(client->getNickname(), client->getUsername(), server.getHostname()));
     new_params.clear();
 }

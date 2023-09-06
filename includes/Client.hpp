@@ -7,9 +7,9 @@
 
 enum _auth
 {
-    AUTHENTICATE,
-    NOTAUTHENTICATED,
-    REGISTERED
+    AUTHENTICATE, // sonra zorunlu pass şimdi herşey serbest
+    NOTAUTHENTICATED, 
+    REGISTERED // user nick ilk sadece
 };
 
 class Numeric;

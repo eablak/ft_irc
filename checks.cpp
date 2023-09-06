@@ -15,8 +15,3 @@ void checks::check_args(int ac, char **av){
         std::cerr << "wrong port" << std::endl;
     }
 }
-
-int checks::checkNick(std::string nick){
-    (void) nick;
-    return 1;
-}

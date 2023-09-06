@@ -32,7 +32,6 @@ std::map<std::string, ICommand *> HandleMessage::getCommandMap()
 
 void HandleMessage::processNotAuthenticated()
 {
-	_commandMap.insert(std::make_pair("PASS", new Pass()));
 	_commandMap.insert(std::make_pair("USER", new User()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("CAP", new Cap()));
@@ -41,16 +40,8 @@ void HandleMessage::processNotAuthenticated()
 
 void HandleMessage::processAuthenticate()
 {
-	_commandMap.insert(std::make_pair("PASS", new Pass()));
-	_commandMap.insert(std::make_pair("NICK", new Nick()));
-	_commandMap.insert(std::make_pair("USER", new User()));
-	_commandMap.insert(std::make_pair("CAP", new Cap()));
-	_commandMap.insert(std::make_pair("PING", new Ping()));
-}
 
-void HandleMessage::processRegistered()
-{
-	_commandMap.insert(std::make_pair("TOPIC", new Topic()));
+		_commandMap.insert(std::make_pair("TOPIC", new Topic()));
 	_commandMap.insert(std::make_pair("KICK", new Kick()));
 	_commandMap.insert(std::make_pair("PASS", new Pass()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
@@ -62,6 +53,15 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("WHO", new Who()));
 	_commandMap.insert(std::make_pair("MODE", new Mode()));
 	_commandMap.insert(std::make_pair("NOTICE", new Notice()));
+	_commandMap.insert(std::make_pair("PING", new Ping()));
+}
+
+void HandleMessage::processRegistered()
+{
+	_commandMap.insert(std::make_pair("PASS", new Pass()));
+	_commandMap.insert(std::make_pair("NICK", new Nick()));
+	_commandMap.insert(std::make_pair("USER", new User()));
+	_commandMap.insert(std::make_pair("CAP", new Cap()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
 }
 

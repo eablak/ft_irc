@@ -58,7 +58,7 @@ void Server::clientAccept()
 		_pollfds.push_back(poll_client);
 		_clients.push_back(client);
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
-		messageToClient(client, client, "Welcome to IRC. Please Enter Password");
+		messageToClient(client, client, "Welcome to IRC. Please Enter USER and NICK");
 	}
 }
 
@@ -142,11 +142,11 @@ void Server::clientEvent(int fd)
 		ICommand *command = _handlemsg.getCommand(client->getCommand());
 		if (command == NULL)
 		{
-			if (_handlemsg.checkAuthCommand(*this, client) == 1)
-			{
-				_handlemsg.removeExecutedPart(msg);
-				continue;
-			}
+			// // if (_handlemsg.checkAuthCommand(*this, client) == 1)
+			// // {
+			// 	_handlemsg.removeExecutedPart(msg);
+			// 	continue;
+			// // }
 			Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
 			_handlemsg.removeExecutedPart(msg);
 			continue;
