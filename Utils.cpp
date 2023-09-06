@@ -7,12 +7,15 @@ std::vector<std::string> Utils::split(std::string &str, char delim)
     std::string token;
     while (std::getline(ss, token, delim))
     {
+
+        if (token.size() == 0)
+            continue;
         result.push_back(token);
     }
     return result;
 }
 
-std::vector<std::string>Utils::concatParams(std::vector<std::string> &params)
+std::vector<std::string> Utils::concatParams(std::vector<std::string> &params)
 {
     std::vector<std::string> new_params;
     std::string all;

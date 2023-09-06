@@ -25,7 +25,6 @@ void User::execute(Server &server, Client *client)
         return;
     }
     std::vector<std::string> new_params = Utils::concatParams(client->getParams());
-   
     if (new_params.size() != 4 || (new_params[1] != "0"))
     {
         server.messageToClient(client, client, "Error: Missing parameter");

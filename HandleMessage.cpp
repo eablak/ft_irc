@@ -71,10 +71,11 @@ int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
 {
 	if (msg.size() > 512)
 	{
-		std::cout << "512" << std::endl; // kendisi handleliyo
 		Numeric::printNumeric(client, server, ERR_INPUTTOOLONG());
 		msg[511] = '\r';
 		msg[512] = '\n';
+		msg.clear();
+		return (0);
 	}
 
 	if (msg == "")
