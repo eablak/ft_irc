@@ -37,6 +37,8 @@ void HandleMessage::processNotAuthenticated()
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
 	_commandMap.insert(std::make_pair("CAP", new Cap()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
+	_commandMap.insert(std::make_pair("QUIT", new Quit()));
+
 }
 
 void HandleMessage::processAuthenticate()
@@ -65,6 +67,8 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("USER", new User()));
 	_commandMap.insert(std::make_pair("CAP", new Cap()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
+	_commandMap.insert(std::make_pair("QUIT", new Quit()));
+
 }
 
 int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
