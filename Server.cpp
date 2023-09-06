@@ -116,6 +116,7 @@ void Server::removeClient(Client *client)
 			break;
 		}
 	}
+	delete client;
 }
 
 void Server::clientEvent(int fd)

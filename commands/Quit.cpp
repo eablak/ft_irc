@@ -50,7 +50,7 @@ void Quit::execute(Server &server, Client *client)
     {
         server.messageToClient(client, client, "QUIT :");
         partFromAllChannels(server, client);
-
+        
         server.removeClient(client);
         return;
     }
