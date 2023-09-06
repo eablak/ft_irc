@@ -79,7 +79,7 @@ bool Channel::isClientOperator(Client *client)
     }
     return (false);
 }
-// sends a the message to AlL of the channel members including the client
+
 void Channel::sendMessageToChannel(Server &server, Client *client, std::string message)
 {
     std::vector<Client *>::iterator it;

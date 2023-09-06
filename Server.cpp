@@ -143,11 +143,6 @@ void Server::clientEvent(int fd)
 		ICommand *command = _handlemsg.getCommand(client->getCommand());
 		if (command == NULL)
 		{
-			// // if (_handlemsg.checkAuthCommand(*this, client) == 1)
-			// // {
-			// 	_handlemsg.removeExecutedPart(msg);
-			// 	continue;
-			// // }
 			Numeric::printNumeric(client, *this, ERR_UNKNOWNCOMMAND(client->getCommand()));
 			_handlemsg.removeExecutedPart(msg);
 			continue;

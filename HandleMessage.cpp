@@ -96,7 +96,7 @@ int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
 	client->setParams(params);
 	return (1);
 }
-// dont forget to delete the commands
+
 ICommand *HandleMessage::getCommand(std::string command)
 {
 	std::map<std::string, ICommand *>::iterator it;

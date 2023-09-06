@@ -19,7 +19,7 @@
 #define ERR_NONICKNAMEGIVEN() ("431 :No nickname given")
 #define ERR_ERRONEUSNICKNAME(nick) ("432 " + nick + " :Erroneus nickname")
 #define ERR_UNKNOWNCOMMAND(cmd) ("421 ERR_UNKNOWNCOMMAND " + cmd + " :Unknown command")
-#define ERR_ALREADYREGISTRED() ("462 :You may not reregister") // USER veya PASS'i bi daha gönderirse
+#define ERR_ALREADYREGISTRED() ("462 :You may not reregister")
 #define ERR_NICKNAMEINUSE(nick) ("433 * " + nick + " :Nickname is already in use")
 #define ERR_NOSUCHNICK(nickname) "401 " + nickname + " :No such nick/channel"
 #define ERR_NOSUCHCHANNEL(channel) "403 " + channel + " :No such channel"
