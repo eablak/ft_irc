@@ -14,6 +14,7 @@
 #include "includes/Mode.hpp"
 #include "includes/Notice.hpp"
 #include "includes/Ping.hpp"
+#include "includes/Names.hpp"
 
 HandleMessage::HandleMessage(Client *client)
 {
@@ -41,7 +42,7 @@ void HandleMessage::processNotAuthenticated()
 void HandleMessage::processAuthenticate()
 {
 
-		_commandMap.insert(std::make_pair("TOPIC", new Topic()));
+	_commandMap.insert(std::make_pair("TOPIC", new Topic()));
 	_commandMap.insert(std::make_pair("KICK", new Kick()));
 	_commandMap.insert(std::make_pair("PASS", new Pass()));
 	_commandMap.insert(std::make_pair("NICK", new Nick()));
@@ -54,6 +55,7 @@ void HandleMessage::processAuthenticate()
 	_commandMap.insert(std::make_pair("MODE", new Mode()));
 	_commandMap.insert(std::make_pair("NOTICE", new Notice()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
+	_commandMap.insert(std::make_pair("names", new Names()));
 }
 
 void HandleMessage::processRegistered()
@@ -64,7 +66,6 @@ void HandleMessage::processRegistered()
 	_commandMap.insert(std::make_pair("CAP", new Cap()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
 }
-
 
 int HandleMessage::handleMsg(Server &server, Client *client, std::string msg)
 {

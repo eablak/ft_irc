@@ -19,6 +19,11 @@ void Mode::handleChannel(Server &server, Client *client, std::vector<std::string
 			Numeric::printNumeric(client, server, RPL_CHANNELMODEIS(channel.getName(), "+nt"));
 			return;
 		}
+		if (!channel.isClientOperator(client))
+		{
+			Numeric::printNumeric(client, server, ERR_CHANOPRIVSNEEDED(channel.getName()));
+			return;
+		}
 		if (params[1].find("+o") != std::string::npos)
 		{
 			try
