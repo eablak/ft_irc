@@ -10,6 +10,17 @@ File::File(){
 }
 
 void File::_sendFile(Server &server, Client *client){
+
+
+    std::ifstream _file("test.txt", std::ios::binary); 
+    std::cout << "here \n";
+    char byte;
+    while (_file.get(byte)) {
+
+        std::cout << "Okunan Bayt: " << static_cast<int>(byte) << std::endl;
+    }
+
+
     std::cout << "SEND file" << std::endl;
     Client *sendClient = server.getClientWithNick(client->getParams()[4]);
     if (!sendClient){
