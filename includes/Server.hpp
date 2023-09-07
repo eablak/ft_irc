@@ -45,6 +45,8 @@ public:
     void removeChannel(std::string channelName);
     Client *getClientByNickname(std::string nickname);
     void removeChannel(Channel &channel);
+    int getPort();
+    Client *getClientWithNick(std::string nickname);
     class ClientDisconnectedException : public std::exception
     {
         virtual const char *what() const throw()

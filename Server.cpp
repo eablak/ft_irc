@@ -1,4 +1,5 @@
 #include "includes/Server.hpp"
+#include "includes/fileTransfer.hpp"
 
 Server::Server(std::string _port, std::string _password)
 {
@@ -72,6 +73,17 @@ Client *Server::getClient(int fd)
 	std::cout << "getClient Error" << std::endl;
 	exit(1);
 }
+
+Client *Server::getClientWithNick(std::string nickname)
+{
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i]->getNickname() == nickname)
+			return (_clients[i]);
+	}
+	return (NULL);
+}
+
 
 std::string Server::readMessage(int fd)
 {
@@ -242,4 +254,8 @@ void Server::removeChannel(Channel &channel)
 			break;
 		}
 	}
+}
+
+int Server::getPort(){
+	return (this->port);
 }
