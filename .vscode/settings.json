@@ -85,6 +85,8 @@
         "variant": "cpp",
         "*.ipp": "cpp",
         "__bits": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "stack": "cpp",
+        "filesystem": "cpp"
     }
 }

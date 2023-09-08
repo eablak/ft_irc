@@ -11,16 +11,6 @@ File::File(){
 
 void File::_sendFile(Server &server, Client *client){
 
-
-    // std::ifstream _file("a.jpeg", std::ios::binary); 
-    // std::cout << "here \n";
-    // char byte;
-    // while (_file.get(byte)) {
-
-    //     std::cout << "Okunan Bayt: " << static_cast<int>(byte) << std::endl;
-    // }
-
-
     std::cout << "SEND file" << std::endl;
     Client *sendClient = server.getClientWithNick(client->getParams()[4]);
     if (!sendClient){
@@ -36,90 +26,59 @@ void File::_sendFile(Server &server, Client *client){
 
     std::cout << sendClient->getNickname() << " kişiye send" << std::endl;
 
-    // std::ifstream text_file("test.txt");
-    // std::string text;
-    // text_file.seekg(0, std::ios::end);
-    // text.reserve(text_file.tellg());
-    // text_file.seekg(0, std::ios::beg);
-    // text.assign(
-    //     std::istreambuf_iterator<char>(text_file),
-    //     std::istreambuf_iterator<char>()
-    // );
-    // ssize_t bytes_sent = send(sendClient->getClientFd(), text.c_str(), text.size(), 0);
-    // if (bytes_sent == -1) {
-    //     perror("send");
-    // } else {
-    //     std::cout << bytes_sent << " bayt metin gönderildi." << std::endl;
-    // }
-
-
-
-
-
-
-    std::ifstream image_file(client->getParams()[1], std::ios::binary);
-    if (!image_file) {
+    std::ifstream _file(client->getParams()[1], std::ios::binary);
+    if (!_file) {
         std::cerr << "Dosya açılamadı!" << std::endl;
         return ;
     }
 
-    image_file.seekg(0, std::ios::end);
-    size_t image_size = image_file.tellg();
-    image_file.seekg(0, std::ios::beg);
+    _file.seekg(0, std::ios::end);
+    size_t file_size = _file.tellg();
+    _file.seekg(0, std::ios::beg);
 
-    char *buffer = new char[image_size]; 
-    image_file.read(buffer, image_size); 
+    std::cout << "FILE SIZE : " << file_size << std::endl;
 
-    ssize_t bytes_sent = send(sendClient->getClientFd(), buffer, image_size, 0);
+    char *buffer = new char[file_size]; 
+    // _file.read(buffer, file_size); 
+
+    ssize_t bytes_sent = send(sendClient->getClientFd(), buffer, file_size, 0);
 
     if (bytes_sent == -1) {
         perror("send");
     } else {
         std::cout << bytes_sent << " bayt resim gönderildi." << std::endl;
     }
+  
+}
 
+void File::_getFile(Server &server, Client *client){
 
+    Client *senderClient = server.getClientWithNick(client->getParams()[4]);
+    if (!senderClient){
+        server.messageToClient(client, client, "Wrong SenderClient nickname");
+        return ;
+    }
+    std::cout << "GETFILE" << std::endl;
     char buffer2[1024]; 
+    ssize_t bytes_received2 = 0;
     while (1) {
-        ssize_t bytes_received = recv(sendClient->getClientFd(), buffer2, sizeof(buffer2), 0);
-
+        ssize_t bytes_received = recv(senderClient->getClientFd(), buffer2, sizeof(buffer2), 0);
+        bytes_received2 += bytes_received;
         if (bytes_received == -1) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                // Bekleme durumunda olduğumuz için devam ediyoruz
                 continue;
             } else {
                 perror("recv");
-                break; // Diğer hatalar için döngüyü kır
+                break; 
             }
         } else if (bytes_received == 0) {
-            // Soket kapatıldı
             std::cout << "Soket kapatıldı." << std::endl;
             break;
         } else {
             std::cout << bytes_received << " bayt veri alındı." << std::endl;
-            // Veriyi işleme devam edin
         }
     }
-
-
-    // if (bytes_received == -1) {
-    //     perror("recv");
-    // } else {
-    //     std::cout << bytes_received << " bayt veri alındı." << std::endl;
-
-    //     std::ofstream received_file("alınan_dosya.jpg", std::ios::binary);
-    //     received_file.write(buffer2, bytes_received);
-    //     received_file.close();
-
-    //     std::cout << "Alınan dosya kaydedildi." << std::endl;
-    // }
-
-}
-
-void File::_getFile(Server &server, Client *client){
-    (void) client;
-    (void) server;
-    std::cout << "get file" << std::endl;
+    std::cout << "EN SON :: " << bytes_received2 << std::endl;
 }
 
 void File::execute(Server &server, Client *client){
