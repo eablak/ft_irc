@@ -9,8 +9,8 @@ File::File(){
   
 }
 
-void File::_sendFile(Server &server, Client *client){
-    Client *sendClient = server.getClientWithNick(client->getParams()[4]);
+void File::_sendFile(Server &server, Client *client) {
+       Client *sendClient = server.getClientWithNick(client->getParams()[4]);
     printf("Getting Picture Size\n");
     // make file stream
     FILE *picture;
@@ -52,44 +52,60 @@ void File::_sendFile(Server &server, Client *client){
     std::cout << counter << std::endl;
 }
 
-void File::_getFile(Server &server, Client *client){
-    (void) server;
 
-    // define buffer
+void File::_getFile(Server &server, Client *client){
+
+     (void) server;
+
+    // Define buffer
     char *buff = new char[BUFSIZ];
 
-    //Read Picture Size
+    // Read Picture Size
     printf("Reading Picture Size\n");
-    recv(client->getClientFd(), buff, BUFSIZ, 0);
-    int file_size = atoi(buff);
-    std::cout << "Picture size:";
-    std::cout << file_size << std::endl;
+    ssize_t bytes_received = recv(client->getClientFd(), buff, BUFSIZ, 0);
+    if (bytes_received <= 0) {
+        // Handle error or connection closure
+        perror("recv");
+        delete[] buff;
+        return;
+    }
 
-    // create new file for recive image
+    // Null-terminate the received data
+    buff[bytes_received] = '\0';
+
+    int file_size = atoi(buff);
+    std::cout << "Picture size: " << file_size << std::endl;
+
+    // Create a new file for receiving the image
     std::ofstream imageFile;
     imageFile.open("client_image.png", std::ios::binary);
 
-    //Read Picture Byte Array and Copy in file
+    // Read Picture Byte Array and Copy to the file
     printf("Reading Picture Byte Array\n");
-    ssize_t len;
     int remain_data = file_size;
-    int reciveddata = 0;
-    printf("Recive Started:\n");
-    while ((remain_data > 0) && ((len = recv(client->getClientFd(), buff, BUFSIZ, 0)) > 0))
-    {
+    int received_data = 0;
+    printf("Receive Started:\n");
+    
+    while (remain_data > 0) {
+        ssize_t len = recv(client->getClientFd(), buff, BUFSIZ, 0);
+        if (len <= 0) {
+            // Handle error or connection closure
+            perror("recv");
+            break;
+        }
         imageFile.write(buff, len);
-        reciveddata += len;
+        received_data += len;
         remain_data -= len;
-        int percent = (reciveddata*1.0 / file_size*1.0) * 100;
-        std::cout << "Recive:";
-        std::cout << percent;
-        std::cout << "%" << std::endl;
+        int percent = (received_data * 1.0 / file_size * 1.0) * 100;
+        std::cout << "Received: " << percent << "%" << std::endl;
     }
 
-    // close stream
+    // Close the file stream
     imageFile.close();
-    std::cout << "Recived Size:";
-    std::cout << reciveddata << std::endl;
+    std::cout << "Received Size: " << received_data << " bytes" << std::endl;
+
+    // Clean up the buffer
+    delete[] buff;
 }
 
 

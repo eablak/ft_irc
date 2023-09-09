@@ -1,5 +1,8 @@
 #include "includes/Server.hpp"
 #include "includes/fileTransfer.hpp"
+#include <netdb.h>
+#include <arpa/inet.h>
+const int SERVER_PORT = 5432;
 
 Server::Server(std::string _port, std::string _password)
 {
@@ -45,6 +48,15 @@ void Server::clientAccept()
 	socklen_t len;
 	int client_fd;
 	pollfd poll_client;
+	std::string host = getHostname();
+    hostent *hp = gethostbyname(host.c_str());
+	client_addr.sin_family = AF_INET;
+	client_addr.sin_port = htons(SERVER_PORT);
+    client_addr.sin_addr.s_addr = *(uint32_t *)hp->h_addr;
+    const char *rmem = inet_ntoa(client_addr.sin_addr);
+	if (rmem == NULL)
+		std::cout << "NULLLL" << std::endl;
+
 
 	len = sizeof(client_addr);
 	client_fd = accept(socketfd, (sockaddr *)&client_addr, &len);
