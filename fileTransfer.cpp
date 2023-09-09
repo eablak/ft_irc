@@ -10,76 +10,88 @@ File::File(){
 }
 
 void File::_sendFile(Server &server, Client *client){
-
-    std::cout << "SEND file" << std::endl;
     Client *sendClient = server.getClientWithNick(client->getParams()[4]);
-    if (!sendClient){
-        server.messageToClient(client, client, "Wrong SendClient nickname");
-        return ;
+    printf("Getting Picture Size\n");
+    // make file stream
+    FILE *picture;
+    picture = fopen("server_image.png", "rb");
+
+    // get size of file
+    int size;
+    fseek(picture, 0, SEEK_END);
+    size = ftell(picture);
+    fseek(picture, 0, SEEK_SET);
+
+    //Send Picture Size
+    printf("Sending Picture Size\n");
+    char file_size[256];
+    sprintf(file_size, "%d", size);
+    std::cout << "Picture size:";
+    std::cout << file_size << std::endl;
+    send(sendClient->getClientFd(), file_size, sizeof(file_size), 0);
+
+    // Send Picture as Byte Array(without need of a buffer as large as the image file)
+    printf("Sending Picture as Byte Array\n");
+    char send_buffer[BUFSIZ]; // no link between BUFSIZE and the file size
+    std::cout << sizeof(send_buffer) << std::endl;
+    printf("Send Start :\n");
+
+
+    int counter = 0;
+    while (!feof(picture))
+    {
+        int nb = fread(send_buffer, 1, sizeof(send_buffer), picture);
+        send(sendClient->getClientFd(), send_buffer, nb, 0);
+        std::cout << "Buffer Send ... " << std::endl;
+        std::cout << "byte ";
+        std::cout << nb << std::endl;
+        counter += nb;
+        // no need to bzero
     }
-
-    std::fstream ifs(client->getParams()[1] , std::fstream::in);
-	if (ifs.fail()){
-		printf("999 :Invalid file path\n");
-        return ;
-    }
-
-    std::cout << sendClient->getNickname() << " kişiye send" << std::endl;
-
-    std::ifstream _file(client->getParams()[1], std::ios::binary);
-    if (!_file) {
-        std::cerr << "Dosya açılamadı!" << std::endl;
-        return ;
-    }
-
-    _file.seekg(0, std::ios::end);
-    size_t file_size = _file.tellg();
-    _file.seekg(0, std::ios::beg);
-
-    std::cout << "FILE SIZE : " << file_size << std::endl;
-
-    char *buffer = new char[file_size]; 
-    // _file.read(buffer, file_size); 
-
-    ssize_t bytes_sent = send(sendClient->getClientFd(), buffer, file_size, 0);
-
-    if (bytes_sent == -1) {
-        perror("send");
-    } else {
-        std::cout << bytes_sent << " bayt resim gönderildi." << std::endl;
-    }
-  
+    std::cout << "Sent Size:";
+    std::cout << counter << std::endl;
 }
 
 void File::_getFile(Server &server, Client *client){
+    (void) server;
 
-    Client *senderClient = server.getClientWithNick(client->getParams()[4]);
-    if (!senderClient){
-        server.messageToClient(client, client, "Wrong SenderClient nickname");
-        return ;
+    // define buffer
+    char *buff = new char[BUFSIZ];
+
+    //Read Picture Size
+    printf("Reading Picture Size\n");
+    recv(client->getClientFd(), buff, BUFSIZ, 0);
+    int file_size = atoi(buff);
+    std::cout << "Picture size:";
+    std::cout << file_size << std::endl;
+
+    // create new file for recive image
+    std::ofstream imageFile;
+    imageFile.open("client_image.png", std::ios::binary);
+
+    //Read Picture Byte Array and Copy in file
+    printf("Reading Picture Byte Array\n");
+    ssize_t len;
+    int remain_data = file_size;
+    int reciveddata = 0;
+    printf("Recive Started:\n");
+    while ((remain_data > 0) && ((len = recv(client->getClientFd(), buff, BUFSIZ, 0)) > 0))
+    {
+        imageFile.write(buff, len);
+        reciveddata += len;
+        remain_data -= len;
+        int percent = (reciveddata*1.0 / file_size*1.0) * 100;
+        std::cout << "Recive:";
+        std::cout << percent;
+        std::cout << "%" << std::endl;
     }
-    std::cout << "GETFILE" << std::endl;
-    char buffer2[1024]; 
-    ssize_t bytes_received2 = 0;
-    while (1) {
-        ssize_t bytes_received = recv(senderClient->getClientFd(), buffer2, sizeof(buffer2), 0);
-        bytes_received2 += bytes_received;
-        if (bytes_received == -1) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                continue;
-            } else {
-                perror("recv");
-                break; 
-            }
-        } else if (bytes_received == 0) {
-            std::cout << "Soket kapatıldı." << std::endl;
-            break;
-        } else {
-            std::cout << bytes_received << " bayt veri alındı." << std::endl;
-        }
-    }
-    std::cout << "EN SON :: " << bytes_received2 << std::endl;
+
+    // close stream
+    imageFile.close();
+    std::cout << "Recived Size:";
+    std::cout << reciveddata << std::endl;
 }
+
 
 void File::execute(Server &server, Client *client){
     std::cout << "!!   " << server.getHostname() << "   " << std::endl;
