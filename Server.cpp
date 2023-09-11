@@ -2,7 +2,6 @@
 #include "includes/fileTransfer.hpp"
 #include <netdb.h>
 #include <arpa/inet.h>
-const int SERVER_PORT = 5432;
 
 Server::Server(std::string _port, std::string _password)
 {
@@ -56,7 +55,7 @@ void Server::clientAccept()
 	else
 	{
 		poll_client.fd = client_fd;
-		poll_client.events = POLLIN;
+		poll_client.events = POLLIN | POLLOUT; 
 		poll_client.revents = 0;
 		Client *client = new Client(client_fd, this->hostname);
 		_pollfds.push_back(poll_client);
@@ -136,6 +135,7 @@ void Server::removeClient(Client *client)
 
 void Server::clientEvent(int fd)
 {
+	std::cout << "1!!!!!!!test!!!!!!!!" << std::endl;
 	Client *client = getClient(fd);
 	std::string msg;
 	try
@@ -187,6 +187,7 @@ void Server::serverInvoke()
 				else
 					clientEvent(_pollfds[i].fd);
 			}
+
 		}
 	}
 }

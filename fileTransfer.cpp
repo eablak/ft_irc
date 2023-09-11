@@ -12,26 +12,16 @@ File::File(){
 
 void File::_sendFile(Server &server, Client *client) {
 
-    server.messageToClient(client,client, "FILE DOSYASI GONDERILMEK ISTENIYOR\n");
-    
-}
+    // server.messageToClient(client,client, "FILE DOSYASI GONDERILMEK ISTENIYOR\n");
 
-void handle_error(int eno, char const *msg)
-{
-    if (eno == 0)
-        std::cerr << msg << std::endl;
-    else
-        std::cerr << msg << ": " << strerror(eno) << std::endl;
-    exit(errno);
-}
-
-void File::_getFile(Server &server, Client *client){
-
-(void) client;
+    (void) server;
 
     // int nread;
     // char *buf = new char[MAX_LINE];
-    int new_s = (server.getClientByNickname("eablak|2")->getClientFd());
+
+    Client *_client = server.getClientByNickname(client->getParams()[4]);
+
+    int new_s = (_client->getClientFd());
     // nread = recv(new_s, buf, MAX_LINE, 0);
     // if (nread == -1)
     //     handle_error(0, "simplex_server - recv");
@@ -69,13 +59,14 @@ void File::_getFile(Server &server, Client *client){
 
 
     int counter = 0;
+    std::cout <<"writing to" << new_s << std::endl;
     while (!feof(picture))
     {
         int nb = fread(send_buffer, 1, sizeof(send_buffer), picture);
         send(new_s, send_buffer, nb, 0);
-        std::cout << "Buffer Send ... " << std::endl;
-        std::cout << "byte ";
-        std::cout << nb << std::endl;
+        // std::cout << "Buffer Send ... " << std::endl;
+        // std::cout << "byte ";
+        // std::cout << nb << std::endl;
         counter += nb;
         // no need to bzero
     }
@@ -83,20 +74,42 @@ void File::_getFile(Server &server, Client *client){
     std::cout << counter << std::endl;
 
     // std::cout << buf << std::flush;
+    
+}
 
+void handle_error(int eno, char const *msg)
+{
+    if (eno == 0)
+        std::cerr << msg << std::endl;
+    else
+        std::cerr << msg << ": " << strerror(eno) << std::endl;
+    exit(errno);
+}
+
+void File::_getFile(Server &server, Client *client){
 
 //----------------------------------
 
     // int new_s2 = (server.getClientByNickname("eablak|2")->getClientFd());
+    (void) server;
 
+    int new_s = (client->getClientFd());
 
     char *buff = new char[BUFSIZ];
 
-    //Read Picture Size
+    std::cout << "socket " << new_s << std::endl;
     printf("Reading Picture Size\n");
     int ret = recv(new_s, buff, BUFSIZ, 0);
+    
+    if (ret == -1) {
+        perror("recv"); // Hata mesajını yazdır
+    } else if (ret == 0) {
+        std::cout << "Soket kapandı." << std::endl;
+    } else {
+        std::cout << "RET: " << ret << std::endl;
+        // recv işlemi başarılı oldu, veriyi kullanabilirsiniz
+    }
 
-    std::cout << "RET" << ret << std::endl;
 
     if(!buff){
         std::cout << "buff boş\n";
