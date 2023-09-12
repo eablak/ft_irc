@@ -136,10 +136,3 @@ std::string Client::getMessage()
     return (this->message);
 }
 
-struct sockaddr_in Client::getClinetAdrr(){
-    return client_addr;
-}
-
-void Client::setClientAdrr(struct sockaddr_in _clientAddr){
-    client_addr =_clientAddr;
-}

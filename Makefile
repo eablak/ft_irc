@@ -9,7 +9,7 @@
 
 NAME        := ircserv
 CC         := c++
-FLAGS    := -Wall -Wextra -Werror -std=c++11 -g
+FLAGS    := -Wall -Wextra -Werror -std=c++98 -g
 
 ################################################################################
 #                                 PROGRAM'S SRCS                               #
@@ -39,7 +39,6 @@ SRCS        :=      main.cpp \
 						commands/Mode.cpp\
 						commands/Notice.cpp\
 						commands/Ping.cpp\
-                        fileTransfer.cpp\
 
 OBJS        := ${SRCS:.cpp=.o}
 
@@ -79,4 +78,5 @@ fclean:		clean
 re:			fclean all
 
 .PHONY:		all clean fclean re
+
 
