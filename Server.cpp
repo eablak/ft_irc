@@ -1,4 +1,8 @@
 #include "includes/Server.hpp"
+#include "includes/fileTransfer.hpp"
+#include <netdb.h>
+#include <arpa/inet.h>
+const int SERVER_PORT = 5432;
 
 Server::Server(std::string _port, std::string _password)
 {
@@ -28,6 +32,7 @@ void Server::createSocket()
 	if (listen(socketfd, 100) < 0)
 		error::error_func("Error listen socket");
 	std::cout << "Server listening " << port << " port.." << std::endl;
+	setServerAddr(serverAddr);
 }
 
 void Server::messageToClient(Client *sender, Client *target, std::string msg)
@@ -59,6 +64,7 @@ void Server::clientAccept()
 		_clients.push_back(client);
 		std::cout << "fd " << client_fd << " client succesfully connected\n";
 		messageToClient(client, client, "Welcome to IRC. Please Enter USER and NICK");
+		client->setClientAdrr(client_addr);
 	}
 }
 
@@ -72,6 +78,17 @@ Client *Server::getClient(int fd)
 	std::cout << "getClient Error" << std::endl;
 	exit(1);
 }
+
+Client *Server::getClientWithNick(std::string nickname)
+{
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		if (_clients[i]->getNickname() == nickname)
+			return (_clients[i]);
+	}
+	return (NULL);
+}
+
 
 std::string Server::readMessage(int fd)
 {
@@ -242,4 +259,20 @@ void Server::removeChannel(Channel &channel)
 			break;
 		}
 	}
+}
+
+int Server::getPort(){
+	return (this->port);
+}
+
+struct sockaddr_in Server::getServerAddr(){
+	return serverAddr;
+}
+
+void Server::setServerAddr(struct sockaddr_in _serverAddr){
+	serverAddr = _serverAddr;
+}
+
+int Server::getSocketFd(){
+	return socketfd;
 }

@@ -15,6 +15,7 @@
 #include "includes/Notice.hpp"
 #include "includes/Ping.hpp"
 #include "includes/Names.hpp"
+#include "includes/fileTransfer.hpp"
 
 HandleMessage::HandleMessage(Client *client)
 {
@@ -58,6 +59,8 @@ void HandleMessage::processAuthenticate()
 	_commandMap.insert(std::make_pair("NOTICE", new Notice()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
 	_commandMap.insert(std::make_pair("names", new Names()));
+	_commandMap.insert(std::make_pair("DCC", new File()));
+
 }
 
 void HandleMessage::processRegistered()
@@ -104,52 +107,6 @@ ICommand *HandleMessage::getCommand(std::string command)
 	if (it == this->_commandMap.end())
 		return NULL;
 	return it->second;
-}
-
-int HandleMessage::checkAuthCommand(Server &server, Client *client)
-{
-
-	std::vector<std::string> _allCommands;
-
-	_allCommands.push_back("PASS");
-	_allCommands.push_back("NICK");
-	_allCommands.push_back("USER");
-	_allCommands.push_back("JOIN");
-	_allCommands.push_back("PART");
-	_allCommands.push_back("TOPIC");
-	_allCommands.push_back("PRIVMSG");
-
-	if (client->getAuthStatus() == NOTAUTHENTICATED)
-	{
-		for (size_t i = 0; i < _allCommands.size(); i++)
-		{
-			if (client->getCommand() == _allCommands[i])
-			{
-				server.messageToClient(client, client, "Error: You can only send PASS");
-				_allCommands.clear();
-				return 1;
-			}
-		}
-	}
-	else if (client->getAuthStatus() == AUTHENTICATE)
-	{
-		for (size_t i = 0; i < _allCommands.size(); i++)
-		{
-			if (!(client->getCommand() == "NICK" || client->getCommand() == "USER") && client->getCommand() == _allCommands[i])
-			{
-				server.messageToClient(client, client, "Error: You can only send NICK or USER");
-				_allCommands.clear();
-				return 1;
-			}
-		}
-		if (client->getCommand() == "NICK" || client->getCommand() == "USER")
-		{
-			_allCommands.clear();
-			return 1;
-		}
-	}
-	_allCommands.clear();
-	return 0;
 }
 
 void HandleMessage::removeExecutedPart(std::string &msg)
