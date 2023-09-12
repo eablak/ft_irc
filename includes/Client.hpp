@@ -30,6 +30,9 @@ private:
     std::string hostname;
     std::string message;
 
+
+    struct sockaddr_in client_addr;
+
 public:
     Client();
     Client(int fd, std::string hostname);
@@ -54,6 +57,9 @@ public:
     std::string getPrefix();
     void setMessage(std::string message);
     std::string getMessage();
+
+    struct sockaddr_in getClinetAdrr();
+    void setClientAdrr(struct sockaddr_in _clientAddr);
 };
 
 #endif

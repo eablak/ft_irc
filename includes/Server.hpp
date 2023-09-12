@@ -24,6 +24,9 @@ private:
     std::string hostname;
     std::vector<Channel> _channels;
 
+    struct sockaddr_in serverAddr;
+
+
 public:
     Server(std::string av1, std::string av2);
     ~Server();
@@ -47,6 +50,12 @@ public:
     void removeChannel(Channel &channel);
     int getPort();
     Client *getClientWithNick(std::string nickname);
+
+
+    struct sockaddr_in getServerAddr();
+    void setServerAddr(struct sockaddr_in _serverAddr);
+    int getSocketFd();
+
     class ClientDisconnectedException : public std::exception
     {
         virtual const char *what() const throw()

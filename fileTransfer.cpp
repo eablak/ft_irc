@@ -12,69 +12,66 @@ File::File(){
 
 void File::_sendFile(Server &server, Client *client) {
 
-    // server.messageToClient(client,client, "FILE DOSYASI GONDERILMEK ISTENIYOR\n");
 
-    (void) server;
-
-    // int nread;
-    // char *buf = new char[MAX_LINE];
-
-    Client *_client = server.getClientByNickname(client->getParams()[4]);
-
-    int new_s = (_client->getClientFd());
-    // nread = recv(new_s, buf, MAX_LINE, 0);
-    // if (nread == -1)
-    //     handle_error(0, "simplex_server - recv");
-    // if (nread == 0){
-    //     std::cout << "disconnect" << std::endl;
-    //     return; // client has disconnected
-    // }
-    // std::cout << "nread değeri " << nread << std::endl;
-    // std::cout <<" buf " << buf << std::endl;
-    printf("Getting Picture Size\n");
-
-    // make file stream
-    FILE *picture;
-    picture = fopen("server_image.png", "rb");
-
-    // get size of file
-    int size;
-    fseek(picture, 0, SEEK_END);
-    size = ftell(picture);
-    fseek(picture, 0, SEEK_SET);
-
-    //Send Picture Size
-    printf("Sending Picture Size\n");
-    char file_size[256];
-    sprintf(file_size, "%d", size);
-    std::cout << "Picture size:";
-    std::cout << file_size << std::endl;
-    send(new_s, file_size, sizeof(file_size), 0);
-
-    // Send Picture as Byte Array(without need of a buffer as large as the image file)
-    printf("Sending Picture as Byte Array\n");
-    char send_buffer[BUFSIZ]; // no link between BUFSIZE and the file size
-    std::cout << sizeof(send_buffer) << std::endl;
-    printf("Send Start :\n");
+    int Socket = client->getClientFd();
+    //hedef server
+    struct sockaddr_in Server_Address = server.getServerAddr();
+    connect ( Socket, (struct sockaddr *)&Server_Address, sizeof (Server_Address) );
 
 
-    int counter = 0;
-    std::cout <<"writing to" << new_s << std::endl;
-    while (!feof(picture))
-    {
-        int nb = fread(send_buffer, 1, sizeof(send_buffer), picture);
-        send(new_s, send_buffer, nb, 0);
-        // std::cout << "Buffer Send ... " << std::endl;
-        // std::cout << "byte ";
-        // std::cout << nb << std::endl;
-        counter += nb;
-        // no need to bzero
+    FILE *in = fopen("background.jpeg","r");
+    char Buffer[2] = "";
+    int len;
+    int i = 0;
+    while ((len = fread(Buffer,sizeof(Buffer),1, in)) > 0)
+    {     
+        std::cout << "i: " << i << std::endl;
+        i++;
+        send(Socket,Buffer,sizeof(Buffer),0);            
     }
-    std::cout << "Sent Size:";
-    std::cout << counter << std::endl;
+    send(Socket,"Hi",sizeof(Buffer),0);
 
-    // std::cout << buf << std::flush;
-    
+    char Buf[BUFSIZ];
+    recv(Socket, Buf, BUFSIZ, 0);
+    if ( strcmp (Buf,"ACK") == 0  )
+    {
+        printf("Recive ACK\n");
+    }        
+    // fclose(in);
+
+
+
+    // -------------------------------------------------------------
+
+
+    int Communication_Socket = server.getSocketFd();
+    sockaddr_in Client_Address = client->getClinetAdrr();
+    int Main_Socket = server.getSocketFd();
+
+    socklen_t Lenght = sizeof (Client_Address);
+    Communication_Socket = accept ( Main_Socket, (struct sockaddr*)&Client_Address, &Lenght );
+
+    FILE *fp=fopen("recv.jpeg","w");
+    while(1)
+    {
+        char Buffer[2]="";
+        if (recv(Communication_Socket, Buffer, sizeof(Buffer), 0))
+        {
+            if ( strcmp (Buffer,"Hi") == 0  )
+            {
+                break;
+            }
+            else
+            {
+                fwrite(Buffer,sizeof(Buffer),1, fp);
+            }
+        }
+    }
+    fclose(fp);
+    send(Communication_Socket, "ACK" ,3,0);
+    printf("ACK Send");
+    exit(0);
+
 }
 
 void handle_error(int eno, char const *msg)
@@ -88,63 +85,37 @@ void handle_error(int eno, char const *msg)
 
 void File::_getFile(Server &server, Client *client){
 
-//----------------------------------
+    // int Communication_Socket = server.getSocketFd();
+    // sockaddr_in Client_Address;
+    // int Main_Socket;
 
-    // int new_s2 = (server.getClientByNickname("eablak|2")->getClientFd());
+    // socklen_t Lenght = sizeof (Client_Address);
+    // Communication_Socket = accept ( Main_Socket, (struct sockaddr*)&Client_Address, &Lenght );
+
+
+
+    // FILE *fp=fopen("recv.jpeg","w");
+    // while(1)
+    // {
+    //     char Buffer[2]="";
+    //     if (recv(Communication_Socket, Buffer, sizeof(Buffer), 0))
+    //     {
+    //         if ( strcmp (Buffer,"Hi") == 0  )
+    //         {
+    //             break;
+    //         }
+    //         else
+    //         {
+    //             fwrite(Buffer,sizeof(Buffer),1, fp);
+    //         }
+    //     }
+    // }
+    // fclose(fp);
+    // send(Communication_Socket, "ACK" ,3,0);
+    // printf("ACK Send");
+    // exit(0);
     (void) server;
-
-    int new_s = (client->getClientFd());
-
-    char *buff = new char[BUFSIZ];
-
-    std::cout << "socket " << new_s << std::endl;
-    printf("Reading Picture Size\n");
-    int ret = recv(new_s, buff, BUFSIZ, 0);
-    
-    if (ret == -1) {
-        perror("recv"); // Hata mesajını yazdır
-    } else if (ret == 0) {
-        std::cout << "Soket kapandı." << std::endl;
-    } else {
-        std::cout << "RET: " << ret << std::endl;
-        // recv işlemi başarılı oldu, veriyi kullanabilirsiniz
-    }
-
-
-    if(!buff){
-        std::cout << "buff boş\n";
-        exit(1) ;
-    }
-
-    int file_size2 = std::stoi(buff);
-    std::cout << "Picture size:";
-    std::cout << file_size2 << std::endl;
-
-    // create new file for recive image
-    std::ofstream imageFile;
-    imageFile.open("client_image.png", std::ios::binary);
-
-    //Read Picture Byte Array and Copy in file
-    printf("Reading Picture Byte Array\n");
-    ssize_t len;
-    int remain_data = file_size2;
-    int reciveddata = 0;
-    printf("Recive Started:\n");
-    while ((remain_data > 0) && ((len = recv(new_s, buff, BUFSIZ, 0)) > 0))
-    {
-        imageFile.write(buff, len);
-        reciveddata += len;
-        remain_data -= len;
-        int percent = (reciveddata*1.0 / file_size2*1.0) * 100;
-        std::cout << "Recive:";
-        std::cout << percent;
-        std::cout << "%" << std::endl;
-    }
-
-    // close stream
-    imageFile.close();
-    std::cout << "Recived Size:";
-    std::cout << reciveddata << std::endl;
+    (void) client;
 }
 
 
