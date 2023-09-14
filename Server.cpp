@@ -186,8 +186,11 @@ void Server::serverInvoke()
 			{
 				if (_pollfds[i].fd == socketfd)
 					clientAccept();
-				else
+				else{
+					// std::cout << "i: "<< i<< " BURAAA\n";
+					// getchar();
 					clientEvent(_pollfds[i].fd);
+				}
 			}
 		}
 	}

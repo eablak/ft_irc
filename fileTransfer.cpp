@@ -12,14 +12,14 @@ File::File(){
 
 void File::_sendFile(Server &server, Client *client) {
 
-
+    // (void) server;
     int Socket = client->getClientFd();
     //hedef server
     struct sockaddr_in Server_Address = server.getServerAddr();
     connect ( Socket, (struct sockaddr *)&Server_Address, sizeof (Server_Address) );
 
 
-    FILE *in = fopen("background.jpeg","r");
+    FILE *in = fopen("a.txt","r");
     char Buffer[2] = "";
     int len;
     int i = 0;
@@ -37,41 +37,7 @@ void File::_sendFile(Server &server, Client *client) {
     {
         printf("Recive ACK\n");
     }        
-    // fclose(in);
-
-
-
-    // -------------------------------------------------------------
-
-
-    int Communication_Socket = server.getSocketFd();
-    sockaddr_in Client_Address = client->getClinetAdrr();
-    int Main_Socket = server.getSocketFd();
-
-    socklen_t Lenght = sizeof (Client_Address);
-    Communication_Socket = accept ( Main_Socket, (struct sockaddr*)&Client_Address, &Lenght );
-
-    FILE *fp=fopen("recv.jpeg","w");
-    while(1)
-    {
-        char Buffer[2]="";
-        if (recv(Communication_Socket, Buffer, sizeof(Buffer), 0))
-        {
-            if ( strcmp (Buffer,"Hi") == 0  )
-            {
-                break;
-            }
-            else
-            {
-                fwrite(Buffer,sizeof(Buffer),1, fp);
-            }
-        }
-    }
-    fclose(fp);
-    send(Communication_Socket, "ACK" ,3,0);
-    printf("ACK Send");
-    exit(0);
-
+    fclose(in);
 }
 
 void handle_error(int eno, char const *msg)
@@ -85,37 +51,39 @@ void handle_error(int eno, char const *msg)
 
 void File::_getFile(Server &server, Client *client){
 
-    // int Communication_Socket = server.getSocketFd();
-    // sockaddr_in Client_Address;
-    // int Main_Socket;
+    int Communication_Socket = server.getClientByNickname(client->getParams()[4])->getClientFd();
+    sockaddr_in Client_Address;
+    int Main_Socket = client->getClientFd();
 
-    // socklen_t Lenght = sizeof (Client_Address);
-    // Communication_Socket = accept ( Main_Socket, (struct sockaddr*)&Client_Address, &Lenght );
+    socklen_t Lenght = sizeof (Client_Address);
+    Communication_Socket = accept ( Main_Socket, (struct sockaddr*)&Client_Address, &Lenght );
 
-
-
-    // FILE *fp=fopen("recv.jpeg","w");
-    // while(1)
+    // if (!fork())
     // {
-    //     char Buffer[2]="";
-    //     if (recv(Communication_Socket, Buffer, sizeof(Buffer), 0))
-    //     {
-    //         if ( strcmp (Buffer,"Hi") == 0  )
-    //         {
-    //             break;
-    //         }
-    //         else
-    //         {
-    //             fwrite(Buffer,sizeof(Buffer),1, fp);
-    //         }
-    //     }
-    // }
-    // fclose(fp);
-    // send(Communication_Socket, "ACK" ,3,0);
-    // printf("ACK Send");
-    // exit(0);
-    (void) server;
-    (void) client;
+    //     getchar();
+    int i = 0;
+        FILE *fp=fopen("b.txt","w");
+        while(1)
+        {
+            std::cout << "i: " << i << std::endl;
+            i++;
+            char Buffer[2]="";
+            if (recv(Communication_Socket, Buffer, sizeof(Buffer), 0))
+            {
+                if ( strcmp (Buffer,"Hi") == 0  )
+                {
+                    break;
+                }
+                else
+                {
+                    fwrite(Buffer,sizeof(Buffer),1, fp);
+                }
+            }
+        }
+        fclose(fp);
+        send(Communication_Socket, "ACK" ,3,0);
+        printf("ACK Send");
+        // exit(0);
 }
 
 
