@@ -1,6 +1,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "thread"
 #include "libraries.hpp"
 #include "Client.hpp"
 #include "error.hpp"
@@ -24,6 +25,8 @@ private:
     std::string hostname;
     std::vector<Channel> _channels;
 
+    std::vector<std::thread> clientThreads;
+
 public:
     Server(std::string av1, std::string av2);
     ~Server();
@@ -45,6 +48,10 @@ public:
     void removeChannel(std::string channelName);
     Client *getClientByNickname(std::string nickname);
     void removeChannel(Channel &channel);
+
+    std::vector<std::thread> getClientThreads();
+    // std::vector<int> getclientSockets();
+
     class ClientDisconnectedException : public std::exception
     {
         virtual const char *what() const throw()
