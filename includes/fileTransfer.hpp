@@ -11,7 +11,7 @@ class File : public ICommand{
     File();
     void execute(Server &server, Client *client);
     void _sendFile(Server &server, Client *client);
-    void _getFile(Server &server, Client *client);
+    // void _getFile(Server &server, Client *client);
 };
 
 #endif

@@ -1,62 +1,32 @@
 #include "includes/fileTransfer.hpp"
 #include <fstream>
+#include <thread>
 #define MAX_LINE 256
 
 // DCC SEND <filename> <host> <port>
 // DCC SENDFILE <filename> <host> <port> nickname/channel
 // DCC GETFILE <filename> <host> <port> nickname/channel
 
+int _global = 0;
+
 File::File(){
   
 }
 
-void File::_sendFile(Server &server, Client *client) {
+void _getFile(Server &server, Client *client){
 
-    // (void) server;
-    int Socket = client->getClientFd();
-    //hedef server
-    struct sockaddr_in Server_Address = server.getServerAddr();
-    connect ( Socket, (struct sockaddr *)&Server_Address, sizeof (Server_Address) );
-
-
-    FILE *in = fopen("a.txt","r");
-    char Buffer[2] = "";
-    int len;
-    int i = 0;
-    while ((len = fread(Buffer,sizeof(Buffer),1, in)) > 0)
-    {     
-        std::cout << "i: " << i << std::endl;
-        i++;
-        send(Socket,Buffer,sizeof(Buffer),0);            
-    }
-    send(Socket,"Hi",sizeof(Buffer),0);
-
-    char Buf[BUFSIZ];
-    recv(Socket, Buf, BUFSIZ, 0);
-    if ( strcmp (Buf,"ACK") == 0  )
-    {
-        printf("Recive ACK\n");
-    }        
-    fclose(in);
-}
-
-void handle_error(int eno, char const *msg)
-{
-    if (eno == 0)
-        std::cerr << msg << std::endl;
-    else
-        std::cerr << msg << ": " << strerror(eno) << std::endl;
-    exit(errno);
-}
-
-void File::_getFile(Server &server, Client *client){
-
+    // if (_global == 0){
+    //     std::cout << "send yok\n";
+    //     return ;
+    // }
     int Communication_Socket = server.getClientByNickname(client->getParams()[4])->getClientFd();
-    sockaddr_in Client_Address;
+    // sockaddr_in Client_Address;
     int Main_Socket = client->getClientFd();
+    struct sockaddr_in Server_Address = server.getServerAddr();
 
-    socklen_t Lenght = sizeof (Client_Address);
-    Communication_Socket = accept ( Main_Socket, (struct sockaddr*)&Client_Address, &Lenght );
+    connect ( Main_Socket, (struct sockaddr *)&Server_Address, sizeof (Server_Address) );
+    // socklen_t Lenght = sizeof (Client_Address);
+    // Communication_Socket = accept ( Main_Socket, (struct sockaddr*)&Client_Address, &Lenght );
 
     // if (!fork())
     // {
@@ -65,7 +35,7 @@ void File::_getFile(Server &server, Client *client){
         FILE *fp=fopen("b.txt","w");
         while(1)
         {
-            std::cout << "i: " << i << std::endl;
+            std::cout << "I: " << i << std::endl;
             i++;
             char Buffer[2]="";
             if (recv(Communication_Socket, Buffer, sizeof(Buffer), 0))
@@ -86,6 +56,52 @@ void File::_getFile(Server &server, Client *client){
         // exit(0);
 }
 
+void File::_sendFile(Server &server, Client *client) {
+
+    // (void) server;
+    int Socket = client->getClientFd();
+    //hedef server
+    struct sockaddr_in Server_Address = server.getServerAddr();
+    connect ( Socket, (struct sockaddr *)&Server_Address, sizeof (Server_Address) );
+
+
+    FILE *in = fopen("a.txt","r");
+    char Buffer[2] = "";
+    int len;
+    int i = 0;
+    while ((len = fread(Buffer,sizeof(Buffer),1, in)) > 0)
+    {     
+        std::cout << "i: " << i << std::endl;
+        // if (i == 1)
+        i++;
+        send(Socket,Buffer,sizeof(Buffer),0);
+        // if (len == 0){
+        //     std::cout << "bitti\n";
+        // }
+    }
+    send(Socket,"Hi",sizeof(Buffer),0);
+    std::thread myThread(_getFile,std::ref(server), client);  
+    myThread.join();
+
+    char Buf[BUFSIZ];
+    recv(Socket, Buf, BUFSIZ, 0);
+    if ( strcmp (Buf,"ACK") == 0  )
+    {
+        printf("Recive ACK\n");
+    }        
+    fclose(in);
+    _global = 1;
+    std::cout << "GLOBAL: " <<_global << std::endl;
+}
+
+void handle_error(int eno, char const *msg)
+{
+    if (eno == 0)
+        std::cerr << msg << std::endl;
+    else
+        std::cerr << msg << ": " << strerror(eno) << std::endl;
+    exit(errno);
+}
 
 void File::execute(Server &server, Client *client){
     std::cout << "!!   " << server.getHostname() << "   " << std::endl;
