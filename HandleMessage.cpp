@@ -15,6 +15,7 @@
 #include "includes/Notice.hpp"
 #include "includes/Ping.hpp"
 #include "includes/Names.hpp"
+#include "includes/fileTransfer.hpp"
 
 HandleMessage::HandleMessage(Client *client)
 {
@@ -58,6 +59,7 @@ void HandleMessage::processAuthenticate()
 	_commandMap.insert(std::make_pair("NOTICE", new Notice()));
 	_commandMap.insert(std::make_pair("PING", new Ping()));
 	_commandMap.insert(std::make_pair("names", new Names()));
+	_commandMap.insert(std::make_pair("DCC", new File()));
 }
 
 void HandleMessage::processRegistered()

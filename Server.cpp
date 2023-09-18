@@ -39,30 +39,6 @@ void Server::messageToClient(Client *sender, Client *target, std::string msg)
 }
 
 
-std::vector<int> clientSockets;
-
-void handleClient(int clientSocket) {
-
-    char buffer[1024];
-    int bytesRead;
-
-    while ((bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0) {
-        for (long unsigned int i = 0; i < clientSockets.size(); ++i) {
-            if (clientSocket != clientSockets[i]) {
-                send(clientSockets[i], buffer, bytesRead, 0);
-            }
-        }
-    }
-
-    close(clientSocket);
-
-	for (auto it = clientSockets.begin(); it != clientSockets.end(); ++it) {
-        if (*it == clientSocket) {
-            clientSockets.erase(it);
-            break;
-        }
-    }
-}
 
 void Server::clientAccept()
 {
@@ -87,9 +63,7 @@ void Server::clientAccept()
 		messageToClient(client, client, "Welcome to IRC. Please Enter USER and NICK");
 
 
-		clientSockets.push_back(client_fd);
-        std::thread clientThread(handleClient, client_fd);
-        clientThread.detach();
+	
 
 	}
 }
@@ -284,3 +258,7 @@ std::vector<std::thread> Server::getClientThreads(){
 // std::vector<int> Server::getclientSockets(){
 // 	return clientSockets;
 // }
+
+int Server::getPort(){
+	return (this->port);
+}

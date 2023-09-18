@@ -39,6 +39,7 @@ SRCS        :=      main.cpp \
 						commands/Mode.cpp\
 						commands/Notice.cpp\
 						commands/Ping.cpp\
+						fileTransfer.cpp\
 
 OBJS        := ${SRCS:.cpp=.o}
 

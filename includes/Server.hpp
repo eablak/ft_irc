@@ -51,7 +51,7 @@ public:
 
     std::vector<std::thread> getClientThreads();
     // std::vector<int> getclientSockets();
-
+    int getPort();
     class ClientDisconnectedException : public std::exception
     {
         virtual const char *what() const throw()
@@ -76,3 +76,5 @@ public:
 };
 
 #endif
+
+// void handleClient(int clientSocket);
