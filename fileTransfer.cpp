@@ -1,44 +1,50 @@
 #include "includes/fileTransfer.hpp"
 #include <fstream>
 #include <thread>
+#include "includes/Utils.hpp"
 #define MAX_LINE 256
 
 // DCC SEND <filename> <host> <port>
 // DCC SENDFILE <filename> <host> <port> nickname/channel
 // DCC GETFILE <filename> <host> <port> nickname/channel
 
-int _global = 0;
-
 File::File(){
   
 }
 
-void _getFile(Server &server, Client *client){
-    (void) server;
-    (void) client;
-}
 
-void File::_sendFile(Server &server, Client *client) {
-    (void) server;
-    (void) client;
-}
+int File::permission(std::string sender, int receiver, Server &server, std::string file_name){
 
+    Client *client = server.getClient(receiver);
+    server.messageToClient(client,client,sender +" wants to send you " + file_name + " file!");
+    char buff[1024];
+    recv(receiver,buff,sizeof(buff),0);
+    std::string msg = buff;
+    size_t pos = msg.find("\r\n");
+	if (pos == std::string::npos)
+		pos = msg.find("\n");
+	std::string executablePart = msg.substr(0, pos);
+    std::cout << executablePart << std::endl;
+	std::vector<std::string> params = Utils::split(executablePart, ' ');
+    
+    if (params[0] == "DCC" && params[1] == "GETFILE" && params[2] == file_name && params[3] == server.getHostname() && params[4] == std::to_string(server.getPort()) && params[5] == sender){
+        return 1;
+    }
+    Client *_sender = server.getClientByNickname(sender);
+    server.messageToClient(_sender,_sender,client->getNickname()+ " did not accept!\n");
+    return 0;
+}
 
 
 std::vector<int> clientSockets;
 
 void handleClient(int clientSocket, int receiver) {
 
-    // char buffer[1024];
-    // int bytesRead;
-
-    (void) clientSocket;
     FILE *in = fopen("background.jpeg","r");
-    fseek(in, 0, SEEK_END); // Dosyanın sonuna git
-    long file_size = ftell(in); // Dosyanın sonundan dosya boyutunu al
-    fseek(in, 0, SEEK_SET); // Dosyanın başına geri dön
+    fseek(in, 0, SEEK_END);
+    long file_size = ftell(in);
+    fseek(in, 0, SEEK_SET);
 
-    // Buffer için bellek ayır
     unsigned char *buffer = (unsigned char *)malloc(file_size);
     if (buffer == NULL) {
         perror("Bellek ayirma hatasi");
@@ -46,7 +52,6 @@ void handleClient(int clientSocket, int receiver) {
         return ;
     }
 
-    // Dosyayi buffer'a oku
     size_t bytes_read = fread(buffer, 1, file_size, in);
     if (bytes_read != (size_t)file_size) {
         perror("Dosya okuma hatasi");
@@ -56,22 +61,12 @@ void handleClient(int clientSocket, int receiver) {
     }
 
     std::cout << "dosya bytee: " << bytes_read << std::endl;
-    getchar();
-
-    // while ((bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0) {
-        // for (long unsigned int i = 0; i < clientSockets.size(); ++i) {
-        //     if (clientSocket != clientSockets[i]) {
-        //         send(clientSockets[i], buffer, bytes_read, 0);
-        //     }
-        // }
-    // }
-
+   
     fseek(in, 0, SEEK_SET); //!!!!!
 
     int okunan_total = 0;
     int send_total = 0;
     FILE *fp=fopen("recv.jpeg","w");
-    // (void) fp;
     while ((bytes_read = fread(buffer, 1, sizeof(buffer), in)) > 0) {
         std::cout << "bytes read " << bytes_read << std::endl;
         okunan_total += bytes_read;
@@ -105,36 +100,32 @@ void handleClient(int clientSocket, int receiver) {
 }
 
 
-void handle_error(int eno, char const *msg)
-{
-    if (eno == 0)
-        std::cerr << msg << std::endl;
-    else
-        std::cerr << msg << ": " << strerror(eno) << std::endl;
-    exit(errno);
-}
-
 void File::execute(Server &server, Client *client){
+
     std::cout << "!!   " << server.getHostname() << "   " << std::endl;
+
+    if (client->getParams()[0] != "SENDFILE"){
+        server.messageToClient(client,client,"You can only use SENDFILE command!\n");
+        return ;
+    }
     if ((client->getParams().size() != 5) || (client->getParams()[2] != server.getHostname() || std::stoi(client->getParams()[3]) != server.getPort()))
     {
         server.messageToClient(client,client,"Missing parameter DCC");
         return;
     }
 
-
     int receiver = server.getClientByNickname(client->getParams()[4])->getClientFd();
-    clientSockets.push_back(client->getClientFd());
-    clientSockets.push_back(receiver);
-    std::thread clientThread(handleClient, client->getClientFd(), receiver);
-    clientThread.detach();
-    return ;
+    if (receiver == client->getClientFd()){
+        server.messageToClient(client,client, "You can not send file to yourself!\n");
+        return ;
+    }
 
-
-    if (client->getParams()[0] == "SENDFILE")
-        _sendFile(server, client);
-    else if (client->getParams()[0] == "GETFILE")
-        _getFile(server, client);
-    else
-        server.messageToClient(client,client,"Wrong command");
+    std::string file_name = client->getParams()[1];
+    if (permission(client->getNickname(), receiver, server, file_name)){
+        clientSockets.push_back(client->getClientFd());
+        clientSockets.push_back(receiver);
+        std::thread clientThread(handleClient, client->getClientFd(), receiver);
+        clientThread.detach();
+        return ;
+    }
 }

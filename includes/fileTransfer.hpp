@@ -10,8 +10,7 @@ class File : public ICommand{
     public:
     File();
     void execute(Server &server, Client *client);
-    void _sendFile(Server &server, Client *client);
-    // void _getFile(Server &server, Client *client);
+    int permission(std::string sender,int receiver, Server &server, std::string file_name);
 };
 
 #endif

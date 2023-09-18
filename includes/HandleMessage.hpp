@@ -25,7 +25,6 @@ public:
     void processRegistered();
     std::map<std::string, ICommand *> getCommandMap();
     ICommand *getCommand(std::string command);
-    int checkAuthCommand(Server &server, Client *client);
     void removeExecutedPart(std::string &msg);
 };
 #endif
