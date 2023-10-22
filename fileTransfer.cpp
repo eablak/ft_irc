@@ -2,11 +2,14 @@
 #include <fstream>
 #include <thread>
 #include "includes/Utils.hpp"
+#include <errno.h>
 #define MAX_LINE 256
 
 // DCC SEND <filename> <host> <port>
 // DCC SENDFILE <filename> <host> <port> nickname
 // DCC GETFILE <filename> <host> <port> nickname
+
+//std::c++11
 
 File::File(){
   
@@ -17,17 +20,48 @@ int File::permission(std::string sender, int receiver, Server &server, std::stri
 
     Client *client = server.getClient(receiver);
     server.messageToClient(client,client,sender +" wants to send you " + file_name + " file!");
-    char buff[1024];
-    recv(receiver,buff,sizeof(buff),0);
+    char buff[1024] = "";
+    // int ret_recv =  recv(receiver,buff,sizeof(buff),0);
+    // printf("ret_recv %d\n",ret_recv);
+    // if (ret_recv < 0)
+    //     {
+    //         std::cout << "RECV error\n";
+    //         fprintf(stderr, "recv: %s (%d)\n", strerror(errno), errno);
+    //         return (0);
+    //     }
+
+    while (true) {
+    int ret_recv = recv(receiver, buff, sizeof(buff), 0);
+    if (ret_recv == -1) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            // Veri mevcut değil, bir süre bekle ve tekrar dene.
+            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Örnek olarak 100 milisaniye bekleyin.
+            continue;
+        } else {
+            // Diğer hata durumları için işlem yap.
+            perror("recv");
+            break;
+        }
+    } else {
+        // Veri başarıyla alındı.
+        break;
+    }
+}
+
+
+
     std::string msg = buff;
     size_t pos = msg.find("\r\n");
 	if (pos == std::string::npos)
 		pos = msg.find("\n");
 	std::string executablePart = msg.substr(0, pos);
-    std::cout << executablePart << std::endl;
+    // std::cout << "EXECUTABLE PART :" << executablePart << std::endl;
 	std::vector<std::string> params = Utils::split(executablePart, ' ');
-    
-    if (params[0] == "DCC" && params[1] == "GETFILE" && params[2] == file_name && params[3] == server.getHostname() && params[4] == std::to_string(server.getPort()) && params[5] == sender){
+    std::cout << "!'!'!'! " << params[0] << params[1] << params[2] << params[3] << params[4] << params[5]<< std::endl;
+
+    if (params[0] == "DCC" && params[1] == "GETFILE" && params[2] == file_name 
+        && params[3] == server.getHostname() && params[4] == std::to_string(server.getPort()) 
+            && params[5] == sender){
         return 1;
     }
     Client *_sender = server.getClientByNickname(sender);
@@ -97,7 +131,9 @@ void handleClient(int clientSocket, int receiver, std::string file_name) {
 
 void File::execute(Server &server, Client *client){
 
-    // std::cout << "!!   " << server.getHostname() << "   " << std::endl;
+    std::cout << "BUraya gelen string  " << client->getMessage() << std::endl;
+
+    std::cout << "!! HOSTNAME  " << server.getHostname() << "   " << std::endl;
 
     std::string _file = client->getParams()[1];
     FILE *_in = fopen(&_file[0],"r");
