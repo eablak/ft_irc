@@ -49,7 +49,7 @@ public:
     Client *getClientByNickname(std::string nickname);
     void removeChannel(Channel &channel);
 
-    std::vector<std::thread> getClientThreads();
+    // std::vector<std::thread> getClientThreads();
     // std::vector<int> getclientSockets();
     int getPort();
     class ClientDisconnectedException : public std::exception

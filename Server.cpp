@@ -251,9 +251,9 @@ void Server::removeChannel(Channel &channel)
 }
 
 
-std::vector<std::thread> Server::getClientThreads(){
-	return std::move(clientThreads);
-}
+// std::vector<std::thread> Server::getClientThreads(){
+// 	return std::move(clientThreads);
+// }
 
 // std::vector<int> Server::getclientSockets(){
 // 	return clientSockets;

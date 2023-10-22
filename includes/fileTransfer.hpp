@@ -13,4 +13,6 @@ class File : public ICommand{
     int permission(std::string sender,int receiver, Server &server, std::string file_name);
 };
 
+
+void *handleClient(void* args);
 #endif

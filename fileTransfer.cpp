@@ -3,6 +3,7 @@
 #include <thread>
 #include "includes/Utils.hpp"
 #include <errno.h>
+#include <pthread.h> 
 #define MAX_LINE 256
 
 // DCC SEND <filename> <host> <port>
@@ -10,6 +11,12 @@
 // DCC GETFILE <filename> <host> <port> nickname
 
 //std::c++11
+
+struct ThreadArgs {
+    int clientSocket;
+    int receiver;
+    std::string file_name;
+};
 
 File::File(){
   
@@ -21,15 +28,6 @@ int File::permission(std::string sender, int receiver, Server &server, std::stri
     Client *client = server.getClient(receiver);
     server.messageToClient(client,client,sender +" wants to send you " + file_name + " file!");
     char buff[1024] = "";
-    // int ret_recv =  recv(receiver,buff,sizeof(buff),0);
-    // printf("ret_recv %d\n",ret_recv);
-    // if (ret_recv < 0)
-    //     {
-    //         std::cout << "RECV error\n";
-    //         fprintf(stderr, "recv: %s (%d)\n", strerror(errno), errno);
-    //         return (0);
-    //     }
-
     while (true) {
     int ret_recv = recv(receiver, buff, sizeof(buff), 0);
     if (ret_recv == -1) {
@@ -47,8 +45,6 @@ int File::permission(std::string sender, int receiver, Server &server, std::stri
         break;
     }
 }
-
-
 
     std::string msg = buff;
     size_t pos = msg.find("\r\n");
@@ -70,8 +66,12 @@ int File::permission(std::string sender, int receiver, Server &server, std::stri
 }
 
 
-void handleClient(int clientSocket, int receiver, std::string file_name) {
-    
+void *handleClient(void* args) {
+
+    ThreadArgs* clientArgs = static_cast<ThreadArgs*>(args);
+    int clientSocket = clientArgs->clientSocket;
+    int receiver = clientArgs->receiver;
+    std::string file_name = clientArgs->file_name;
     (void) clientSocket;
     FILE *in = fopen(&file_name[0],"r");
 
@@ -83,7 +83,7 @@ void handleClient(int clientSocket, int receiver, std::string file_name) {
     if (buffer == NULL) {
         perror("Memory allocation error");
         fclose(in);
-        return ;
+        return NULL;
     }
 
     size_t bytes_read = fread(buffer, 1, file_size, in);
@@ -91,7 +91,7 @@ void handleClient(int clientSocket, int receiver, std::string file_name) {
         perror("File reading error");
         free(buffer);
         fclose(in);
-        return ;
+        return NULL;
     }
 
     std::cout << "dosya bytee: " << bytes_read << std::endl;
@@ -125,15 +125,13 @@ void handleClient(int clientSocket, int receiver, std::string file_name) {
         std::cout << "ESIT GONDERILDI\n";
     }
     std::cout << "FINISH\n";
-
+    return NULL;
 }
 
 
 void File::execute(Server &server, Client *client){
 
-    std::cout << "BUraya gelen string  " << client->getMessage() << std::endl;
-
-    std::cout << "!! HOSTNAME  " << server.getHostname() << "   " << std::endl;
+    // std::cout << "!! HOSTNAME  " << server.getHostname() << "   " << std::endl;
 
     std::string _file = client->getParams()[1];
     FILE *_in = fopen(&_file[0],"r");
@@ -154,8 +152,17 @@ void File::execute(Server &server, Client *client){
 
     std::string file_name = client->getParams()[1];
     if (permission(client->getNickname(), receiver, server, file_name)){
-        std::thread clientThread(handleClient, client->getClientFd(), receiver, client->getParams()[1]);
-        clientThread.detach();
+
+        ThreadArgs *clientArgs = new ThreadArgs;
+        clientArgs->clientSocket = client->getClientFd();
+        clientArgs->file_name = client->getParams()[1];
+        clientArgs->receiver = receiver;
+
+        pthread_t ptid; 
+        pthread_create(&ptid, NULL, &handleClient, clientArgs); 
+        pthread_join(ptid,NULL);
+        // std::thread clientThread(handleClient, client->getClientFd(), receiver, client->getParams()[1]);
+        // clientThread.detach();
         return ;
     }
 }

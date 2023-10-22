@@ -9,7 +9,7 @@
 
 NAME        := ircserv
 CC         := c++
-FLAGS    := -Wall -Wextra -Werror -std=c++11 -g
+FLAGS    := -Wall -Wextra -Werror -std=c++98 -g
 
 ################################################################################
 #                                 PROGRAM'S SRCS                               #
